@@ -1,0 +1,59 @@
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+#imagecontainer {
+  position: fixed;
+  /* TODO: actually use parent width including margins */
+  width: calc(100% - 16px);
+  height: 40vh;
+}
+
+#contentcontainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  margin-top: 40vh;
+  width: 100%;
+  gap: 30px;
+  background-color: white;
+}
+
+#content {
+  padding-top: 30px;
+  width: 600px;
+}
+
+#readmore {
+  padding-top: 30px;
+  position: sticky;
+  width: 240px;
+  top: 0;
+  align-self: flex-start
+}
+
+.readmorecard {
+  border-radius: 5px;
+  background-color: gray;
+  border-radius: 0px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.readmorecard:last-child {
+  margin-bottom: 0;
+}
+
+.summary {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width:calc(600px + 30px + 240px)) {
+  #readmore { display: none }
+}
