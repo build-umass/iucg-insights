@@ -1,5 +1,24 @@
-.smallarticledisplaycontainer > .imagecontainer {
-  height: 160px;
-
+.smallarticledisplaycontainer .imagecontainer {
+  height: 240px;
+  clip-path: inset(0 0 0 0 round 4px 4px 0px 0px);
  }
 
+.smallarticledisplaycontainer {
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0.3em 0.3em 0.7em rgba(0, 0, 0, 0.3);
+}
+
+.smallarticledisplaycontainer .textcontainer .tags {
+  font-size: 13px;
+  font-style: italic;
+  color: gray;
+}
+ 
+.smallarticledisplaycontainer .textcontainer .title {
+  font-size: 23px;
+}
+
+.smallarticledisplaycontainer .textcontainer {
+  margin: 8px 24px 16px 24px;
+}

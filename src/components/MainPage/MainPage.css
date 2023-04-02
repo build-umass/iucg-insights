@@ -1,0 +1,5 @@
+.articles {
+  display: grid;
+  grid-template-columns: 640px 640px;
+  justify-content: center;
+}
