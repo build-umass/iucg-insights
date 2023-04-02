@@ -1,6 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { MainPage } from './components/MainPage/MainPage'
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<MainPage/>);
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
