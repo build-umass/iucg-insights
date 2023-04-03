@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ message: "Title and content are required" });
   }
   try {
-    const article = new Article({ title, content });
+    const article = new Article({ title,subtitle,synopsis,author,content });
     await article.save();
     res.json(article);
   } catch (error) {
