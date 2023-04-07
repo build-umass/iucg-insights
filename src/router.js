@@ -31,6 +31,9 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Route for uploading a photo for an article
+// In progress
+
 // DELETE /api/articles/:id
 router.delete("/:id", async (req, res) => {
   try {

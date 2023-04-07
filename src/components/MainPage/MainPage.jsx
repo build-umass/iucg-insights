@@ -18,19 +18,21 @@ function MainPage() {
   }, []);
 
  // Fetches articles from the database
-  const fetchArticles = async () => {
-    try {
-      const response = await axios.get("/api/articles");
-      setArticles(
-        response.data.map((article) => ({
-          ...article,
-          photoUrl: `https://dog.ceo/api/breeds/image/random`,
-        }))
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
+ const fetchArticles = async () => {
+  try {
+    const response = await axios.get("/api/articles");
+    const articlesWithPhotos = await Promise.all(response.data.map(async (article) => {
+      const photoResponse = await axios.get("https://dog.ceo/api/breeds/image/random");
+      return {
+        ...article,
+        photoUrl: photoResponse.data.message,
+      };
+    }));
+    setArticles(articlesWithPhotos);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   // This function render the markdown to html. Not currently used.
   // May be useful for later
@@ -64,15 +66,14 @@ function MainPage() {
           <div key={article._id}>
             <SmallArticleDisplay
               article={article}
-              photoUrl={`https://dog.ceo/api/breeds/image/random`}
             />
-            <button onClick={() => handleDelete(article._id)}> 
+            <button class="button-3" role="button" onClick={() => handleDelete(article._id)}> 
               Delete Article
             </button>
           </div>
         ))}
       </div>
-      <button onClick={navigateToCreate}> 
+      <button class="button-6" role="button" onClick={navigateToCreate}> 
         Create Article 
       </button>
     </div>

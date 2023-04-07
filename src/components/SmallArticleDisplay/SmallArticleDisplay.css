@@ -9,16 +9,43 @@
   box-shadow: 0.3em 0.3em 0.7em rgba(0, 0, 0, 0.3);
 }
 
-.smallarticledisplaycontainer .textcontainer .tags {
+.smallarticledisplaycontainer .textcontainer .subtitle {
   font-size: 13px;
   font-style: italic;
   color: gray;
 }
  
 .smallarticledisplaycontainer .textcontainer .title {
+  font-weight: bold;
   font-size: 23px;
 }
 
 .smallarticledisplaycontainer .textcontainer {
   margin: 8px 24px 16px 24px;
 }
+
+/* .title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #333;
+  text-shadow: 2px 2px 0 #ccc;
+}
+
+.subtitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #666;
+  text-shadow: 1px 1px 0 #ccc;
+}*/
+
+.synopsis {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  color: #999;
+  text-shadow: 1px 1px 0 #ccc;
+} 
