@@ -1,52 +1,81 @@
-import "./MainPage.css"
-import React from "react"
-import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay"
+import "./MainPage.css";
+import { useState, useEffect } from "react";
+import { marked } from "marked";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay";
 import { Titlebar } from "../Titlebar/Titlebar"
 
-export class MainPage extends React.Component {
-  
-  constructor(props) {
-    super(props)
-    
-    this.state = {
-      articles: [...Array(8)].map(()=>({title:null,subtitle:null,contentImage:null,author:null,tags:null})),
+axios.defaults.baseURL = "http://localhost:5000";
+
+// This is the main page of the website. It displays all the articles in the database.
+function MainPage() {
+  const [articles, setArticles] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+ // Fetches articles from the database
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get("/api/articles");
+      setArticles(
+        response.data.map((article) => ({
+          ...article,
+          photoUrl: `https://dog.ceo/api/breeds/image/random`,
+        }))
+      );
+    } catch (error) {
+      console.error(error);
     }
-   
-    const simulateFetch = (async () => {
-      
-      //our response is going to be a json object
-      const fetchOne = (async () => {
-        let response = {
-          title: "This is a longer title because they'll probably be longer in production",
-          subtitle: "they made another racist joke to no one's suprise, they're all buisiness students anyways",
-          synopsis: "This is a longer bit of text that will display under some forms of articles because we'll have extra space maybe",
-          author: "bennett gillig",
-          tags: ["dog", "dog2", "something", "dog3"]
-        }
-        response.contentImg = (await fetch("https://dog.ceo/api/breeds/image/random").then(a=>a.json())).message
-        return response
-      })
-      
-      let promises = [...Array(8)].map(async ()=>await fetchOne())      
-      let result = await Promise.all(promises)
+  };
 
-      this.setState({articles: result})
+  // This function render the markdown to html. Not currently used.
+  // May be useful for later
+  const handleMarkdown = (content) => {
+    return { __html: marked(content) };
+  };
 
-    }).bind(this)
-    
-    simulateFetch()
-    
-  }
-  
-  render() {
-    return <div className="mainpage">
-        <Titlebar/>
-        <div className="articles">
-        { this.state.articles.map((article, i) => 
-          <SmallArticleDisplay article={article} key={i}/>
-        )}
-        </div>
+  // This function deletes an article from the database
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/articles/${id}`);
+      setArticles((prevState) =>
+        prevState.filter((article) => article._id !== id)
+      );
+    } catch (error) {
+      console.error(error);
+      alert("Internal server error.");
+    }
+  };
+
+  const navigateToCreate = () => {
+    navigate("../../create");
+  };
+
+  // This function renders the articles to the page, use the SmallArticleDisplay component
+  return (
+    <div className="mainpage">
+    <Titlebar/>
+      <div className="articles">
+        {articles.map((article) => (
+          <div key={article._id}>
+            <SmallArticleDisplay
+              article={article}
+              photoUrl={`https://dog.ceo/api/breeds/image/random`}
+            />
+            <button onClick={() => handleDelete(article._id)}> 
+              Delete Article
+            </button>
+          </div>
+        ))}
       </div>
-  }
+      <button onClick={navigateToCreate}> 
+        Create Article 
+      </button>
+    </div>
+  );
 }
-
+export default MainPage;
