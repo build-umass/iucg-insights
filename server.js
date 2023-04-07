@@ -1,23 +1,25 @@
 // server.js
+// This is the server file for the application.
+// It is responsible for setting up the server and connecting to the database.
+// It also contains the API routes for the application.
+const express = require("express"); //import express
+const mongoose = require("mongoose"); //import mongoose
+const cors = require("cors"); //import cors
+const Article = require("./models/article"); //import article model
 
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const Article = require("./models/article");
+const app = express(); //create express app
 
-const app = express();
-
-// Connect to MongoDB database
+// Connect to MongoDB database  
 mongoose.connect('mongodb://localhost:27017/iucg-blog', { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => console.log('Connected to MongoDB'))  
   .catch(err => console.error('Error connecting to MongoDB', err));
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors()); 
+app.use(express.json()); 
 
 // API routes
-app.get("/api/articles", async (req, res) => {
+app.get("/api/articles", async (req, res) => { 
   try {
     const articles = await Article.find();
     res.json(articles);
