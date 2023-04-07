@@ -1,3 +1,4 @@
+// Description: This file contains the schema for the article model.
 const mongoose = require("mongoose");
 
 const articleSchema = new mongoose.Schema({

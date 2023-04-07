@@ -7,6 +7,7 @@ import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay"
 
 axios.defaults.baseURL = "http://localhost:5000";
 
+// This is the main page of the website. It displays all the articles in the database.
 function MainPage() {
   const [articles, setArticles] = useState([]);
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function MainPage() {
     fetchArticles();
   }, []);
 
+ // Fetches articles from the database
   const fetchArticles = async () => {
     try {
       const response = await axios.get("/api/articles");
@@ -29,10 +31,13 @@ function MainPage() {
     }
   };
 
+  // This function render the markdown to html. Not currently used.
+  // May be useful for later
   const handleMarkdown = (content) => {
     return { __html: marked(content) };
   };
 
+  // This function deletes an article from the database
   const handleDelete = async (id) => {
     try {
       await axios.delete(`/api/articles/${id}`);
@@ -45,26 +50,30 @@ function MainPage() {
     }
   };
 
-  const navigateToApp = () => {
-    navigate("../../app");
+  const navigateToCreate = () => {
+    navigate("../../create");
   };
 
+  // This function renders the articles to the page, use the SmallArticleDisplay component
   return (
     <div>
       <div style={{ display: "grid", gridTemplateColumns: "400px 400px" }}>
         {articles.map((article) => (
-          <SmallArticleDisplay
-            article={article}
-            key={article._id}
-            photoUrl={article.photoUrl}
-          />
+          <div key={article._id}>
+            <SmallArticleDisplay
+              article={article}
+              photoUrl={`https://dog.ceo/api/breeds/image/random`}
+            />
+            <button onClick={() => handleDelete(article._id)}> 
+              Delete Article
+            </button>
+          </div>
         ))}
       </div>
-      <button onClick={navigateToApp}>
-        Create Article
+      <button onClick={navigateToCreate}> 
+        Create Article 
       </button>
     </div>
   );
 }
-
 export default MainPage;

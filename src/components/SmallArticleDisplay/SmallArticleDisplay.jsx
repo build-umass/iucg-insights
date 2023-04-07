@@ -7,7 +7,7 @@ export class SmallArticleDisplay extends React.Component {
   constructor(props) {
     super(props);
   }
-
+// this is the component that renders the articles on the main page
   render() {
     return (
       <div className="smallarticledisplaycontainer">
@@ -22,7 +22,7 @@ export class SmallArticleDisplay extends React.Component {
     );
   }
 }
-
+// this function renders the image for the article
 function Image({ src }) {
   const [loading, setLoading] = useState(true);
 
