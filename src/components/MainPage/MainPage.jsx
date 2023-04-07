@@ -4,6 +4,7 @@ import { marked } from "marked";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay";
+import { Titlebar } from "../Titlebar/Titlebar"
 
 axios.defaults.baseURL = "http://localhost:5000";
 
@@ -56,8 +57,9 @@ function MainPage() {
 
   // This function renders the articles to the page, use the SmallArticleDisplay component
   return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: "400px 400px" }}>
+    <div className="mainpage">
+    <Titlebar/>
+      <div className="articles">
         {articles.map((article) => (
           <div key={article._id}>
             <SmallArticleDisplay

@@ -1,7 +1,8 @@
-import "./SmallArticleDisplay.css";
-import { useState } from "react";
-import React from "react";
-import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation";
+import "./SmallArticleDisplay.css"
+import "../../common.css"
+import { useState } from "react"
+import React from "react"
+import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation"
 
 export class SmallArticleDisplay extends React.Component {
   constructor(props) {
@@ -9,15 +10,12 @@ export class SmallArticleDisplay extends React.Component {
   }
 // this is the component that renders the articles on the main page
   render() {
-    return (
-      <div className="smallarticledisplaycontainer">
-        <Image src={this.props.photoUrl} style={{ height: "160px" }} />
-        <span id="title">{this.props.article.title}</span>
-        <br />
-        <span id="subtitle">{this.props.article.subtitle}</span>
-        <span onClick={() => console.log(this.props.article)}>
-          {this.props.test}
-        </span>
+    return <div className="smallarticledisplaycontainer">
+        <Image src={this.props.article.contentImg} style={{height: "240px"}}/>
+        <div className="textcontainer">
+          <span className="tags">{this.props.article.tags ? this.props.article.tags.join(", ") : ""}</span><br/>
+          <span className="title">{this.props.article.title}</span><br/>
+        </div>
       </div>
     );
   }
@@ -29,25 +27,10 @@ function Image({ src }) {
   function onload() {
     setLoading(false);
   }
-
-  return (
-    <div className="imagecontainer">
-      <div
-        className="center-content"
-        style={{ display: loading || !src ? "" : "none" }}
-      >
-        <LoadingAnimation />
-      </div>
-      <img
-        src={src}
-        onLoad={onload}
-        style={{
-          height: "100%",
-          width: "100%",
-          objectFit: "cover",
-          display: loading || !src ? "none" : "",
-        }}
-      ></img>
+  
+  return <div className="imagecontainer">
+      <div className="center-content" style={{display: loading || !src ? "" : "none"}}><LoadingAnimation size="50px"/></div>
+      <img src={src} onLoad={onload} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
     </div>
   );
 }
