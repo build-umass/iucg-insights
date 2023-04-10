@@ -13,7 +13,8 @@ Create a database specific to your testing:
 2. Once set up, navigate to connect>Connect your application and copy the connection string/url for Node.js driver ('mongodb://...'). 
 
 3. Clone this repo (if not already) and replace the text in `.env` such that:
-    ### `MONGODB_URI = 'Your connection string'`
+
+    `MONGODB_URI = 'Your connection string'`
 
 ## Prepare and Run Application
 1. Open a terminal window in your project directory
