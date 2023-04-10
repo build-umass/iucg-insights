@@ -2,6 +2,10 @@
 // This is the server file for the application.
 // It is responsible for setting up the server and connecting to the database.
 // It also contains the API routes for the application.
+
+// access env variables
+require('dotenv').config();
+
 const express = require("express"); //import express
 const mongoose = require("mongoose"); //import mongoose
 const cors = require("cors"); //import cors
@@ -10,7 +14,7 @@ const Article = require("./models/article"); //import article model
 const app = express(); //create express app
 
 // Connect to MongoDB database  
-mongoose.connect('mongodb://localhost:27017/iucg-blog', { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
   .then(() => console.log('Connected to MongoDB'))  
   .catch(err => console.error('Error connecting to MongoDB', err));
 
