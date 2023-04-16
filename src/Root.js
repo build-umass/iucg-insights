@@ -4,6 +4,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainPage from './components/MainPage/MainPage';
+import LoginPage from './components/LoginPage/LoginPage';
 import Create from './create';
 
 const Root = () => (
@@ -11,6 +12,7 @@ const Root = () => (
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/create" element={<Create />} />
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   </BrowserRouter>
 );
