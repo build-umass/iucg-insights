@@ -2,9 +2,9 @@ import "./MainPage.css";
 import { useState, useEffect } from "react";
 import { marked } from "marked";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay";
-import { Titlebar } from "../Titlebar/Titlebar"
+import Titlebar from "../Titlebar/Titlebar"
 
 axios.defaults.baseURL = "http://localhost:5000";
 

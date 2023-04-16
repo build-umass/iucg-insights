@@ -7,14 +7,18 @@ import MainPage from './components/MainPage/MainPage';
 import LoginPage from './components/LoginPage/LoginPage';
 import Create from './create';
 
-const Root = () => (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/create" element={<Create />} />
-      <Route path="/login" element={<LoginPage />} />
-    </Routes>
-  </BrowserRouter>
-);
+const Root = () => {
+  return (
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/create" element={<Create />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
+}
 
 export default Root;
