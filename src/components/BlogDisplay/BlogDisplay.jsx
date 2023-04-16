@@ -15,40 +15,14 @@ const ARTICLE_TEST = {
 
 }
 
-export class BlogDisplay extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      //markdown is used to set the markdown content of the actual blog
-      markdown: null,
-      //used to set the src of the content image
-      contentImg: null,
-    }
-
-    const simulateFetch = (async () => {
-      //wait some time
-      await new Promise(r=>setTimeout(r,0));
-
-      // await fetch("https://dog.ceo/api/breeds/image/random").then(a=>a.json()).then(a=>ARTICLE_TEST.contentImg=a.message);
-      // await fetch("https://dog.ceo/api/breeds/image/random").then(a=>a.json()).then(a=>ARTICLE_TEST.authorImg=a.message);
-      await fetch("https://raw.githubusercontent.com/andOrlando/aspine/master/README.md").then(a=>a.text()).then(a=>ARTICLE_TEST.content=md.render(a));
-      await fetch("https://dog.ceo/api/breeds/image/random").then(a=>a.json()).then(a=>ARTICLE_TEST.contentImg=a.message);
-
-      this.setState({ contentImg: ARTICLE_TEST.contentImg, markdown: ARTICLE_TEST.content })
-    }).bind(this);
-    simulateFetch()
-  }
-
-  render() {
+export function BlogDisplay({ article }) {
     return <div style={{position: "relative"}}>
-      <Image src={this.state.contentImg}/>
+      <Image src={article.contentImg}/>
       <div id="contentcontainer">
-        <Content markdown={this.state.markdown}/>
+        <Content markdown={md.render(article.content)}/>
         <ReadMore/>
       </div>
     </div>
-  }
 }
 
 function Image({ src }) {
