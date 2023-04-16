@@ -49,4 +49,25 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// PUT /api/articles/:id
+router.put("/:id", async (req, res) => {
+  const { title, subtitle, synopsis, author, content } = req.body;
+  try {
+    const article = await Article.findById(req.params.id);  //find article by id
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });  //return 404 if article not found
+    }
+    article.title = title;
+    article.subtitle = subtitle;
+    article.synopsis = synopsis;
+    article.author = author;
+    article.content = content;
+    await article.save();  //save updated article to database
+    res.json(article);  //return updated article as JSON
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;  //export router

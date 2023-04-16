@@ -57,6 +57,11 @@ function MainPage() {
     navigate("../../create");
   };
 
+  // use edit function to edit the article
+  const handleEdit = (id) => {
+    navigate(`../../edit/${id}`);
+  };
+
   // This function renders the articles to the page, use the SmallArticleDisplay component
   return (
     <div className="mainpage">
@@ -69,6 +74,9 @@ function MainPage() {
             />
             <button class="button-3" role="button" onClick={() => handleDelete(article._id)}> 
               Delete Article
+            </button>
+            <button class="button-3" role="button" onClick={() => handleEdit(article._id)}>
+              Edit Article
             </button>
           </div>
         ))}
