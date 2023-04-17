@@ -1,6 +1,7 @@
 import "./BlogDisplay.css"
 import "../../common.css"
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import React from "react";
 import { Remarkable } from "remarkable"
 import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation.jsx"
@@ -17,7 +18,9 @@ const ARTICLE_TEST = {
 
 }
 
-export default function BlogDisplay({ article }) {
+export default function BlogDisplay() {
+  const { id } = useParams();
+  const article = ARTICLE_TEST // or api call with id
     return <div style={{position: "relative"}}>
       <Image src={article.contentImg}/>
       <div className="contentcontainer">
