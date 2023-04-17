@@ -7,7 +7,7 @@ export default function SmallerArticleDisplay({ article }) {
   return <div className="smallerarticledisplaycontainer">
       <div className="textcontainer">
         <span className="title">{article.title}</span><br/>
-        <span className="summary">{article.summary}</span>
+        <span className="summary">{article.synopsis}</span>
       </div>
     </div>
 }
