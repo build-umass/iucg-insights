@@ -1,18 +1,10 @@
-.center-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-#imagecontainer {
+.imagecontainer {
   position: fixed;
-  /* TODO: actually use parent width including margins */
-  width: calc(100% - 16px);
+  width: 100%;
   height: 40vh;
 }
 
-#contentcontainer {
+.contentcontainer {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -22,15 +14,37 @@
   background-color: white;
 }
 
-#content {
+.content {
   padding-top: 30px;
-  width: 600px;
+  width: 800px;
 }
 
-#readmore {
+.title {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.author {
+  display: flex;
+  margin-bottom: 35px;
+}
+
+.authortext {
+  height: auto !important;
+  font-size: 20px;
+  margin-left: 20px;
+}
+
+.authorimg {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.readmore {
   padding-top: 30px;
   position: sticky;
-  width: 240px;
+  width: 300px;
   top: 0;
   align-self: flex-start
 }
@@ -54,6 +68,6 @@
   -webkit-box-orient: vertical;
 }
 
-@media (max-width:calc(600px + 30px + 240px)) {
-  #readmore { display: none }
+@media (max-width:calc(800px + 30px + 300px)) {
+  .readmore { display: none }
 }
