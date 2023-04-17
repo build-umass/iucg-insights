@@ -1,25 +1,31 @@
 import "./BlogDisplay.css"
+import "../../common.css"
 import { useState } from "react";
 import React from "react";
 import { Remarkable } from "remarkable"
 import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation.jsx"
+import SmallerArticleDispaly from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
 
 const md = new Remarkable();
 const ARTICLE_TEST = {
   title: "Dog eats crab!",
   author: "Joe Joseph",
   authorImg: "this'll be fetched in testing",
-  content: "this'll be fetched in testing",
+  content: "this'll be fetched in testing!!\nthis is more text\n*this is styled text*",
   contentImg: "this'll be fetched in testing",
   summary: "local dog eats a crab! Insane! $200 giveaway for the low price of $400! I really don't know what to put for example text here! But I have to keep talking otherwise it'll not be long enough! I don't know why I'm using so many !s! Either way, it just has to be long enough that we hit overflow so I can make sure it elipsizes correctly",
 
 }
 
-export function BlogDisplay({ article }) {
+export default function BlogDisplay({ article }) {
     return <div style={{position: "relative"}}>
       <Image src={article.contentImg}/>
-      <div id="contentcontainer">
-        <Content markdown={md.render(article.content)}/>
+      <div className="contentcontainer">
+        <div className="content">
+          <Title title={article.title}/>
+          <Author author={article.author} authorImg={article.authorImg}/>
+          <Content markdown={md.render(article.content)}/>
+        </div>
         <ReadMore/>
       </div>
     </div>
@@ -29,20 +35,30 @@ function Image({ src }) {
   var [loading, setLoading] = useState(true)
   function onload() { setLoading(false) }
 
-  return <div id="imagecontainer">
+  return <div className="imagecontainer">
       <div className="center-content" style={{display: loading || !src ? "" : "none"}}><LoadingAnimation/></div>
       <img src={src} onLoad={onload} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
   </div>
 }
 
 function Content({ markdown }) {
-  return <div id="content">
-    { !markdown ?
+  return !markdown ?
       <div className="center-content" style={{height: "100%"}}><LoadingAnimation/></div> :
       <div dangerouslySetInnerHTML={{ __html: markdown }}></div>
-    }
-  </div>
 }
+
+function Title({ title }) {
+  return <div className="title">{title}</div>
+}
+
+function Author({ author, authorImg }) {
+  return <div className="author">
+      <img className="authorimg" src={authorImg}/>
+      <div className={"authortext center-content"}>{author}</div>
+    </div>
+}
+
+
 
 
 class ReadMore extends React.Component {
@@ -63,19 +79,6 @@ class ReadMore extends React.Component {
   }
 
   render() {
-    return <div id="readmore">{ this.state.articles.map(article => <ReadMoreCard article={article}/>) }</div>
+    return <div className="readmore">{ this.state.articles.map(article => <SmallerArticleDispaly article={article}/>) }</div>
   }
-}
-
-
-function ReadMoreCard({ article }) {
-  return <div className="readmorecard">
-    { !article ?
-      <div className="center-content"><LoadingAnimation/></div> :
-      <>
-        <div>{article.title}</div>
-        <div className="summary">{article.summary}</div>
-      </>
-    }
-  </div>
 }
