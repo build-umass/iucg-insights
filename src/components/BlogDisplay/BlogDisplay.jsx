@@ -21,7 +21,7 @@ export default function BlogDisplay({ id }) {
   
   useEffect(()=>{getArticle(id).then(setArticle)}, [])
 
-  return <div style={{position: "relative"}}>
+  return <div className="blogdisplay" style={{position: "relative"}}>
     <Image src={article.contentImg}/>
     <div className="contentcontainer">
       <div className="content">
@@ -68,25 +68,3 @@ function ReadMore() {
   
   return <div className="readmore">{ articles.map(article => <SmallerArticleDisplay article={article} key={article._id}/>) }</div>
 }
-
-/*class ReadMore extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      articles: Array(5).fill(null)
-    }
-
-    const simulateFetch = (async () => {
-      //wait some time
-      await new Promise(r=>setTimeout(r,0));
-
-      this.setState({articles: Array(5).fill(ARTICLE_TEST)})
-    }).bind(this)
-    simulateFetch()
-  }
-
-  render() {
-    return <div className="readmore">{ this.state.articles.map(article => <SmallerArticleDisplay article={article}/>) }</div>
-  }
-}*/

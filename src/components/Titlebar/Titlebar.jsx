@@ -10,7 +10,7 @@ const Titlebar = () => {
     <div className={"nav center-content"}>
       <div className="button">Home</div>
       <div className="button">Dog</div>
-      <div className="button">Dog 2</div>
+      <div className="button" onClick={() => navigator("/create")}>Create</div>
       <div className="button" onClick={() => navigator("/login")}>Login</div>
     </div>
   </div>

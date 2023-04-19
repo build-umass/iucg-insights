@@ -1,10 +1,13 @@
 import "./SmallArticleDisplay.css"
 import "../../common.css"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation"
 
 export default function SmallArticleDisplay({ article }) {
-  return <div className="smallarticledisplaycontainer">
+  const navigate = useNavigate()
+  
+  return <div className="smallarticledisplaycontainer" onClick={()=>navigate(`/articles/${article._id}`)}>
     <Image src={article.contentImg} style={{height: "240px"}}/>
     <div className="textcontainer">
       <span className="tags">{article.subtitle}</span><br/>
