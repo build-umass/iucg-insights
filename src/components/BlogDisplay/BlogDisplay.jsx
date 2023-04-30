@@ -1,34 +1,37 @@
 import "./BlogDisplay.css"
 import "../../common.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { Remarkable } from "remarkable"
-import { LoadingAnimation } from "../LoadingAnimation/LoadingAnimation.jsx"
-import SmallerArticleDispaly from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
+import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
+import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
+import { getArticle, getArticles } from "../../api"
 
 const md = new Remarkable();
-const ARTICLE_TEST = {
-  title: "Dog eats crab!",
-  author: "Joe Joseph",
-  authorImg: "this'll be fetched in testing",
-  content: "this'll be fetched in testing!!\nthis is more text\n*this is styled text*",
-  contentImg: "this'll be fetched in testing",
-  summary: "local dog eats a crab! Insane! $200 giveaway for the low price of $400! I really don't know what to put for example text here! But I have to keep talking otherwise it'll not be long enough! I don't know why I'm using so many !s! Either way, it just has to be long enough that we hit overflow so I can make sure it elipsizes correctly",
 
-}
+export default function BlogDisplay({ id }) {
+  const [article, setArticle] = useState({
+    title: null,
+    author: null,
+    authorImg: null,
+    content: null,
+    contentImg: null,
+    subtitle: null
+  })
+  
+  useEffect(()=>{getArticle(id).then(setArticle)}, [])
 
-export default function BlogDisplay({ article }) {
-    return <div style={{position: "relative"}}>
-      <Image src={article.contentImg}/>
-      <div className="contentcontainer">
-        <div className="content">
-          <Title title={article.title}/>
-          <Author author={article.author} authorImg={article.authorImg}/>
-          <Content markdown={md.render(article.content)}/>
-        </div>
-        <ReadMore/>
+  return <div className="blogdisplay" style={{position: "relative"}}>
+    <Image src={article.contentImg}/>
+    <div className="contentcontainer">
+      <div className="content">
+        <Title title={article.title}/>
+        <Author author={article.author} authorImg={article.authorImg}/>
+        <Content markdown={md.render(article.content)}/>
       </div>
+      <ReadMore/>
     </div>
+  </div>
 }
 
 function Image({ src }) {
@@ -58,27 +61,10 @@ function Author({ author, authorImg }) {
     </div>
 }
 
-
-
-
-class ReadMore extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      articles: Array(5).fill(null)
-    }
-
-    const simulateFetch = (async () => {
-      //wait some time
-      await new Promise(r=>setTimeout(r,0));
-
-      this.setState({articles: Array(5).fill(ARTICLE_TEST)})
-    }).bind(this)
-    simulateFetch()
-  }
-
-  render() {
-    return <div className="readmore">{ this.state.articles.map(article => <SmallerArticleDispaly article={article}/>) }</div>
-  }
+function ReadMore() {
+  const [articles, setArticles] = useState([])
+  //TODO: get random articles instead of first 5 or try to get similar ones
+  useEffect(()=>{getArticles().then(a=>setArticles(a.slice(0, 5)))}, [])
+  
+  return <div className="readmore">{ articles.map(article => <SmallerArticleDisplay article={article} key={article._id}/>) }</div>
 }

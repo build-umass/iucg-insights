@@ -12,6 +12,7 @@
   float: left;
   font-size: 48px;
   font-style: bold;
+  height: 100%;
 }
 
 .titlebar .nav {

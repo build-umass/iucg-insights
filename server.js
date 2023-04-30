@@ -33,6 +33,18 @@ app.get("/api/articles", async (req, res) => {
   }
 });
 
+app.get("/api/articles/:id", async(req, res) => {
+  try {
+    const { id } = req.params;
+    const article = await Article.findById(id);
+    res.json(article)
+  }
+  catch(error) {
+    console.error(error)
+    res.status(500).json({ message: "Internal server error." })
+  }
+})
+
 app.post("/login", async (req, res) => {
   console.log(req.body.password)
   try {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './create.css';
+import './Create.css';
 import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = 'http://localhost:5000';
