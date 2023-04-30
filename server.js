@@ -80,6 +80,20 @@ app.delete("/api/articles/:id", async (req, res) => {
   }
 });
 
+app.put("/api/articles/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedArticle = await Article.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updatedArticle) {
+      return res.status(404).json({ message: "Article not found." });
+    }
+    res.json(updatedArticle);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+    
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}.`));

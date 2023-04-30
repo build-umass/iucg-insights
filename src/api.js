@@ -26,9 +26,21 @@ async function _deleteArticle(id) {
   await axios.delete(`/api/articles/${id}`);
 }
 
-function _updateArticle(id) {
+async function _updateArticle(id) {
   //TODO: Merge yiming's code and fold it into this
-  throw "not yet implemented"
+  //const { title, subtitle, synopsis, author, content } = req.body;
+  // const article = await Article.findById(id);  //find article by id
+  // if (!article) {
+  //   return res.status(404).json({ message: "Article not found" });  //return 404 if article not found
+  // }
+  // article.title = title;
+  // article.subtitle = subtitle;
+  // article.synopsis = synopsis;
+  // article.author = author;
+  // article.content = content;
+  // await article.save();  //save updated article to database
+  // res.json(article);  //return updated article as JSON
+  await axios.put(`/api/articles/${id}`);
 }
 
 function wrap(func, ...a) {
