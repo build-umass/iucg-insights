@@ -1,0 +1,30 @@
+.titlebar {
+  background-color: #e9e9ed;
+  height: 120px;
+  padding: 0 10% 0 10%;
+  position: sticky;
+  z-index: 1;
+  width: 100%;
+  top: 0;
+}
+
+.titlebar .title {
+  float: left;
+  font-size: 48px;
+  font-style: bold;
+  height: 100%;
+}
+
+.titlebar .nav {
+  float: right;
+  height: 100%;
+}
+
+.titlebar .nav .button {
+  padding: 14px 20px;
+  margin: 0 6px;
+  background-color: #d0d3e7;
+  font-size: 20px;
+  border-radius: 3px;
+}
+

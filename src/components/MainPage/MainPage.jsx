@@ -1,79 +1,21 @@
 import "./MainPage.css";
 import { useState, useEffect } from "react";
-import { marked } from "marked";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { SmallArticleDisplay } from "../SmallArticleDisplay/SmallArticleDisplay";
+import SmallArticleDisplay from "../SmallArticleDisplay/SmallArticleDisplay";
+import Titlebar from "../Titlebar/Titlebar"
+import { getArticles } from "../../api"
 
-axios.defaults.baseURL = "http://localhost:5000";
 
 // This is the main page of the website. It displays all the articles in the database.
-function MainPage() {
+export default function MainPage() {
   const [articles, setArticles] = useState([]);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
+  //get articles
+  useEffect(()=>{getArticles().then(setArticles)}, []);
 
- // Fetches articles from the database
-  const fetchArticles = async () => {
-    try {
-      const response = await axios.get("/api/articles");
-      setArticles(
-        response.data.map((article) => ({
-          ...article,
-          photoUrl: `https://dog.ceo/api/breeds/image/random`,
-        }))
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // This function render the markdown to html. Not currently used.
-  // May be useful for later
-  const handleMarkdown = (content) => {
-    return { __html: marked(content) };
-  };
-
-  // This function deletes an article from the database
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/api/articles/${id}`);
-      setArticles((prevState) =>
-        prevState.filter((article) => article._id !== id)
-      );
-    } catch (error) {
-      console.error(error);
-      alert("Internal server error.");
-    }
-  };
-
-  const navigateToCreate = () => {
-    navigate("../../create");
-  };
-
-  // This function renders the articles to the page, use the SmallArticleDisplay component
-  return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: "400px 400px" }}>
-        {articles.map((article) => (
-          <div key={article._id}>
-            <SmallArticleDisplay
-              article={article}
-              photoUrl={`https://dog.ceo/api/breeds/image/random`}
-            />
-            <button onClick={() => handleDelete(article._id)}> 
-              Delete Article
-            </button>
-          </div>
-        ))}
+  return <div className="mainpage">
+      <Titlebar/>
+      <div className="articles">
+        {articles.map((article) => <SmallArticleDisplay article={article} key={article._id}/> )}
       </div>
-      <button onClick={navigateToCreate}> 
-        Create Article 
-      </button>
     </div>
-  );
 }
-export default MainPage;
