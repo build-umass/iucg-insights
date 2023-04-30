@@ -15,20 +15,45 @@ const app = express(); //create express app
 
 // Connect to MongoDB database  
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
-  .then(() => console.log('Connected to MongoDB'))  
+  .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB', err));
 
 // Middleware
-app.use(cors()); 
-app.use(express.json()); 
+app.use(cors());
+app.use(express.json());
 
 // API routes
-app.get("/api/articles", async (req, res) => { 
+app.get("/api/articles", async (req, res) => {
   try {
     const articles = await Article.find();
     res.json(articles);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+app.get("/api/articles/:id", async(req, res) => {
+  try {
+    const { id } = req.params;
+    const article = await Article.findById(id);
+    res.json(article)
+  }
+  catch(error) {
+    console.error(error)
+    res.status(500).json({ message: "Internal server error." })
+  }
+})
+
+app.post("/login", async (req, res) => {
+  console.log(req.body.password)
+  try {
+    if (req.body.password === "isenbrocode") {
+      res.send("The request was successful, unlike the isenbros");
+    } else {
+      res.status(401).json({ message: "Internal server error." });
+    }
+  } catch (error) {
     res.status(500).json({ message: "Internal server error." });
   }
 });

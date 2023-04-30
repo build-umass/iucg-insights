@@ -1,0 +1,70 @@
+.blogdisplay {
+  position: relative;
+}
+
+.blogdisplay .imagecontainer {
+  position: fixed;
+  width: 100%;
+  height: 40vh;
+}
+
+.blogdisplay .contentcontainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  margin-top: 40vh;
+  width: 100%;
+  gap: 30px;
+  background-color: white;
+}
+
+.blogdisplay .contentcontainer .content {
+  padding-top: 30px;
+  width: 800px;
+}
+
+.blogdisplay .contentcontainer .content .title {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.blogdisplay .contentcontainer .content .author {
+  display: flex;
+  margin-bottom: 35px;
+}
+
+.blogdisplay .contentcontainer .content .author .authortext {
+  height: auto !important;
+  font-size: 20px;
+  margin-left: 20px;
+}
+
+.blogdisplay .contentcontainer .content .author .authorimg {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.readmore {
+  padding-top: 30px;
+  position: sticky;
+  width: 300px;
+  top: 0;
+  align-self: flex-start
+}
+
+.readmorecard {
+  border-radius: 5px;
+  background-color: gray;
+  border-radius: 0px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.readmorecard:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width:calc(800px + 30px + 300px)) {
+  .readmore { display: none }
+}

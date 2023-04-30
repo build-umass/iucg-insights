@@ -1,0 +1,22 @@
+.adminbuttons {
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  margin: 20px;
+}
+
+.deletecontainer {
+  display: grid;
+}
+
+.deletecontainer .deletetext {
+  grid-area: 1/1;
+}
+
+.circlebutton {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  box-shadow: 0.3em 0.3em 0.7em rgba(0, 0, 0, 0.3);
+  margin-right: 10px
+}
