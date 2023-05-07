@@ -97,8 +97,7 @@ app.put("/api/articles/:id", async (req, res) => {
 app.post("/api/articles/search/", async (req, res) => {
   try {
     const { title } = req.body;
-    const article = await Article.find({ title: title })
-    console.log(article);
+    const article = await Article.find({ title: { $regex: title, $options: "i" } });
     res.json(article);
   } catch (error) {
     console.error(error);
