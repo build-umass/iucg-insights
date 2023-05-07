@@ -11,10 +11,25 @@ async function _getArticle(id) {
 
 async function _getArticles() {
   let { data } = await axios.get("/api/articles");
+  console.log(data)
   data = await Promise.all(data.map(async article => {
     const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
     return {...article, contentImg: contentImg };
   }));
+  return data;
+}
+
+async function _searchArticle(searchText) {
+  if (searchText === "") { // if the search field is empty (default), get all
+    return await _getArticles()
+  }
+  let { data } = await axios.post("/api/articles/search/", { title: searchText });
+  data = await Promise.all(data.map(async article => {
+    const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    return {...article, contentImg: contentImg };
+  }));
+  console.log("------")
+  console.log(data)
   return data;
 }
 
@@ -30,7 +45,7 @@ async function _updateArticle(id) {
   //TODO: Merge yiming's code and fold it into this
   //const { title, subtitle, synopsis, author, content } = req.body;
   // const article = await Article.findById(id);  //find article by id
-  // if (!article) {
+  // if (!article) {    const jdfdfd = await searchArticle(searchText)
   //   return res.status(404).json({ message: "Article not found" });  //return 404 if article not found
   // }
   // article.title = title;
@@ -52,6 +67,7 @@ function wrap(func, ...a) {
 
 export function getArticle(...a) { return wrap(_getArticle, ...a) }
 export function getArticles(...a) { return wrap(_getArticles, ...a) }
+export function searchArticle(...a) { return wrap(_searchArticle, ...a) }
 export function createArticle(...a) { return wrap(_createArticle, ...a) }
 export function deleteArticle(...a) { return wrap(_deleteArticle, ...a) }
 export function updateArticle(...a) { return wrap(_updateArticle, ...a) }
