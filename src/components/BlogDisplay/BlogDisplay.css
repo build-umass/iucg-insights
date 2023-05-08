@@ -16,11 +16,45 @@
   width: 100%;
   gap: 30px;
   background-color: white;
+  
+  transition: margin-top 0.8s;
+}
+
+.blogdisplay .contentcontainer.editing {
+  margin-top: 0vh;
 }
 
 .blogdisplay .contentcontainer .content {
   padding-top: 30px;
   width: 800px;
+  min-height: calc(40vh + 10px);
+}
+
+.blogdisplay .contentcontainer .content .editwindow {
+  background: aliceblue;
+  padding: 20px;
+  font-family: courier new;
+}
+
+.blogdisplay .contentcontainer .content .buttoncontainer {
+  background: lightblue;
+}
+
+.blogdisplay .contentcontainer .content .buttoncontainer button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 15px;
+  color: black;
+  transition: background 0.2s, color 0.2s;
+}
+
+.blogdisplay .contentcontainer .content .buttoncontainer button.selected {
+  color: darkblue;
+}
+
+.blogdisplay .contentcontainer .content .buttoncontainer button:hover {
+  background: #00000011;
 }
 
 .blogdisplay .contentcontainer .content .title {
@@ -31,12 +65,15 @@
 .blogdisplay .contentcontainer .content .author {
   display: flex;
   margin-bottom: 35px;
+  margin-top: 20px;
 }
 
 .blogdisplay .contentcontainer .content .author .authortext {
   height: auto !important;
   font-size: 20px;
   margin-left: 20px;
+  justify-content: left;
+  width: 100%;
 }
 
 .blogdisplay .contentcontainer .content .author .authorimg {
