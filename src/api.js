@@ -32,7 +32,10 @@ async function _searchArticle(searchText) {
   }
   let { data } = await axios.post("/api/articles/search/", { title: searchText });
   data = await Promise.all(data.map(async article => {
-    const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    var contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    if (article.photo) {
+      contentImg = `data:${article.photo.contentType};base64, ${Buffer.from(article.photo.data).toString('base64')}`;
+    }
     return {...article, contentImg: contentImg };
   }));
   console.log("------")
