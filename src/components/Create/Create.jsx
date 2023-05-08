@@ -12,10 +12,11 @@ function Create() {
     synopsis: '',
     author: '',
     content: '',
+    photo: null,
     articles: [],
   });
 
-  const { title, subtitle, synopsis, author, content, articles } = state;
+  const { title, subtitle, synopsis, author, content, photo, articles } = state;
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -33,9 +34,9 @@ function Create() {
 
     try {
       const { data } = await axios.post('/api/articles',
-      { title, subtitle, synopsis, author, content });
+      { title, subtitle, synopsis, author, content, photo });
       setState((prevState) => ({ articles: [...prevState.articles, data],
-        title: '', subtitle: '', synopsis: '', author: '', content: '' }));
+        title: '', subtitle: '', synopsis: '', author: '', content: '', photo: null }));
       console.log(data)
     
       // Navigate to main page
@@ -64,6 +65,8 @@ function Create() {
             <textarea id="content" name="content" value={content} onChange={handleChange}></textarea>
             <label htmlFor="author">Author</label>
             <input type="text" id="author" name="author" value={author} onChange={handleChange} />
+	    <label htmlFor="photo">Cover Image</label>
+	    <input type="file" id="photo" name="photo" accept="image/*" value={photo} onChange={handleChange}/>
             <button type="submit">Submit</button>
           </form>
         </section>

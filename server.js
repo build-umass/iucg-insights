@@ -9,6 +9,7 @@ require('dotenv').config();
 const express = require("express"); //import express
 const mongoose = require("mongoose"); //import mongoose
 const cors = require("cors"); //import cors
+const fs = require('file-system'); //import file-system
 const Article = require("./models/article"); //import article model
 
 const app = express(); //create express app
@@ -60,6 +61,12 @@ app.post("/login", async (req, res) => {
 
 app.post("/api/articles", async (req, res) => {
   try {
+    var img = fs.readFileSync("iucg.jpg");
+    var encode_image = img.toString('base64');
+    req.body.photo = {
+	    contentType: 'image/jpg', 
+	    data: Buffer.from(encode_image, 'base64'),
+    };
     const article = new Article(req.body);
     await article.save();
     res.json(article);
