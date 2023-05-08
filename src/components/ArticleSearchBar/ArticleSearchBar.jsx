@@ -19,7 +19,7 @@ const SearchBar = ({ setArticles }) => {
   
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="password">ROCKS:</label>
+      <label htmlFor="password">Search</label>
       <input
         type="search"
         id="search"
