@@ -2,8 +2,8 @@ import "./MainPage.css";
 import { useState, useEffect } from "react";
 import SmallArticleDisplay from "../SmallArticleDisplay/SmallArticleDisplay";
 import Titlebar from "../Titlebar/Titlebar"
+import ArticleSearchBar from "../ArticleSearchBar/ArticleSearchBar"
 import { getArticles } from "../../api"
-
 
 // This is the main page of the website. It displays all the articles in the database.
 export default function MainPage() {
@@ -14,6 +14,7 @@ export default function MainPage() {
 
   return <div className="mainpage">
       <Titlebar/>
+      <ArticleSearchBar setArticles={setArticles}/>
       <div className="articles">
         {articles.map((article) => <SmallArticleDisplay article={article} key={article._id}/> )}
       </div>

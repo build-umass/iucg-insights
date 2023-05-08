@@ -1,0 +1,7 @@
+POST http://localhost:5000/api/articles/search/ HTTP/1.1
+content-type: application/json
+
+{
+    "title": "This is a longer title because they'll probably be longer in production"
+}
+

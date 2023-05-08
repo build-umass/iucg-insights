@@ -93,7 +93,18 @@ app.put("/api/articles/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 });
-    
+
+app.post("/api/articles/search/", async (req, res) => {
+  try {
+    const { title } = req.body;
+    const article = await Article.find({ title: { $regex: title, $options: "i" } });
+    res.json(article);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}.`));
