@@ -12,10 +12,11 @@ function Create() {
     synopsis: '',
     author: '',
     content: '',
+    image: null,
     articles: [],
   });
 
-  const { title, subtitle, synopsis, author, content, articles } = state;
+  const { title, subtitle, synopsis, author, content, image, articles } = state;
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -23,6 +24,12 @@ function Create() {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const upload = async (event) => {
+    //console.log(image.files[0].name);
+    //console.log(image.files)
+    let img = image.files[0].name;
+    await axios.post("/upload", {img});
+  };
   // call handleSubmit when the form is submitted
   const handleSubmit = async (event) => {  
     event.preventDefault();
@@ -30,12 +37,22 @@ function Create() {
       alert('Title and content are required.');
       return;
     }
-
+    if (image) {
+	    try 
+	    {
+		    //var img = image.files[0];
+		    await axios.post("/upload", { image }); //.files[0]);
+	    } catch (error) {
+		    console.error(error);
+	    }
+    } else {
+	   console.log('no image')
+    }
     try {
       const { data } = await axios.post('/api/articles',
-      { title, subtitle, synopsis, author, content });
+      { title, subtitle, synopsis, author, content, image});
       setState((prevState) => ({ articles: [...prevState.articles, data],
-        title: '', subtitle: '', synopsis: '', author: '', content: '' }));
+        title: '', subtitle: '', synopsis: '', author: '', content: '', image: null}));
       console.log(data)
     
       // Navigate to main page
@@ -64,7 +81,9 @@ function Create() {
             <textarea id="content" name="content" value={content} onChange={handleChange}></textarea>
             <label htmlFor="author">Author</label>
             <input type="text" id="author" name="author" value={author} onChange={handleChange} />
-            <button type="submit">Submit</button>
+            <label htmlFor="image">Cover Image</label>
+	    <input type="file" id="image" name="image" accept="image/*" value={image} onChange={handleChange}/> 
+	    <button type="submit">Submit</button>
           </form>
         </section>
       </main>

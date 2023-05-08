@@ -1,10 +1,17 @@
 import axios from "axios";
+import {Buffer} from "buffer";
 axios.defaults.baseURL = `http://localhost:5000`;
 
 async function _getArticle(id) {
   let { data } = await axios.get(`/api/articles/${id}`);
   //TODO: not have placeholder images
   data.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+  if (data.image) {
+	  console.log('here');
+	  data.contentImg = `data:${data.image.contentType};base64, ${Buffer.from(data.image.data).toString('base64')}`;
+  } else {
+	  console.log('sike');
+  }
   data.authorImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
   return data;
 }
@@ -12,7 +19,13 @@ async function _getArticle(id) {
 async function _getArticles() {
   let { data } = await axios.get("/api/articles");
   data = await Promise.all(data.map(async article => {
-    const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    var contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    if (article.image) {
+      console.log('here');
+      contentImg = `data:${article.image.contentType};base64, ${Buffer.from(article.image.data).toString('base64')}`;
+    } else {
+      console.log('sike');
+    }
     return {...article, contentImg: contentImg };
   }));
   return data;
