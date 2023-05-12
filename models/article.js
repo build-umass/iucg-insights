@@ -6,11 +6,11 @@ const articleSchema = new mongoose.Schema({
   subtitle: String,
   synopsis: String,
   author: String,
+  authorImg: String,
   content: String,
-  photo: {
-    data: Buffer,
-    contentType: String,
-  },
+  contentImg: String,
+  tags: [String],
+  images: [String],
 });
 
 module.exports = mongoose.model("Article", articleSchema);
