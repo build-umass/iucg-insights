@@ -3,6 +3,7 @@
   bottom: 0;
   z-index: 1;
   margin: 20px;
+  cursor: pointer;
 }
 
 .buttonstatecontainer {

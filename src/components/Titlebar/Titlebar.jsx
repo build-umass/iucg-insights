@@ -8,10 +8,10 @@ const Titlebar = () => {
   return <div className="titlebar">
     <div className={"title center-content"}>IUCG</div>
     <div className={"nav center-content"}>
-      <div className="button">Home</div>
-      <div className="button">Dog</div>
-      <div className="button" onClick={() => navigator("/create")}>Create</div>
-      <div className="button" onClick={() => navigator("/login")}>Login</div>
+      <div className="button" style={{cursor: 'pointer'}}>Home</div>
+      <div className="button" style={{cursor: 'pointer'}}>Dog</div>
+      <div className="button" style={{cursor: 'pointer'}} onClick={() => navigator("/create")}>Create</div>
+      <div className="button" style={{cursor: 'pointer'}} onClick={() => navigator("/login")}>Login</div>
     </div>
   </div>
 }

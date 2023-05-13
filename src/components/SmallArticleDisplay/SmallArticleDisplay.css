@@ -1,6 +1,7 @@
 .smallarticledisplaycontainer .imagecontainer {
   height: 240px;
   clip-path: inset(0 0 0 0 round 4px 4px 0px 0px);
+  cursor: pointer;
  }
 
 .smallarticledisplaycontainer {
