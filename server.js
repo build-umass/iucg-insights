@@ -10,7 +10,7 @@ const express = require("express"); //import express
 const mongoose = require("mongoose"); //import mongoose
 const cors = require("cors"); //import cors
 const Article = require("./models/article"); //import article model
-
+const Tag = require("./models/tags"); //import tag model
 const app = express(); //create express app
 
 // Connect to MongoDB database  
@@ -99,6 +99,27 @@ app.post("/api/articles/search/", async (req, res) => {
     const { title } = req.body;
     const article = await Article.find({ title: { $regex: title, $options: "i" } });
     res.json(article);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+app.post("/api/tags", async (req, res) => {
+  try {
+    const tags = new Tag(req.body);
+    await tags.save();
+    res.json(tags);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+app.get("/api/tags", async (req, res) => {
+  try {
+    const tags = await Tag.find();
+    res.json(tags);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error." });

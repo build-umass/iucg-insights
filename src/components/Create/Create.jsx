@@ -12,8 +12,12 @@ function Create() {
     synopsis: '',
     author: '',
     content: '',
-    articles: [],
+    articles: []
   });
+
+  const [input, setInput] = useState('');
+  const [tags, setTags] = useState([]);
+  const [isKeyReleased, setIsKeyReleased] = useState(false);
 
   const { title, subtitle, synopsis, author, content, articles } = state;
   const navigate = useNavigate();
@@ -23,8 +27,13 @@ function Create() {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const onChange = (e) => {
+    const { value } = e.target;
+    setInput(value);
+  };
+
   // call handleSubmit when the form is submitted
-  const handleSubmit = async (event) => {  
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!title || !content) {
       alert('Title and content are required.');
@@ -33,11 +42,14 @@ function Create() {
 
     try {
       const { data } = await axios.post('/api/articles',
-      { title, subtitle, synopsis, author, content });
-      setState((prevState) => ({ articles: [...prevState.articles, data],
-        title: '', subtitle: '', synopsis: '', author: '', content: '' }));
+        { title, subtitle, synopsis, author, content, tags });
+      await axios.post('/api/tags', { tags });  // add tags to tags collection
+      setState((prevState) => ({
+        articles: [...prevState.articles, data],
+        title: '', subtitle: '', synopsis: '', author: '', content: '', tags: []
+      }));
       console.log(data)
-    
+
       // Navigate to main page
       navigate('/');
     } catch (error) {
@@ -45,6 +57,38 @@ function Create() {
       alert('Internal server error.');
     }
   };
+
+  // ----handle tags input-----
+  const onKeyDown = (e) => {
+    const { key } = e;
+    const trimmedInput = input.trim();
+
+    if (key === ',' && trimmedInput.length && !tags.includes(trimmedInput)) {
+      e.preventDefault();
+      setTags(prevState => [...prevState, trimmedInput]);
+      setInput('');
+    }
+
+    if (key === "Backspace" && !input.length && tags.length && isKeyReleased) {
+      const tagsCopy = [...tags];
+      const poppedTag = tagsCopy.pop();
+      e.preventDefault();
+      setTags(tagsCopy);
+      setInput(poppedTag);
+    }
+
+    setIsKeyReleased(false);
+  };
+
+  const onKeyUp = () => {
+    setIsKeyReleased(true);
+  }
+
+  const deleteTag = (index) => {
+    setTags(prevState => prevState.filter((tags, i) => i !== index))
+  }
+  // ----handle tags input-----
+
 
   return (
     <div className="App">
@@ -64,6 +108,20 @@ function Create() {
             <textarea id="content" name="content" value={content} onChange={handleChange}></textarea>
             <label htmlFor="author">Author</label>
             <input type="text" id="author" name="author" value={author} onChange={handleChange} />
+            <div>
+              {tags.map((tags, index) => (
+                <div className="tag">
+                  {tags}
+                  <button onClick={() => deleteTag(index)}>x</button>
+                </div>
+              ))}
+              <input
+                value={input}
+                placeholder="Enter a tag"
+                onKeyDown={onKeyDown}
+                onChange={onChange}
+              />
+            </div>
             <button type="submit">Submit</button>
           </form>
         </section>

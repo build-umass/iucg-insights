@@ -45,6 +45,14 @@ async function _updateArticle(id, article) {
   await axios.put(`/api/articles/${id}`, article);
 }
 
+async function _createtags(tags) {
+  return await axios.post("/api/tags", tags).data;
+}
+
+async function _gettags() {
+  return await axios.get("/api/tags").data;
+}
+
 function wrap(func, ...a) {
   return new Promise((resolve, reject) => {
     try { resolve(func(...a)) }
@@ -58,4 +66,5 @@ export function searchArticle(...a) { return wrap(_searchArticle, ...a) }
 export function createArticle(...a) { return wrap(_createArticle, ...a) }
 export function deleteArticle(...a) { return wrap(_deleteArticle, ...a) }
 export function updateArticle(...a) { return wrap(_updateArticle, ...a) }
-
+export function createtags(...a) { return wrap(_createtags, ...a) }
+export function gettags(...a) { return wrap(_gettags, ...a) }
