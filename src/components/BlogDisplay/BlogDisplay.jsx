@@ -9,6 +9,7 @@ import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
 import AdminButtons from "../AdminButtons/AdminButtons"
 import { getArticle, getArticles, updateArticle } from "../../api"
+import { useCookies } from 'react-cookie';
 
 const md = new Remarkable();
 
@@ -25,7 +26,7 @@ const fromHTML=str=>str
   .replace(/&gt;/, ">")
 
 export default function BlogDisplay() {
-  
+  const [cookies] = useCookies(['myCookie']);
   const { id } = useParams()
 
   const [article, setArticle] = useState({
@@ -58,13 +59,21 @@ export default function BlogDisplay() {
     setArticle(oldArticle)
   }
 
+  const renderAdmin = () => {
+    if (cookies.isAdmin) {
+      return (
+        <AdminButtons id={id}
+        editing={editing}
+        editCallback={()=>setEditing(true)}
+        cancelCallback={cancelCallback}
+        saveCallback={saveCallback}/>
+      )
+    }
+  }
+
   //once we've created all our components we can actually render our thing
   return <>
-    <AdminButtons id={id}
-      editing={editing}
-      editCallback={()=>setEditing(true)}
-      cancelCallback={cancelCallback}
-      saveCallback={saveCallback}/>
+    {renderAdmin()}
     <div className="blogdisplay" style={{position: "relative"}}>
       <Image src={article.contentImg}/>
       <div className={`contentcontainer ${editing ? "editing" : ""}`}>
