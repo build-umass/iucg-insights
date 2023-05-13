@@ -98,8 +98,7 @@ app.post("/api/articles/search/", async (req, res) => {
   try {
     const { title } = req.body;
     const article = await Article.find({ title: { $regex: title, $options: "i" } });
-    res.json(article);
-  } catch (error) {
+    res.json(article);  } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error." });
   }
