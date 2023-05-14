@@ -24,6 +24,7 @@
   background: #e2e4e5;
 }
 .blogdisplay .buttons div svg {
+  width: 100%;
   max-height: 25px;
 }
 
@@ -35,7 +36,6 @@
 
 .blogdisplay .contentcontainer {
   position: absolute;
-  z-index: 2;
   display: flex;
   justify-content: center;
   margin-top: 40vh;
@@ -46,7 +46,8 @@
   transition: margin-top 0.8s;
 }
 
-.blogdisplay .contentcontainer.editing {
+.blogdisplay .contentcontainer.editing,
+.blogdisplay .contentcontainer.fullscreen {
   margin-top: 0vh;
 }
 
