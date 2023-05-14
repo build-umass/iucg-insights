@@ -43,7 +43,20 @@ function Create() {
     try {
       const { data } = await axios.post('/api/articles',
         { title, subtitle, synopsis, author, content, tags });
-      await axios.post('/api/tags', { tags });  // add tags to tags collection
+      console.log(tags)
+
+      const separatedTags = tags.map(tag => ({ content: tag }));
+
+      // Post each tag individually to the tags collection
+      for (const tag of separatedTags) {
+        try {
+          await axios.post('/api/tags', { content: tag.content });
+          console.log(`Tag "${tag.content}" added to tags collection`);
+        } catch (error) {
+          console.error(`Failed to add tag "${tag.content}"`, error);
+        }
+      }
+
       setState((prevState) => ({
         articles: [...prevState.articles, data],
         title: '', subtitle: '', synopsis: '', author: '', content: '', tags: []

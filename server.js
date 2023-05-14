@@ -119,7 +119,33 @@ app.post("/api/tags", async (req, res) => {
 app.get("/api/tags", async (req, res) => {
   try {
     const tags = await Tag.find();
+    console.log('find the tags!');
+    console.log(tags);
     res.json(tags);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Delete a tag by ID
+app.delete('/api/tags/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Tag.findByIdAndDelete(id);
+    res.json({ message: 'Tag deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+//filter articles by tag
+app.get("/api/articles/filter/:tag", async (req, res) => {
+  try {
+    const tag = req.params.tag;
+    const filteredArticles = await Article.find({ tags: { $in: [tag] } });
+    res.json(filteredArticles);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error." });

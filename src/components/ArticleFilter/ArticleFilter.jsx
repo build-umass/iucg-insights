@@ -1,50 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { gettags } from '../../api';
+import { gettags, deletetag, filterArticlesByTag } from '../../api';
 
-export default function ArticleFilter({ articles, setArticles }) {
+export default function ArticleFilter({ setArticles }) {
   const [tags, setTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
 
-  // get tags
-  useEffect(() => { gettags().then(setTags) }, []);
-
-  // filter articles by tags
+  // Get tags
   useEffect(() => {
-    if (selectedTags.length === 0) {
-      setArticles(articles);
-    } else {
-      setArticles(articles.filter((article) => {
-        return selectedTags.every((tag) => article.tags.includes(tag));
-      }));
-    }
-  }, [selectedTags]);
+    getTags();
+  }, []);
 
-  // add or remove tags from selectedTags
-  // const toggleTag = (tag) => {
-  //   if (selectedTags.includes(tag)) {
-  //     setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
-  //   } else {
-  //     setSelectedTags([...selectedTags, tag]);
-  //   }
-  // };
+  // Fetch tags
+  const getTags = async () => {
+    try {
+      const tagsData = await gettags();
+      setTags(tagsData);
+    } catch (error) {
+      console.error('Failed to fetch tags', error);
+    }
+  };
+
+  // Delete tag
+  const deleteTagById = async (id) => {
+    try {
+      await deletetag(id);
+      getTags(); // Refresh the tags after deletion
+    } catch (error) {
+      console.error('Failed to delete tag', error);
+    }
+  };
+
+  // Filter articles by tag
+  const filterArticles = async (tag) => {
+    try {
+      const filteredArticles = await filterArticlesByTag(tag);
+      setArticles(filteredArticles);
+    } catch (error) {
+      console.error('Failed to filter articles', error);
+    }
+  };
 
   return (
     <div className="article-filter">
       <h4>Filter by tags</h4>
-      <div className="tags">
-        {/* {tags.map((tag) => (
-          <div
-            className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
-            onClick={() => toggleTag(tag)}
-            key={tag}
-          >
-            {tag}
-          </div>
-        ))} */}
+      <div>
         Current tags:
-        {selectedTags.map((tag) => (
-          <div className="tag" key={tag}>
-            {tag}
+        {tags.map((tag) => (
+          <div className="tag" key={tag._id}>
+            <span>Tag: {tag.content}</span>
+            <button onClick={() => deleteTagById(tag._id)}>Delete</button>
+            <button onClick={() => filterArticles(tag.content)}>Filter</button>
           </div>
         ))}
       </div>

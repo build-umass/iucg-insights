@@ -46,11 +46,33 @@ async function _updateArticle(id, article) {
 }
 
 async function _createtags(tags) {
+  console.log("create tags");
+  console.log(tags);
   return await axios.post("/api/tags", tags).data;
 }
 
 async function _gettags() {
-  return await axios.get("/api/tags").data;
+  const tag_data = await axios.get("/api/tags");
+  // console.log("get tag_data");  
+  // console.log(tag_data.data);
+  // // tag_data = await Promise.all(tag_data.map(async (content) => {
+  // //   // const response = await axios.get("/api/tags");
+  // //   return content.data;
+  // // }));
+  return tag_data.data;
+}
+
+async function _deletetag(id) {
+  await axios.delete(`/api/tags/${id}`);
+}
+
+async function _filterArticle(tag) {
+  if (tag === "") { // if the search field is empty (default), get all
+    return await _getArticles()
+  }
+  const filteredArticles = await axios.get(`/api/articles/filter/${tag}`);
+  console.log(filteredArticles);
+  return filteredArticles.data;
 }
 
 function wrap(func, ...a) {
@@ -68,3 +90,5 @@ export function deleteArticle(...a) { return wrap(_deleteArticle, ...a) }
 export function updateArticle(...a) { return wrap(_updateArticle, ...a) }
 export function createtags(...a) { return wrap(_createtags, ...a) }
 export function gettags(...a) { return wrap(_gettags, ...a) }
+export function deletetag(...a) { return wrap(_deletetag, ...a) }
+export function filterArticlesByTag(...a) { return wrap(_filterArticle, ...a) }

@@ -16,7 +16,7 @@ export default function MainPage() {
   return <div className="mainpage">
       <Titlebar/>
       <ArticleSearchBar setArticles={setArticles}/>
-      <ArticleFilter articles={articles} setArticles={setArticles}/>
+       <ArticleFilter setArticles={setArticles}/>
       <div className="articles">
         {articles.map((article) => <SmallArticleDisplay article={article} key={article._id}/> )}
       </div>
