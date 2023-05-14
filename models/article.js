@@ -11,6 +11,16 @@ const articleSchema = new mongoose.Schema({
   contentImg: String,
   tags: [String],
   images: [String],
+  created: { type: Date, default: Date.now},
 });
+
+// Set created date to 'now'
+/*articleSchema.pre('save', (next) => {
+        if (!this.created) {
+                this.created = new Date();
+        }
+
+        next();
+}); */
 
 module.exports = mongoose.model("Article", articleSchema);
