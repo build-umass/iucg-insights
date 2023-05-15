@@ -24,13 +24,10 @@ Create a database specific to your testing:
 
 3. Once finished, start the application: 
 
-    `npm start`
+    `npm run dev`
 
     Note: This should open a new tab in your browser, otherwise access [http://localhost:3000](http://localhost:3000) to view the app in your browser.
-
-4. While running, open a second terminal window in your project directory and start the server (runs the code in server.js, including your database connection): 
-
-    `npm run server`
+    This will concurrently run start and server (including the db connection code).
 
 Now you can interact with the app and create articles!
 

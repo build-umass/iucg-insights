@@ -1,20 +1,32 @@
 import axios from "axios";
+import { Buffer } from "buffer";
 axios.defaults.baseURL = `http://localhost:5000`;
 
 async function _getArticle(id) {
   let { data } = await axios.get(`/api/articles/${id}`);
-  //TODO: not have placeholder images
-  data.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+  //default: placeholder images
+  if (!data.contentImg) {
+    data.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+  } else {
+    let img = (await axios.get(`/api/images/${data.contentImg}`)).data;
+    console.log(img);
+    data.contentImg = `data:${img.type};base64, ${Buffer.from(img.data).toString('base64')}`;
+  }
   data.authorImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
   return data;
 }
 
 async function _getArticles() {
   let { data } = await axios.get("/api/articles");
-  console.log(data)
   data = await Promise.all(data.map(async article => {
-    const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
-    return {...article, contentImg: contentImg };
+    if (!article.contentImg) {
+      article.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    } else {
+      let img = (await axios.get(`/api/images/${article.contentImg}`)).data;
+      console.log(img);
+      article.contentImg = `data:${img.type};base64, ${Buffer.from(img.data).toString('base64')}`;
+    }
+    return {...article};
   }));
   return data;
 }
@@ -25,11 +37,14 @@ async function _searchArticle(searchText) {
   }
   let { data } = await axios.post("/api/articles/search/", { title: searchText });
   data = await Promise.all(data.map(async article => {
-    const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
-    return {...article, contentImg: contentImg };
+    if (!article.contentImg) {
+      article.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    } else {
+      let img = (await axios.get(`/api/images/${article.contentImg}`)).data;      console.log(img);
+      article.contentImg = `data:${img.type};base64, ${Buffer.from(img.data).toString('base64')}`;
+    }
+    return {...article};
   }));
-  console.log("------")
-  console.log(data)
   return data;
 }
 
@@ -42,6 +57,7 @@ async function _deleteArticle(id) {
 }
 
 async function _updateArticle(id, article) {
+  article.contentImg = (await axios.get(`/api/articles/${id}`)).contentImg;
   await axios.put(`/api/articles/${id}`, article);
 }
 

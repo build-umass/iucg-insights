@@ -5,12 +5,16 @@
 
 // access env variables
 require('dotenv').config();
-
+//import axios from 'axios';
+//const axios = require("axios");
 const express = require("express"); //import express
 const mongoose = require("mongoose"); //import mongoose
 const cors = require("cors"); //import cors
+const fs = require('file-system'); //import file-system
 const Article = require("./models/article"); //import article model
 const Tag = require("./models/tags"); //import tag model
+const Image = require("./models/image"); // import images model
+
 const app = express(); //create express app
 
 // Connect to MongoDB database  
@@ -25,7 +29,8 @@ app.use(express.json());
 // API routes
 app.get("/api/articles", async (req, res) => {
   try {
-    const articles = await Article.find();
+    // can use this scheme to implement more complicated filtering
+    const articles = await Article.find().sort({created: -1});
     res.json(articles);
   } catch (error) {
     console.error(error);
@@ -45,11 +50,23 @@ app.get("/api/articles/:id", async(req, res) => {
   }
 })
 
+app.get("/api/images/:id", async(req, res) => {
+  try {
+    const { id } = req.params;
+    const image = await Image.findById(id);
+    res.json(image)
+  }
+  catch(error) {
+    console.error(error)
+    res.status(500).json({ message: "Internal server error: Accessing Image" })
+  }
+})
+
 app.post("/login", async (req, res) => {
   console.log(req.body.password)
   try {
-    if (req.body.password === "isenbrocode") {
-      res.send("The request was successful, unlike the isenbros");
+    if (req.body.password === "secretpwd") {
+      res.send("The request was successful, as we wish all people to be");
     } else {
       res.status(401).json({ message: "Internal server error." });
     }
@@ -60,6 +77,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/api/articles", async (req, res) => {
   try {
+    console.log(req.body);
     const article = new Article(req.body);
     await article.save();
     res.json(article);
@@ -69,6 +87,25 @@ app.post("/api/articles", async (req, res) => {
   }
 });
 
+app.post("/api/images", async (req, res) => {
+  try {
+    if (req.body.data) {
+      rfs = fs.readFileSync(req.body.data).toString('base64');
+      req.body.data = Buffer.from(rfs, 'base64');
+      const image = new Image(req.body);
+      await image.save();
+      res.json(image);
+    } else {
+      // search for default url...
+      // for now just get by hard coded id
+      const defimage = "6461f42db24f0ac937b2b3c6";
+      res.json(defimage);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error: Create Image" });
+  }
+});
 app.delete("/api/articles/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -98,8 +135,7 @@ app.post("/api/articles/search/", async (req, res) => {
   try {
     const { title } = req.body;
     const article = await Article.find({ title: { $regex: title, $options: "i" } });
-    res.json(article);
-  } catch (error) {
+    res.json(article);  } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error." });
   }

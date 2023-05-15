@@ -1,14 +1,4 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-
-header {
+.App header {
   background-color: #282c34;
   color: white;
   display: flex;
@@ -18,26 +8,26 @@ header {
   height: 15vh;
 }
 
-h1 {
+.App header h1 {
   margin: 0;
 }
 
-main {
+.App main {
   margin: 2rem;
 }
 
-form {
+.App main section form {
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
 }
 
-label {
+.App main section label {
   margin-bottom: 0.5rem;
 }
 
-input,
-textarea {
+.App main section input,
+.App main section textarea {
   margin-bottom: 1rem;
   padding: 0.5rem;
   border: none;
@@ -45,7 +35,7 @@ textarea {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
 }
 
-button[type='submit'] {
+.App main section button[type='submit'] {
   background-color: #4caf50;
   color: white;
   padding: 0.5rem;
@@ -54,7 +44,7 @@ button[type='submit'] {
   cursor: pointer;
 }
 
-button[type='submit']:hover {
+.App main section button[type='submit']:hover {
   background-color: #3e8e41;
 }
 
