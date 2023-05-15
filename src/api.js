@@ -57,6 +57,7 @@ async function _deleteArticle(id) {
 }
 
 async function _updateArticle(id, article) {
+  article.contentImg = (await axios.get(`/api/articles/${id}`)).contentImg;
   await axios.put(`/api/articles/${id}`, article);
 }
 

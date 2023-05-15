@@ -34,7 +34,6 @@ export default function BlogDisplay() {
     author: "",
     authorImg: "",
     content: "",
-    contentImg: "",
     subtitle: "" 
   })
   
