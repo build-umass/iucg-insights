@@ -8,7 +8,10 @@ const articleSchema = new mongoose.Schema({
   author: String,
   authorImg: String,
   content: String,
-  contentImg: String,
+  contentImg: {
+	  type: mongoose.Schema.Types.ObjectId,
+	  ref: 'Image',
+  }, 
   tags: [String],
   images: [String],
   created: { type: Date, default: Date.now},
