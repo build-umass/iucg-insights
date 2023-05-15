@@ -12,7 +12,7 @@ function Create() {
     synopsis: '',
     author: '',
     content: '',
-    articles: []
+    articles: [],
   });
 	
   const [imgstate, setImgState] = useState({
@@ -37,7 +37,8 @@ function Create() {
   const onChange = (e) => {
     const { value } = e.target;
     setInput(value);
-    
+  };
+
   const handleUpload = (event) => {
     const { name, value, files } = event.target;
     setImgState({ [name]: value, data: files[0].name, type: files[0].type });

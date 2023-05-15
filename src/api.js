@@ -86,9 +86,17 @@ async function _filterArticle(tag) {
   if (tag === "") { // if the search field is empty (default), get all
     return await _getArticles()
   }
-  const filteredArticles = await axios.get(`/api/articles/filter/${tag}`);
-  console.log(filteredArticles);
-  return filteredArticles.data;
+  let { data } = await axios.get(`/api/articles/filter/${tag}`);
+  data = await Promise.all(data.map(async article => {
+    if (!article.contentImg) {
+      article.contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
+    } else {
+      let img = (await axios.get(`/api/images/${article.contentImg}`)).data;      console.log(img);
+      article.contentImg = `data:${img.type};base64, ${Buffer.from(img.data).toString('base64')}`;
+    }
+    return {...article};
+  }));
+  return data; 
 }
 
 function wrap(func, ...a) {
