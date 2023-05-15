@@ -41,6 +41,7 @@ export default function SmallArticleDisplay({ article, removeCallback }) {
     <Image onClick={navArticle} src={article.contentImg} style={{height: "240px"}}/>
     <div className="textcontainer" onClick={navArticle}>
       <span className="tags">{article.subtitle}</span><br/>
+      <span className="date">{article.created.substring(0,10)}</span><br/>
       <span className="title">{article.title}</span>
     </div>
     {cookies.isAdmin && <>

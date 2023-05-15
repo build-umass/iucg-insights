@@ -25,7 +25,8 @@ app.use(express.json());
 // API routes
 app.get("/api/articles", async (req, res) => {
   try {
-    const articles = await Article.find();
+    // can use this scheme to implement more complicated filtering
+    const articles = await Article.find().sort({created: -1});
     res.json(articles);
   } catch (error) {
     console.error(error);

@@ -11,6 +11,7 @@ const articleSchema = new mongoose.Schema({
   contentImg: String,
   tags: [String],
   images: [String],
+  created: { type: Date, default: Date.now},
 });
 
 module.exports = mongoose.model("Article", articleSchema);
