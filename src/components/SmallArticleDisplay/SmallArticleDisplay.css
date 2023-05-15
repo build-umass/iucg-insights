@@ -17,6 +17,10 @@
   color: gray;
 }
  
+.smallarticledisplaycontainer .textcontainer .date {
+  font-size: 14px;
+  color: gray;
+}
 .smallarticledisplaycontainer .textcontainer .title {
   font-size: 23px;
 }

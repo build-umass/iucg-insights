@@ -14,13 +14,4 @@ const articleSchema = new mongoose.Schema({
   created: { type: Date, default: Date.now},
 });
 
-// Set created date to 'now'
-/*articleSchema.pre('save', (next) => {
-        if (!this.created) {
-                this.created = new Date();
-        }
-
-        next();
-}); */
-
 module.exports = mongoose.model("Article", articleSchema);
