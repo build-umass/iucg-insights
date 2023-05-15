@@ -1,13 +1,12 @@
 import "./BlogDisplay.css"
 import "../../common.css"
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import ContentEditable from 'react-contenteditable';
 import { Remarkable } from "remarkable"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
-import AdminButtons from "../AdminButtons/AdminButtons"
 import { getArticle, getArticles, updateArticle } from "../../api"
 
 const md = new Remarkable();
@@ -25,49 +24,51 @@ const fromHTML=str=>str
   .replace(/&gt;/, ">")
 
 export default function BlogDisplay() {
-  
   const { id } = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const editing = location.state ? location.state.edit : false
 
   const [article, setArticle] = useState({
-    title: null,
-    author: null,
-    authorImg: null,
-    content: null,
-    contentImg: null,
-    subtitle: null 
+    title: "",
+    author: "",
+    authorImg: "",
+    content: "",
+    contentImg: "",
+    subtitle: "" 
   })
-  //keeps track of old article in the event of cancelling
-  const [oldArticle, setOldArticle] = useState(article)
   
   const [html, setHTML] = useState("")
-  const [editing, setEditing] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
+  // const [editing, setEditing] = useState(false)
 
   //get inintial state of article via API and html via article
-  useEffect(()=>{getArticle(id).then(setArticle)}, [])
-  useEffect(()=>{
-    setHTML(toHTML(article.content || ""))
-    setOldArticle(article)
-  }, [editing])
+  useEffect(()=>{getArticle(id).then(article => {
+    setArticle(article)
+    setHTML(toHTML(article.content))
+  })}, [])
   
-  function saveCallback() {
-    setEditing(false)
-    updateArticle(id, article)
-  }
-  function cancelCallback() {
-    setEditing(false)
-    setArticle(oldArticle)
-  }
+  //update fullscreen state
 
   //once we've created all our components we can actually render our thing
   return <>
-    <AdminButtons id={id}
-      editing={editing}
-      editCallback={()=>setEditing(true)}
-      cancelCallback={cancelCallback}
-      saveCallback={saveCallback}/>
     <div className="blogdisplay" style={{position: "relative"}}>
+      <div className="buttons">
+        <div onClick={()=>{navigate("/")}}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+        </div>
+        {editing && <div onClick={()=>{updateArticle(id, article);navigate("/")}}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+        </div>}
+        <div onClick={()=>{setFullscreen(!fullscreen)}}>
+          {!fullscreen ?
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64V352zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H320zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32V352z"/></svg>
+            : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32V64zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32H96v64c0 17.7 14.3 32 32 32s32-14.3 32-32V352c0-17.7-14.3-32-32-32H32zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H352V64zM320 320c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32s32-14.3 32-32V384h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H320z"/></svg>
+          }
+        </div>
+      </div>
       <Image src={article.contentImg}/>
-      <div className={`contentcontainer ${editing ? "editing" : ""}`}>
+      <div className={`contentcontainer${editing?" editing":""}${fullscreen?" fullscreen":""}`}>
         <div className="content">
           <Title article={article} editing={editing}
             handleChange={e=>setArticle({...article, title: e.target.value})}/>
@@ -78,7 +79,7 @@ export default function BlogDisplay() {
             html={html} setHTML={setHTML}
             editing={editing}/>
         </div>
-        {!editing ? <ReadMore/> : null}
+        {!editing && !fullscreen && <ReadMore/>}
       </div>
     </div>
   </>
