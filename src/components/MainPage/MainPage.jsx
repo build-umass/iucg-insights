@@ -19,8 +19,7 @@ export default function MainPage() {
   }
 
   return <div className="mainpage">
-      <Titlebar/>
-      <ArticleSearchBar setArticles={setArticles}/>
+      <Titlebar setArticles={setArticles}/>
       <div className="articles">
         {articles.map((article) =>
           <SmallArticleDisplay

@@ -1,7 +1,8 @@
 .titlebar {
-  background-color: #e9e9ed;
-  height: 120px;
-  padding: 0 10% 0 10%;
+  background-color: #0C1115;
+  color: white;
+  height: 60px;
+  padding: 0 5% 0 5%;
   position: sticky;
   z-index: 1;
   width: 100%;
@@ -20,11 +21,33 @@
   height: 100%;
 }
 
-.titlebar .nav .button {
-  padding: 14px 20px;
-  margin: 0 6px;
-  background-color: #d0d3e7;
+.titlebar .nav div {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  margin-left: 12px;
+  background-color: #9E0E0E;
   font-size: 20px;
-  border-radius: 3px;
+  border-radius: calc(40px / 2);
 }
 
+.titlebar .nav div svg {
+  max-height: 20px;
+  width: 100%;
+}
+
+.titlebar .nav input {
+  height: 35px;
+  border: none;
+  background-color: #0C1115;
+  border-bottom: 4px solid #5C6267;
+  border-radius: 2px;
+  transition: border-bottom 0.3s;
+  color: white;
+}
+
+.titlebar .nav input:focus-visible {
+  border: none;
+  outline: none;
+  border-bottom: 4px solid #9E0E0E;
+}
