@@ -11,7 +11,6 @@ async function _getArticle(id) {
 
 async function _getArticles() {
   let { data } = await axios.get("/api/articles");
-  console.log(data)
   data = await Promise.all(data.map(async article => {
     const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
     return {...article, contentImg: contentImg };
@@ -28,8 +27,6 @@ async function _searchArticle(searchText) {
     const contentImg = (await axios.get("https://dog.ceo/api/breeds/image/random")).data.message;
     return {...article, contentImg: contentImg };
   }));
-  console.log("------")
-  console.log(data)
   return data;
 }
 

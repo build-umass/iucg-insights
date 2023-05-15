@@ -1,4 +1,4 @@
-circle {
+circle.loadinganimation {
   animation: load 3s ease infinite;
   animation-delay: calc(var(--offset) * 0.2 * 2s);
 }
