@@ -48,8 +48,8 @@ app.get("/api/articles/:id", async(req, res) => {
 app.post("/login", async (req, res) => {
   console.log(req.body.password)
   try {
-    if (req.body.password === "isenbrocode") {
-      res.send("The request was successful, unlike the isenbros");
+    if (req.body.password === "secretpwd") {
+      res.send("The request was successful, as we wish all people to be");
     } else {
       res.status(401).json({ message: "Internal server error." });
     }

@@ -2,7 +2,6 @@ import "./MainPage.css";
 import { useState, useEffect } from "react";
 import SmallArticleDisplay from "../SmallArticleDisplay/SmallArticleDisplay";
 import Titlebar from "../Titlebar/Titlebar"
-import ArticleSearchBar from "../ArticleSearchBar/ArticleSearchBar"
 import { getArticles, deleteArticle } from "../../api"
 
 // This is the main page of the website. It displays all the articles in the database.
