@@ -2,6 +2,7 @@ import axios from "axios";
 import { Buffer } from "buffer";
 axios.defaults.baseURL = `http://localhost:5000`;
 
+//TODO: ensure all aritlces have a contentimg, if nothing else than the default one
 async function _getArticle(id) {
   let { data } = await axios.get(`/api/articles/${id}`);
   //default: placeholder images
