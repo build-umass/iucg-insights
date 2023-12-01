@@ -38,7 +38,7 @@ export default function SmallArticleDisplay({ article, removeCallback }) {
   const toggleDots=e=>{setHide(!hide); e.stopPropagation()}
       
   return <div className="smallarticledisplaycontainer" onClick={()=>navigate(`/articles/${article._id}`)}>
-    <Image onClick={navArticle} src={article.contentImg} style={{height: "240px"}}/>
+    <Image onClick={navArticle} src={article.contentImgID} style={{height: "240px"}}/>
     <div className="textcontainer" onClick={navArticle}>
       {article.tags.map((tag, index) => (
         <span key={index} className="tags">{tag+'   '}</span>
@@ -67,6 +67,6 @@ function Image({ src }) {
 
   return <div className="imagecontainer">
     <div className="center-content" style={{ display: loading || !src ? "" : "none" }}><LoadingAnimation size="50px" /></div>
-    <img src={src} onLoad={() => setLoading(false)} style={{ height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : "" }}></img>
+    <img src={`/api/images/${src}`} onLoad={() => setLoading(false)} style={{ height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : "" }}></img>
   </div>
 }

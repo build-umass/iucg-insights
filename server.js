@@ -14,6 +14,9 @@ const Article = require("./models/article");
 const Tag = require("./models/tags");
 const Image = require("./models/image");
 
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 const app = express(); //create express app
 
 // Connect to MongoDB database  
@@ -24,6 +27,10 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+//serve the website
+const path = require("path")
+app.use(express.static(path.join(__dirname, './build')))
 
 //error handling
 function wrap(func, message="Internal server error.") { return async (...a) => {
@@ -69,34 +76,31 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
   res.json({ message: "Article deleted." });
 }));
 
-//get image
+/*** IMAGES ***/
 app.get("/api/images/:id", wrap(async (req, res) => {
-  const { id } = req.params;
-  const image = await Image.findById(id);
-  res.json(image)
+  res.redirect(process.env.AWS_URL + req.params.id)
 }))
 
-//create image
-app.post("/api/images", wrap(async (req, res) => {
-  if (req.body.data) {
-    rfs = readFileSync(req.body.data).toString('base64');
-    req.body.data = Buffer.from(rfs, 'base64');
-    const image = new Image(req.body);
-    await image.save();
-    res.json(image);
-  } else {
-    // search for default url...
-    // for now just get by hard coded id
-    const defimage = "6461f42db24f0ac937b2b3c6";
-    res.json(defimage);
-  }
-}));
+app.put("/api/images/:id", upload.single("file"), async (req, res) => {
 
-//delete image
+  await fetch(process.env.AWS_URL + req.params.id, {
+    method: "PUT",
+    body: req.file.buffer,
+    headers: { "x-api-key": process.env.AWS_API_KEY }
+  })
+
+  res.json({ id: req.params.id })
+})
+
+
 app.delete("/api/images/:id", wrap(async (req, res) => {
-  const { id } = req.params;
-  await Image.findByIdAndDelete(id)
-  res.json({ message: "Image deleted."})
+  await fetch(process.env.AWS_URL + req.params.id, {
+    method: "DELETE",
+    headers: { "x-api-key": process.env.AWS_API_KEY }
+  })
+
+  res.send({ id: req.params.id })
+ 
 }))
 
 //TODO: login should give password for crud operations
