@@ -12,7 +12,7 @@ const cors = require("cors");
 const fs = require("file-system");
 const Article = require("./models/article");
 const Tag = require("./models/tags");
-const Image = require("./models/image");
+const TempImage = require("./models/tempimage")
 
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
@@ -56,6 +56,10 @@ app.get("/api/articles/:id", wrap(async (req, res) => {
 app.post("/api/articles", wrap(async (req, res) => {
   const article = new Article(req.body);
   await article.save();
+
+  //when creating an article we also have to flush tempimages
+  await TempImage.deleteMany({})
+  
   res.json(article);
 }));
 
@@ -81,6 +85,22 @@ app.get("/api/images/:id", wrap(async (req, res) => {
   res.redirect(process.env.AWS_URL + req.params.id)
 }))
 
+app.put("/api/images", upload.array("files"), async (req, res) => {
+  console.log("hit here")
+  console.log(req.files)
+  
+  for (const file of req.files) {
+    await fetch(process.env.AWS_URL + file.originalname, {
+      method: "PUT",
+      body: file.buffer,
+      headers: { "x-api-key": process.env.AWS_API_KEY }
+    })
+  }
+
+  res.json(req.files.map(a => ({ id: a.originalname })))
+  
+}) 
+
 app.put("/api/images/:id", upload.single("file"), async (req, res) => {
 
   await fetch(process.env.AWS_URL + req.params.id, {
@@ -94,6 +114,7 @@ app.put("/api/images/:id", upload.single("file"), async (req, res) => {
 
 
 app.delete("/api/images/:id", wrap(async (req, res) => {
+  console.log("delete image")
   await fetch(process.env.AWS_URL + req.params.id, {
     method: "DELETE",
     headers: { "x-api-key": process.env.AWS_API_KEY }
@@ -103,6 +124,39 @@ app.delete("/api/images/:id", wrap(async (req, res) => {
  
 }))
 
+/*** TEMP IMAGES ***/
+/* this is a kinda weird thing I have to do for article creation
+ * I want them to be able to use the images in the articles to 
+ * preview, but where do I store them? A new database, tempimages!
+ * this just temporarily holds image ids while doing image creation
+ * and gets flushed after the article is actually created. This should
+ * be done in the API probably so I just make the article creation
+ * call and it does it.
+ */
+app.get("/api/tempimages", wrap(async (_, res) => {
+  const articles = await TempImage.find();
+  res.json(articles)
+}))
+
+app.delete("/api/tempimages", wrap(async (_, res) => {
+  console.log("clear temp images")
+  await TempImage.deleteMany({})
+  res.send({ message: "tempimages flushed" })
+}))
+
+app.delete("/api/tempimages/:id", wrap(async (req, res) => {
+  console.log("delete temp image")
+  await TempImage.findOneAndDelete({ id: req.params.id })
+  res.send({ id: req.params.id })
+}))
+
+app.post("/api/tempimages/:id", wrap(async (req, res) => {
+  const img = TempImage({ id: req.params.id })
+  await img.save()
+  res.json(img)
+}))
+
+/*** AUTH STUFF ***/
 //TODO: login should give password for crud operations
 app.post("/login", wrap(async (req, res) => {
   console.log(req.body.password)
@@ -127,8 +181,6 @@ app.post("/api/tags", wrap(async (req, res) => {
 
 app.get("/api/tags", wrap(async (_, res) => {
   const tags = await Tag.find();
-  console.log('find the tags!');
-  console.log(tags);
   res.json(tags);
 }));
 

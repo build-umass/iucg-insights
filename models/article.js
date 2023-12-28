@@ -6,7 +6,7 @@ const articleSchema = new mongoose.Schema({
   subtitle: String,
   synopsis: String,
   author: String,
-  authorImageID: String,
+  authorImgID: String,
   content: String,
   contentImgID: String,
   tags: [String],

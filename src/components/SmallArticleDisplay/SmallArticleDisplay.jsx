@@ -33,7 +33,7 @@ export default function SmallArticleDisplay({ article, removeCallback }) {
   useEffect(()=>()=>window.removeEventListener("click", onclick)) //cleanup
   
   const navArticle=()=>navigate(`/articles/${article._id}`)
-  const navEditArticle=e=>{navigate(`/articles/${article._id}`,{state: {edit: true}}); e.stopPropagation()}
+  const navEditArticle=e=>{navigate(`/create/${article._id}`); e.stopPropagation()}
   const deleteArticle=e=>{removeCallback(); e.stopPropagation()}
   const toggleDots=e=>{setHide(!hide); e.stopPropagation()}
       

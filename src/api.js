@@ -2,22 +2,23 @@
 import axios from "axios";
 axios.defaults.baseURL = `http://localhost:5000`;
 
+/*** ARTICLES ***/
 export async function getArticle(id) {
-  return await axios.get(`/api/articles/${id}`).data;
+  return axios.get(`/api/articles/${id}`).then(a => a.data);
 }
 
 export async function getArticles() {
-  return await axios.get("/api/articles").data;
+  return axios.get("/api/articles").then(a => a.data);
 }
 
 export async function searchArticle(searchText) {
   // if the search field is empty (default), get all
   if (!searchText) return await getArticles()
-  return await axios.post("/api/articles/search/", { title: searchText }).data;
+  return axios.post("/api/articles/search/", { title: searchText }).then(a => a.data)
 }
 
 export async function createArticle(article) {
-  return await axios.post("/api/articles", article).data;
+  return axios.post("/api/articles", article).then(a => a.data);
 }
 
 export async function deleteArticle(id) {
@@ -28,8 +29,9 @@ export async function updateArticle(id, article) {
   await axios.put(`/api/articles/${id}`, article);
 }
 
+/*** TAGS ***/
 export async function createtags(tags) {
-  return await axios.post("/api/tags", tags).data;
+  return axios.post("/api/tags", tags).then(a => a.data);
 }
 
 export async function gettags() {
@@ -38,24 +40,44 @@ export async function gettags() {
 }
 
 export async function deletetag(id) {
-  await axios.delete(`/api/tags/${id}`);
+  return await axios.delete(`/api/tags/${id}`).then(a => a.data);
 }
 
 export async function filterArticle(tag) {
   // if the search field is empty (default), get all
   if (!tag) return await getArticles()
-  return await axios.get(`/api/articles/filter/${tag}`).data;
+  return axios.get(`/api/articles/filter/${tag}`).then(a => a.data)
 }
 
+/*** IMAGES ***/
 export async function getImage(id) {
-  return await axios.get(`/api/images/${id}`).data
+  return axios.get(`/api/images/${id}`).then(a => a.data)
 }
 
-export async function putImage(data) {
-  const id = "a.jpg" //TODO: sha256 hash or smth
-  return await axios.put(`/api/images/${id}`, data).data
+export async function putImage(id, data) {
+  return axios.put(`/api/images/${id}`, data).then(a => a.data)
+}
+
+export async function putFormData(data) {
+  console.log("has been put")
+  console.log(data)
+  return axios.put(`/api/images`, data).then(a => a.data)
 }
 
 export async function deleteImage(id) {
-  return await axios.delete(`/api/images/${id}`).data
+  return axios.delete(`/api/images/${id}`).then(a => a.data)
 }
+
+/*** TEMPIMAGES ELSE ***/
+export async function getTempImages() {
+  return axios.get(`/api/tempimages`)
+    .then(a => a.data)
+    .then(a => a.map(a => a.id))
+}
+export async function postTempImage(id) {
+  await axios.post(`/api/tempimages/${id}`)
+}
+export async function deleteTempImage(id) {
+  await axios.delete(`/api/tempimages/${id}`)
+}
+

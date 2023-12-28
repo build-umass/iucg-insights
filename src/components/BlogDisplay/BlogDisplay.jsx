@@ -21,6 +21,7 @@ export default function BlogDisplay() {
     contentImgID: "",
     subtitle: ""
   })
+  console.log(article)
   
   useEffect(()=>{getArticle(id).then(setArticle)}, [])
 
@@ -40,7 +41,7 @@ function Image({ src }) {
 
   return <div className="imagecontainer">
       <div className="center-content" style={{display: loading || !src ? "" : "none"}}><LoadingAnimation/></div>
-      <img src={`/api/images/${src}`} onLoad={() => setLoading(false)} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
+      <img src={src ? `/api/images/${src}` : ""} onLoad={() => setLoading(false)} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
   </div>
 }
 
@@ -56,7 +57,7 @@ function Title({ title }) {
 
 function Author({ author, src }) {
   return <div className="author">
-      <img className="authorimg" src={`/api/images/${src}`}/>
+      <img className="authorimg" src={src ? `/api/images/${src}` : ""}/>
       <div className={"authortext center-content"}>{author}</div>
     </div>
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { gettags, deletetag, filterArticlesByTag } from '../../api';
+import { gettags, deletetag, filterArticles } from '../../api';
 
 export default function ArticleFilter({ setArticles }) {
   const [tags, setTags] = useState([]);
@@ -32,7 +32,7 @@ export default function ArticleFilter({ setArticles }) {
   // Filter articles by tag
   const filterArticles = async (tag) => {
     try {
-      const filteredArticles = await filterArticlesByTag(tag);
+      const filteredArticles = await filterArticles(tag);
       setArticles(filteredArticles);
     } catch (error) {
       console.error('Failed to filter articles', error);
