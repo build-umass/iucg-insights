@@ -26,7 +26,7 @@ export async function deleteArticle(id) {
 }
 
 export async function updateArticle(id, article) {
-  await axios.put(`/api/articles/${id}`, article);
+  return await axios.put(`/api/articles/${id}`, article).then(a => a.data);
 }
 
 /*** TAGS ***/

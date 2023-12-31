@@ -1,7 +1,7 @@
 import "./CreateEdit.css"
 import "../../common.css"
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import { Remarkable } from "remarkable"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
@@ -24,6 +24,7 @@ const md = new Remarkable();
 export default function BlogDisplay() {
   //get our ID if it exists
   const articleID = useParams().id  
+  const navigate = useNavigate()
 
   const [article, setArticle] = useState({
     title: "",
@@ -86,8 +87,8 @@ export default function BlogDisplay() {
     //the article with it's current values and set baseArticle
     //to those too
     if (articleID) getArticle(articleID)
-      .then(setArticle)
-      .then(setBaseArticle({...article}))
+      .then(a => { setArticle(a); return a })
+      .then(a => { setBaseArticle(a) })
 
     //if we don't have an ID, we have to instantiate our article
     //with our persistant images. We also need to creaate our 
@@ -101,7 +102,12 @@ export default function BlogDisplay() {
   const buildlarger = LargerEditFactory(article, setArticle)
 
   //submit our stuff
+  const [submitLock, setSubmitLock] = useState(false)
   const onSubmit = async () => {
+
+    //disallow clicking a bunch of times
+    if (submitLock) return
+    setSubmitLock(true)
 
     //ensure we have nonempty properties
     for (const prop of ["title", "subtitle", "synopsis", "author", "content"])
@@ -140,7 +146,7 @@ export default function BlogDisplay() {
     const reses = await Promise.all(requests.map(f => f()))
 
     const id = reses[reses.length-1]._id
-    //TODO: navigate away to the id
+    navigate(`/articles/${id}`)
     
   }
 

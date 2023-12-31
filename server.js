@@ -76,7 +76,15 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
 //delete article
 app.delete("/api/articles/:id", wrap(async (req, res) => {
   const { id } = req.params;
-  await Article.findByIdAndDelete(id);
+  const article = await Article.findByIdAndDelete(id);
+
+  for (const img of [article.contentImgID, article.authorImgID, ...article.images]) {
+    await fetch(process.env.AWS_URL + img, {
+      method: "DELETE",
+      headers: { "x-api-key": process.env.AWS_API_KEY }
+    })
+  }
+  
   res.json({ message: "Article deleted." });
 }));
 
