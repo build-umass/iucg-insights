@@ -8,6 +8,7 @@ import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import {
   getArticle,
   updateArticle,
+  createArticle,
   deleteImage,
   putFormData,
   getTempImages,
@@ -16,6 +17,7 @@ import {
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
+import copy from "copy-text-to-clipboard"
 
 const md = new Remarkable();
 
@@ -33,8 +35,6 @@ export default function BlogDisplay() {
     contentImgID: "",
     images: []
   })
-  //TODO markdown rendering
-  // const [markdown, setMarkdown] = useState("")
 
   //these states are necessary to get the actual files outside
   //of the scope of the SingleImage component
@@ -100,13 +100,48 @@ export default function BlogDisplay() {
   const buildparam = ParamEditFactory(article, setArticle)
   const buildlarger = LargerEditFactory(article, setArticle)
 
-  //validate our input
-  function validate() {}
-  
   //submit our stuff
-  const onSubmit = _ => {
-    validate()
-    console.log("submitted :)")
+  const onSubmit = async () => {
+
+    //ensure we have nonempty properties
+    for (const prop of ["title", "subtitle", "synopsis", "author", "content"])
+      if (!article[prop]) return alert(`${prop} must be nonemptyy`)
+
+    //ensure we have images
+    if (!authorImgFile && !article.authorImgID) return alert("must upload an author image")
+    if (!contentImgFile && !article.contentImgID) return alert("must upload a content image")
+
+    //list of functions that return promises bc I want to run them all
+    //at the same time so I just map them to f => f()
+    const requests = []
+
+    //finalArticle because state mutations are too slow so we
+    //will act on a single new dictionary instead of using setArticle anymore
+    const finalArticle = { ...article }
+
+    //we wanna upload the new images, delete the old images and upload the article
+    //all asynchronously so we have the highest chance of not having issues
+
+    //first we make our new form datas and ids
+    for (const [file, prop] of [[authorImgFile, "authorImgID"], [contentImgFile, "contentImgID"]]) {
+      if (!file) continue
+
+      const [[id], data] = makeForm([file])
+      finalArticle[prop] = id
+
+      requests.push(() => putFormData(data))
+      if (baseArticle[prop]) requests.push(() => deleteImage(baseArticle[prop]))
+    }
+
+    //then we actually upload/create the article
+    requests.push(() => articleID ? updateArticle(articleID, finalArticle) : createArticle(finalArticle))
+
+    //send every request at once this is a great idea
+    const reses = await Promise.all(requests.map(f => f()))
+
+    const id = reses[reses.length-1]._id
+    //TODO: navigate away to the id
+    
   }
 
   return <>
@@ -114,17 +149,14 @@ export default function BlogDisplay() {
     <SingleImage id={article.authorImgID} image={authorImgFile} setImage={setAuthorImgFile}/>
 
     <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
-    <form className="createedit" style={{position: "relative"}} onSubmit={onSubmit}>
-      { [ "title",
-          "author",
-          "content",
-        ].map(buildparam) }
-      { [ "subtitle",
-          "synopsis",
-          "content"
-        ].map(buildlarger) }
-      {/* <MarkdownEdit /> */}
-    </form>
+    { [ "title",
+        "author",
+      ].map(buildparam) }
+    { [ "subtitle",
+        "synopsis",
+      ].map(buildlarger) }
+    <MarkdownEdit article={article} setArticle={setArticle}/>
+    <button onClick={onSubmit}>Submit</button>
   </>
 }
 
@@ -163,9 +195,8 @@ function ImageFromID({ id, deleteCallback }) {
 
   return <div>
       <img className="imageimage" src={`/api/images/${id}`}></img>
-      {/*<label for={param}>{param}</label>*/}
       <div onClick={() => console.log("preview")}>preview</div>
-      <div onClick={() => console.log("copy")}>copy</div>
+      <div onClick={() => copy(`![](/api/images/${id})`)}>copy</div>
       <div onClick={deleteCallback}>delete</div>
     </div>
 }
@@ -179,14 +210,8 @@ function ImageUpload({ images, addImages, deleteImage }) {
   const onChange = async e => {
     if (!e.target.files && !e.target.files[0]) return
 
-    const data = new FormData()
-    const ids = []
-
-    for (const f of e.target.files) {
-      const id = randomstring.generate(32)
-      data.append("files", f, id)
-      ids.push(id)
-    }
+    //convert files into a form
+    const [ids, data] = makeForm(e.target.files)
     
     //reset the form bc we're about to submit
     form.current.reset()
@@ -199,10 +224,14 @@ function ImageUpload({ images, addImages, deleteImage }) {
     </form>
 }
 
-function Content({ markdown }) {
-  return !markdown ?
-      <div className="center-content" style={{height: "100%"}}><LoadingAnimation/></div> :
-      <div dangerouslySetInnerHTML={{ __html: markdown }}></div>
+function MarkdownEdit({ article, setArticle }) {
+  
+  const onChange = e => setArticle({ ...article, content: e.target.value })
+
+  return <div>
+      <div dangerouslySetInnerHTML={{ __html: md.render(article.content) }}></div>
+      <TextareaAutosize minRows="4" id="content" value={article.content} onChange={onChange}/>
+    </div>
 }
 
 function ParamEditFactory(article, setArticle) {
@@ -231,9 +260,6 @@ function LargerEdit({ param, article, setArticle }) {
 }
 
 
-
-
-
 //function originally from https://stackoverflow.com/questions/12368910/html-display-image-after-selecting-filename
 const imageToDataURL = file => new Promise(resolve => {
   const reader = new FileReader();
@@ -241,12 +267,15 @@ const imageToDataURL = file => new Promise(resolve => {
   reader.readAsDataURL(file)
 })
 
-const imageToBuffer = file => new Promise(resolve => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result)
-  reader.readAsArrayBuffer(file)
-})
+function makeForm(files) {
+  const data = new FormData()
+  const ids = []
 
+  for (const f of files) {
+    const id = randomstring.generate(32)
+    data.append("files", f, id)
+    ids.push(id)
+  }
 
-
-
+  return [ids, data]
+}

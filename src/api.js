@@ -1,6 +1,6 @@
 //TODO: replace with requests
 import axios from "axios";
-axios.defaults.baseURL = `http://localhost:5000`;
+axios.defaults.baseURL = window.location.host;
 
 /*** ARTICLES ***/
 export async function getArticle(id) {
