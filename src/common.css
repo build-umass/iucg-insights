@@ -1,5 +1,5 @@
-* {
-  box-sizing: border-box;
+:root {
+  --red: #A00C0C
 }
 
 body {

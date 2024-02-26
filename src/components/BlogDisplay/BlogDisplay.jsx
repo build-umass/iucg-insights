@@ -6,7 +6,7 @@ import React from "react";
 import { Remarkable } from "remarkable"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
-import { getArticle, getArticles } from "../../api"
+import { BASE_URL, getArticle, getArticles } from "../../api"
 
 const md = new Remarkable();
 
@@ -41,7 +41,7 @@ function Image({ src }) {
 
   return <div className="imagecontainer">
       <div className="center-content" style={{display: loading || !src ? "" : "none"}}><LoadingAnimation/></div>
-      <img src={src ? `/api/images/${src}` : ""} onLoad={() => setLoading(false)} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
+      <img src={src ? BASE_URL+`/api/images/${src}` : ""} onLoad={() => setLoading(false)} style={{height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : ""}}></img>
   </div>
 }
 
@@ -57,7 +57,7 @@ function Title({ title }) {
 
 function Author({ author, src }) {
   return <div className="author">
-      <img className="authorimg" src={src ? `/api/images/${src}` : ""}/>
+      <img className="authorimg" src={src ? BASE_URL+`/api/images/${src}` : ""}/>
       <div className={"authortext center-content"}>{author}</div>
     </div>
 }
