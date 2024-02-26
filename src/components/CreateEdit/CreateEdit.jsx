@@ -6,6 +6,7 @@ import React from "react";
 import { Remarkable } from "remarkable"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import {
+  BASE_URL,
   getArticle,
   updateArticle,
   createArticle,
@@ -190,7 +191,7 @@ function SingleImage({ id, image, setImage }) {
 
   return <form ref={form}>
       <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img src={imageData ? imageData : id ? `/api/images/${id}` : ""} className="imageimage"></img>
+      <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <div onClick={onDelete}>delete</div>
     </form>
 }
@@ -200,7 +201,7 @@ function SingleImage({ id, image, setImage }) {
 function ImageFromID({ id, deleteCallback }) {
 
   return <div>
-      <img className="imageimage" src={`/api/images/${id}`}></img>
+      <img className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
       <div onClick={() => console.log("preview")}>preview</div>
       <div onClick={() => copy(`![](/api/images/${id})`)}>copy</div>
       <div onClick={deleteCallback}>delete</div>

@@ -29,8 +29,8 @@ app.use(cors());
 app.use(express.json());
 
 //serve the website
-const path = require("path")
-app.use(express.static(path.join(__dirname, './build')))
+// const path = require("path")
+// app.use(express.static(path.join(__dirname, './build')))
 
 //error handling
 function wrap(func, message="Internal server error.") { return async (...a) => {
@@ -159,6 +159,7 @@ app.delete("/api/tempimages/:id", wrap(async (req, res) => {
 }))
 
 app.post("/api/tempimages/:id", wrap(async (req, res) => {
+  console.log("making tempimg")
   const img = TempImage({ id: req.params.id })
   await img.save()
   res.json(img)
@@ -167,15 +168,14 @@ app.post("/api/tempimages/:id", wrap(async (req, res) => {
 /*** AUTH STUFF ***/
 //TODO: login should give password for crud operations
 app.post("/login", wrap(async (req, res) => {
-  console.log(req.body.password)
   if (req.body.password === "secretpwd")
     res.send("The request was successful, as we wish all people to be");
 
-  else res.status(401).json({ message: "Incorrect Password" });
+  else res.status(401).send("Incorrect Password");
 }));
 
 //search for article by title
-app.post("/api/articles/search/", wrap(async (req, res) => {
+app.post("/api/articles/search", wrap(async (req, res) => {
   const { title } = req.body;
   const article = await Article.find({ title: { $regex: title, $options: "i" } });
   res.json(article);

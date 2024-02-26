@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCookies } from "react-cookie";
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation"
+import { BASE_URL } from "../../api.js"
 
 export default function SmallArticleDisplay({ article, removeCallback }) {
   const navigate = useNavigate()
@@ -67,6 +68,10 @@ function Image({ src }) {
 
   return <div className="imagecontainer">
     <div className="center-content" style={{ display: loading || !src ? "" : "none" }}><LoadingAnimation size="50px" /></div>
-    <img src={`/api/images/${src}`} onLoad={() => setLoading(false)} style={{ height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : "" }}></img>
+    <img
+      src={BASE_URL + `/api/images/${src}`}
+      onLoad={() => setLoading(false)} style={{
+      height: "100%", width: "100%", objectFit: "cover", display: loading || !src ? "none" : "" }}>
+    </img>
   </div>
 }
