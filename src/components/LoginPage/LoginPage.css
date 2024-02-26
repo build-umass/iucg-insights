@@ -1,0 +1,71 @@
+#background {
+  background: var(--red);
+  height: 100vh;
+}
+
+#background>div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: min(800px, 100vh);
+}
+
+#loginpagecentered {
+  width: 500px;
+}
+
+#logo {
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+#loginform {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content;
+  padding: 30px 20px 20px 20px;
+
+  background: white;
+  border-radius: 3px;
+}
+
+#loginform>input {
+  margin: 10px 0;
+  display: block;
+
+  border: none;
+  border-bottom: 1px solid var(--lightgray);
+  font-size: 18px;
+
+  box-sizing: border-box;
+  padding: 8px 12px;
+  transition: border 0.05s;
+}
+#loginform>input::placeholder {
+  color: var(--faintgray)
+}
+#loginform>input:focus {
+  border: none;
+  border-bottom: 1px solid var(--red);
+}
+#loginform>input:focus-visible { outline: none; }
+
+#loginform>button {
+  height: 40px;
+  width: 200px;
+  margin: auto;
+  margin-top: 40px;
+  font-size: 18px;
+
+  background-color: var(--red);
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+#loginform>button:hover {
+  opacity: 0.9;
+}
+#loginform>button:active {
+  opacity: 0.8;
+}
+
