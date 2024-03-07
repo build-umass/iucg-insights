@@ -185,7 +185,7 @@ export default function IUCGFooter(){
                     target="_blank"
                     title="Visit Isenberg Undergraduate Consulting Group on LinkedIn"
                 >
-                    <span className="fa fa-2x fa-linkedin">\f0e1</span>
+                    <span className="fa fa-2x fa-linkedin"></span>
                 </a>
                 </li>
             </ul>
