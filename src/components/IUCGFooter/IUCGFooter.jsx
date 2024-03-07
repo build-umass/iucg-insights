@@ -1,4 +1,6 @@
 import "./IUCGFooter.css"
+import "./IUCGFonts.css"
+import "./FooterPatches.css"
 export default function IUCGFooter(){
     return <footer
     id="footer"
@@ -67,7 +69,7 @@ export default function IUCGFooter(){
                     >
                         <input
                         size={40}
-                        className="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                        className="wpcf7-form-control wpcf7-text wpcf7-validates-as-required footer-form-entry"
                         aria-required="true"
                         aria-invalid="false"
                         placeholder="Your Name"
@@ -94,7 +96,7 @@ export default function IUCGFooter(){
                     >
                         <input
                         size={40}
-                        className="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email"
+                        className="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email footer-form-entry"
                         aria-required="true"
                         aria-invalid="false"
                         placeholder="Your Email"
@@ -110,7 +112,7 @@ export default function IUCGFooter(){
                         data-name="menu-583"
                     >
                         <select
-                        className="wpcf7-form-control wpcf7-select wpcf7-validates-as-required"
+                        className="wpcf7-form-control wpcf7-select wpcf7-validates-as-required footer-form-entry"
                         aria-required="true"
                         aria-invalid="false"
                         name="menu-583"
@@ -128,7 +130,8 @@ export default function IUCGFooter(){
                     <input
                         className="wpcf7-form-control has-spinner wpcf7-submit"
                         type="submit"
-                        defaultValue="Sign Up"
+                        value="Sign Up"
+                        id="footer-sign-up-button"
                     />
                     </p>
                     <div className="wpcf7-response-output" aria-hidden="true" />
