@@ -4,26 +4,34 @@ font-style: normal;
 font-weight: 400;
 src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Montserrat';
 font-style: normal;
 font-weight: 500;
 src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Montserrat';
 font-style: normal;
 font-weight: 700;
 src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Open Sans';
 font-style: normal;
 font-weight: 300;
 font-stretch: 100%;
 src: url(https://fonts.gstatic.com/s/opensans/v36/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Open Sans';
 font-style: normal;
 font-weight: 400;
@@ -37,31 +45,65 @@ font-weight: 600;
 font-stretch: 100%;
 src: url(https://fonts.gstatic.com/s/opensans/v36/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Open Sans';
 font-style: normal;
 font-weight: 700;
 font-stretch: 100%;
 src: url(https://fonts.gstatic.com/s/opensans/v36/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+@font-face{
 font-family: 'Open Sans';
 font-style: normal;
 font-weight: 800;
 font-stretch: 100%;
 src: url(https://fonts.gstatic.com/s/opensans/v36/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-;font-display: swap}@font-face{
+;font-display: swap
+}
+/* @font-face{
+    font-family: 'FontAwesome';
+    src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0');
+    src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),
+    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),
+    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),
+    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap
+} */
+@font-face{
 font-family: 'FontAwesome';
-src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0');
-src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'), url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'), url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'), url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
+src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.eot');
+src:    url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.eot') format('embedded-opentype'),
+        url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.woff') format('woff'),
+        url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.ttf') format('truetype'),
+        url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.svg') format('svg');
 font-weight: normal;
 font-style: normal;
-;font-display: swap}@font-face{font-family:'Glyphicons Halflings';src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot?#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff2') format('woff2'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg');font-display: swap}@font-face{font-family:'glyphicons_halflingsregular'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg');;font-display: swap}@font-face{font-family:'kl-social-icons'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.svg#kl-social-icons') format('svg');;font-display: swap}@font-face{  
+;font-display: swap
+}
+@font-face{
+font-family:'Glyphicons Halflings';
+src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');
+src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot?#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff2') format('woff2'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg');font-display: swap
+}
+@font-face{
+font-family:'glyphicons_halflingsregular'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg');;font-display: swap
+}
+@font-face{
+font-family:'kl-social-icons'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.svg#kl-social-icons') format('svg');;font-display: swap
+}
+@font-face{  
 font-family: 'Glyphicons Halflings';
 src: url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.eot");
 src: url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.woff2") format("woff2"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.woff") format("woff"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");  
-;font-display: swap}
+;font-display: swap
+}
 
 #jobman_login,#jobman_loggedin{text-align:left;padding:10px 0}#jobman_login input.username,#jobman_login input.password{width:100px;margin-right:10px}#jobman_login br,#jobman_register br{display:none}#jobman_login span{display:block;text-align:right}#jobman_loggedin span.message,#jobman_login span.message{text-align:left;padding:10px 0}#jobman_register input.submit{float:right}#jobman_register table{text-align:left;width:100%}#jobman_register th{width:130px}#jobman_register td.error{color:red}table.jobs-table,table.job-table,table.job-apply-table{width:100%;text-align:left}table.jobs-table th,table.job-table th{font-weight:700;text-align:left}table.job-table th{width:100px}table.highlighted{background-color:#eef}table.jobs-table tr.highlighted td{background-color:#eef}td.jobs-moreinfo,td.jobs-applynow{font-weight:700;text-align:center;vertical-align:middle}td.jobs-moreinfo a,td.jobs-applynow a{width:100%}table.job-apply-table th,table.job-apply-table td.th{width:40%}table.job-apply-table td{width:60%}#ui-datepicker-div{background-color:#fff;border:1px solid #000}div.ui-datepicker-header a{cursor:pointer}a.ui-datepicker-next{float:right}div.ui-datepicker-title{text-align:center}td.ui-datepicker-current-day{border:1px solid #111}table.ui-datepicker-calendar td{text-align:center;width:25px;height:25px}p.jobmanpromo{padding-top:20px;clear:left}#jobman-jobselect-echo,#jobman-catselect-echo{cursor:pointer;border:1px solid #ccc;padding:1px}#jobman-jobselect-close a,#jobman-catselect-close a{font-family:Helvetica,Arial,sans-serif;font-size:10px;float:right;margin-top:-10px}span.jobselect-popout,span.catselect-popout{position:absolute;display:block;background-color:#f1f1f1;border:1px solid #7d7e88;padding:10px 5px 5px}span.jobselect-popout span,span.catselect-popout span{display:block;min-width:150px}div.job-nav div.previous{float:left;width:20%;text-align:left;min-height:16px}div.job-nav div.this{text-align:center;float:left;width:55%}div.job-nav div.next{float:right;width:20%;text-align:right;min-height:16px}div.jobman-error{border:1px solid red;background-color:#fcc;font-weight:700}
 
