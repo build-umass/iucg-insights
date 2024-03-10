@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import SmallArticleDisplay from "../SmallArticleDisplay/SmallArticleDisplay";
 import Titlebar from "../Titlebar/Titlebar"
 import { getArticles, deleteArticle } from "../../api"
+import IUCGFooter from "../IUCGFooter/IUCGFooter";
+import SearchSection from "../SearchSection/SearchSection";
 
 // This is the main page of the website. It displays all the articles in the database.
 export default function MainPage() {
+  /** @type {[any, (x: any) => void]} */
   const [articles, setArticles] = useState([]);
 
   //get articles
@@ -19,13 +22,18 @@ export default function MainPage() {
 
   return <div className="mainpage">
       <Titlebar setArticles={setArticles}/>
-      <div className="articles">
-        {articles.map((article) =>
-          <SmallArticleDisplay
-            article={article}
-            key={article._id}
-            removeCallback={()=>remove(article)}/>
-        )}
-      </div>
+
+      <div className="hero-banner">
+        <h1>IUCG INSIGHTS</h1>
+        At IUCG we value the insights we gain through industry experience.
+        Below you can view our Industry Reports, Case Studies, and Client Projects.
+        We hope you enjoy learning about our insights.
+      </div> 
+
+      {/*Featured Insights*/}
+
+      <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
+
+      <IUCGFooter />
     </div>
 }
