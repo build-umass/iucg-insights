@@ -3,3 +3,28 @@
   grid-template-columns: 640px 640px;
   justify-content: center;
 }
+
+.hero-banner{
+  background-image:
+    linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,0,0,0.25) 100px, rgba(0,0,0,0.25) 100%),
+    url("/public/hero_image.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: x-large;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 100px;
+}
+
+.hero-banner-text{
+  /* margin: 0px 200px 100px 200px; */
+}
+
+.hero-banner h1{
+  margin: 0;
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 4;
+}

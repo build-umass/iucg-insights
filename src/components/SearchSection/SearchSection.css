@@ -1,0 +1,41 @@
+.middleSearchBar{
+    font-size: large;
+    background-color: #a00c0c;
+    color: white;
+    display: flex;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.middleSearchBarTab{
+    padding: 20px;
+}
+
+.flexPad{
+    flex-grow: 1;
+}
+
+.material-symbols-outlined.big{
+    font-weight: 900;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.filterSelection{
+    font-size: large;
+    background-color: #a00c0c;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.filterEntry{
+    padding: 20px;
+    text-align: center;
+}
+
+.minimized{
+    height: 0px;
+}
