@@ -41,12 +41,15 @@ export default function SmallArticleDisplay({ article, removeCallback }) {
   return <div className="smallarticledisplaycontainer" onClick={()=>navigate(`/articles/${article._id}`)}>
     <Image onClick={navArticle} src={article.contentImgID} style={{height: "240px"}}/>
     <div className="textcontainer" onClick={navArticle}>
-      {article.tags.map((tag, index) => (
-        <span key={index} className="tags">{tag+'   '}</span>
-      ))}<br />
-      <span className="date">{article.created.substring(0,10)}</span><br/>
+      <div className="tags">
+        {article.tags.map((tag, index) => (
+          <span key={index}>{tag+'   '}</span>
+        ))}
+      </div>
+      <div className="title">{article.title}</div>
+      <div className="author">By {article.author}</div>
+      <div className="date">{article.created.substring(0,10)}</div>
 
-      <span className="title">{article.title}</span>
     </div>
     {cookies.isAdmin && <>
     <svg className="dotdotdot" ref={dotdotdot} onClick={toggleDots} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"> <rect width="100" height="100"/> <circle cx="80" cy="50" r="10" fill="#C8CAD1"/> <circle cx="50" cy="50" r="10" fill="#C8CAD1"/> <circle cx="20" cy="50" r="10" fill="#C8CAD1"/></svg>

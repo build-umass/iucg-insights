@@ -39,3 +39,8 @@
 .minimized{
     height: 0px;
 }
+
+.articles{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}

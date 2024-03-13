@@ -1,31 +1,42 @@
 .smallarticledisplaycontainer .imagecontainer {
-  height: 240px;
-  clip-path: inset(0 0 0 0 round 4px 4px 0px 0px);
+  height: 500px;
+  padding: 50px;
   cursor: pointer;
  }
 
 .smallarticledisplaycontainer {
-  margin: 20px;
-  border-radius: 4px;
-  box-shadow: 0.3em 0.3em 0.7em rgba(0, 0, 0, 0.3);
+  margin: 20px 0 20px 0;
+  border-right: solid gray 1px;
+  border-left: solid gray 1px;
   position: relative;
 }
 
 .smallarticledisplaycontainer .textcontainer .tags {
-  font-size: 13px;
+  font-size: 30px;
   font-style: italic;
   color: gray;
 }
+
+.smallarticledisplaycontainer .textcontainer .title {
+  font-size: 37px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: black;
+}
+
+.smallarticledisplaycontainer .textcontainer .author {
+  font-size: 18px;
+  color: black;
+}
  
 .smallarticledisplaycontainer .textcontainer .date {
-  font-size: 14px;
+  padding: 20px 0 0 0;
+  font-size: 22px;
   color: gray;
-}
-.smallarticledisplaycontainer .textcontainer .title {
-  font-size: 23px;
 }
 
 .smallarticledisplaycontainer .textcontainer {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 8px 24px 16px 24px;
 }
 
