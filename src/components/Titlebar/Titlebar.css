@@ -48,7 +48,7 @@
   background-color: #0C1115;
   border-bottom: 4px solid #5C6267;
   border-radius: 2px;
-  transition: border-bottom 0.3s;
+  transition: border-bottom 0.3s, width 1s;
   color: white;
 }
 
@@ -56,4 +56,13 @@
   border: none;
   outline: none;
   border-bottom: 4px solid #9E0E0E;
+}
+
+.search-bar {
+  display: block;
+  width: 1px;
+}
+
+.search-bar.open {
+  width: 100px;
 }

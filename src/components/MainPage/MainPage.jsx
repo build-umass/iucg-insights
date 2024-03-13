@@ -28,6 +28,9 @@ export default function MainPage() {
         At IUCG we value the insights we gain through industry experience.
         Below you can view our Industry Reports, Case Studies, and Client Projects.
         We hope you enjoy learning about our insights.
+        <div className="linkedin-logo">
+          <a href="https://www.linkedin.com/company/iucg/" />
+        </div>
       </div> 
 
       {/*Featured Insights*/}
