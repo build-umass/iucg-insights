@@ -1,28 +1,4 @@
 @font-face{
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    ;font-display: swap
-}
-@font-face{
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 500;
-    src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    ;font-display: swap
-}
-@font-face{
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 700;
-    src: url(https://fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    ;font-display: swap
-}
-@font-face{
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 300;
@@ -65,17 +41,6 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     ;font-display: swap
 }
-/* @font-face{
-    font-family: 'FontAwesome';
-    src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0');
-    src: url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'),
-    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'),
-    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'),
-    url('https://www.isenbergconsulting.org/wp-content/plugins/event-calendar-wd/css/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap
-} */
 @font-face{
     font-family: 'FontAwesome';
     src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/fonts/fontawesome-webfont.eot');
@@ -86,29 +51,4 @@
     font-weight: normal;
     font-style: normal;
     ;font-display: swap
-}
-@font-face{
-    font-family:'Glyphicons Halflings';
-    src:
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');
-    src:
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot?#iefix') format('embedded-opentype'),
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff2') format('woff2'),
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),
-        url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg')
-    ;
-    font-display: swap
-}
-@font-face{
-font-family:'glyphicons_halflingsregular'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/glyphicons_halflingsregular/glyphicons_halflingsregular.svg#glyphicons_halflingsregular') format('svg');;font-display: swap
-}
-@font-face{
-font-family:'kl-social-icons'; font-weight:normal; font-style:normal;src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot');src:url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.eot#iefix') format('embedded-opentype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.woff') format('woff'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.ttf') format('truetype'),url('https://www.isenbergconsulting.org/wp-content/themes/kallyas/template_helpers/icons/kl-social-icons/kl-social-icons.svg#kl-social-icons') format('svg');;font-display: swap
-}
-@font-face{  
-font-family: 'Glyphicons Halflings';
-src: url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.eot");
-src: url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.woff2") format("woff2"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.woff") format("woff"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("https://www.isenbergconsulting.org/wp-content/plugins/booking/assets/libs/bootstrap-css/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");  
-;font-display: swap
 }
