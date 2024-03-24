@@ -30,7 +30,23 @@ export default function IUCGFooter() {
                                 <input
                                     className="footer-form-entry"
                                     aria-required="true"
-                                    placeho>
+                                    placeholder="Your Name"
+                                    type="text"
+                                    name="footer-form-name"
+                                />
+                            </p>
+                            <p>
+                                <input
+                                    size={40}
+                                    className="footer-form-entry"
+                                    aria-required="true"
+                                    placeholder="Your Email"
+                                    type="email"
+                                    name="footer-form-email"
+                                />
+                            </p>
+                            <p>
+                                <select
                                     className="footer-form-entry"
                                     aria-required="true"
                                     name="footer-form-job"
