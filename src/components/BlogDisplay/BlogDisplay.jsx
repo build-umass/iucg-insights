@@ -15,11 +15,9 @@ export default function BlogDisplay() {
   
   const [article, setArticle] = useState({
     title: "",
-    author: "",
-    authorImgID: "",
+    authorIDs: [],
     content: "",
     contentImgID: "",
-    subtitle: ""
   })
   console.log(article)
   

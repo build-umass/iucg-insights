@@ -10,12 +10,19 @@ export async function getArticles() {
   return fetch(BASE_URL + `/api/articles`).then(a => a.json())
 }
 
-export async function searchArticle(searchText) {
+/**
+ *
+ * @param {string} title
+ * @param {string[]} categories
+ * @param {string[]} industries
+ * @param {string[]} authors
+ */
+export async function searchArticle(title, categories, industries, authors) {
   // if the search field is empty (default), get all
-  if (!searchText) return await getArticles()
+  if (!title && !categories && !industries && !authors) return getArticles()
   return fetch(BASE_URL + `/api/articles/search`, {
     method: "POST",
-    body: JSON.stringify({ title: searchText }),
+    body: JSON.stringify({ title, categories, industries, authors }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
@@ -40,35 +47,66 @@ export async function updateArticle(id, article) {
   }).then(a => a.json())
 }
 
-/*** TAGS INFO: these are unused ***/
-/*export async function createtags(tags) {
-  return axios.post("/api/tags", tags).then(a => a.data);
+export async function getIndustries() {
+  return fetch(BASE_URL+`/api/industries`, { headers: { "Content-Type": "application/json"}})
+    .then(a => a.json())
 }
 
-export async function gettags() {
-  const tag_data = await axios.get("/api/tags");
-  return tag_data.data;
+export async function createIndustry(name) {
+  return fetch(BASE_URL+`/api/industries`, {
+    method: "POST",
+    body: { content: name },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
 }
 
-export async function deletetag(id) {
-  return await axios.delete(`/api/tags/${id}`).then(a => a.data);
+export async function deleteIndustry(id) {
+  return fetch(BASE_URL+`/api/industries/${id}`, { method: "DELETE" })
 }
 
-export async function filterArticle(tag) {
-  // if the search field is empty (default), get all
-  if (!tag) return await getArticles()
-  return axios.get(`/api/articles/filter/${tag}`).then(a => a.data)
-}*/
-
-/*** IMAGES ***/
-/* INFO: these are literally never used anywhere
-export async function getImage(id) {
-  return fetch(BASE_URL + `/api/images/${id}`).then(a => a.body())
+export async function getCategories() {
+  return fetch(BASE_URL+`/api/categories`, { headers: { "Content-Type": "application/json"}})
+    .then(a => a.json())
 }
 
-export async function putImage(id, data) {
-  return axios.put(`/api/images/${id}`, data).then(a => a.data)
-}*/
+export async function createCategory(name) {
+  return fetch(BASE_URL+`/api/categories`, {
+    method: "POST",
+    body: { content: name },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
+}
+
+export async function deleteCategory(id) {
+  return fetch(BASE_URL+`/api/industries/${id}`, { method: "DELETE" })
+}
+
+export async function getAuthors() {
+  return fetch(BASE_URL+`/api/authors`, { headers: { "Content-Type": "application/json"}})
+    .then(a => a.json())
+}
+
+export async function createAuthor(content, imageID) {
+  return fetch(BASE_URL+`/api/categories`, {
+    method: "POST",
+    body: { content, imageID },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
+}
+
+export async function updateAuthor(id, content, imageID) {
+  return fetch(BASE_URL+`/api/categories/${id}`, {
+    method: "PUT",
+    body: { content, imageID },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
+}
+
+export async function deleteAuthor(id) {
+  return fetch(BASE_URL+`/api/authors/${id}`, { method: "DELETE" })
+}
+
+
 
 export async function putFormData(data) {
   return fetch(BASE_URL+"/api/images", {

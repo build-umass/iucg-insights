@@ -9,9 +9,12 @@ require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const fs = require("file-system");
 const Article = require("./models/article");
-const Tag = require("./models/tags");
+// const Tag = require("./models/tags");
+const Category = require("./models/categories")
+const Industry = require("./models/industries")
+const Author = require("./models/authors")
+
 const TempImage = require("./models/tempimage")
 
 const multer = require('multer');
@@ -174,38 +177,66 @@ app.post("/login", wrap(async (req, res) => {
   else res.status(401).send("Incorrect Password");
 }));
 
-//search for article by title
+//search for article by everything
 app.post("/api/articles/search", wrap(async (req, res) => {
-  const { title } = req.body;
-  const article = await Article.find({ title: { $regex: title, $options: "i" } });
-  res.json(article);
+  const { title, categories, industries, authors } = req.body;
+  const query = { title: { $regex: title, $options: "i" }};
+  if (categories) query.categories = { $elemMatch: { $in: categories }}
+  if (industries) query.industries = { $elemMatch: { $in: industries }}
+  if (authors) query.authors = { $elemMatch: { $in: authors }}
+
+  res.json(await Article.find(query))
 }));
 
-app.post("/api/tags", wrap(async (req, res) => {
-  const tags = new Tag(req.body);
-  await tags.save();
-  res.json(tags);
+
+/*** TINY GUYS ***/
+//tiny guy posts
+app.post("/api/categories", wrap(async (req, res) => {
+  const category = new Category(req.body)
+  await category.save();
+  res.json(category);
+}));
+app.post("/api/induestries", wrap(async (req, res) => {
+  const industry = new Industry(req.body)
+  await industry.save();
+  res.json(industry);
+}));
+app.post("/api/authors", wrap(async (req, res) => {
+  const author = new Author(req.body)
+  await author.save();
+  res.json(author);
+}))
+app.put("/api/authors", wrap(async (req, res) => {
+  const author = await Author.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(author);
+}))
+
+//tiny guy gets
+app.get("/api/categories", wrap(async (_, res) => {
+  res.json(await Category.find());
+}));
+app.get("/api/industries", wrap(async (_, res) => {
+  res.json(await Industry.find());
+}));
+app.get("/api/authors", wrap(async (_, res) => {
+  res.json(await Author.find());
 }));
 
-app.get("/api/tags", wrap(async (_, res) => {
-  const tags = await Tag.find();
-  res.json(tags);
+//tiny guy deletes
+app.delete('/api/categories/:id', wrap(async (req, res) => {
+  await Category.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Category deleted successfully' });
+}));
+app.delete('/api/industries/:id', wrap(async (req, res) => {
+  await Industry.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Industry deleted successfully' });
+}));
+app.delete('/api/author/:id', wrap(async (req, res) => {
+  await Author.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Industry deleted successfully' });
 }));
 
-// Delete a tag by ID
-app.delete('/api/tags/:id', wrap(async (req, res) => {
-  const { id } = req.params;
-  await Tag.findByIdAndDelete(id);
-  res.json({ message: 'Tag deleted successfully' });
-}));
 
-//filter articles by tag
-app.get("/api/articles/filter/:tag", wrap(async (req, res) => {
-  const tag = req.params.tag;
-  const filteredArticles = await Article.find({ tags: { $in: [tag] } });
-  res.json(filteredArticles);
-}));
 
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}.`));
