@@ -16,9 +16,10 @@ import {
   deleteTempImage,
   getIndustries,
   createIndustry,
+  deleteIndustry,
   getCategories,
   createCategory,
-  deleteIndustry,
+  deleteCategory,
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
@@ -26,7 +27,7 @@ import copy from "copy-text-to-clipboard"
 
 const md = new Remarkable();
 
-export default function BlogDisplay() {
+export default function CreateEdit() {
   //get our ID if it exists
   const articleID = useParams().id  
   const navigate = useNavigate()
@@ -159,19 +160,22 @@ export default function BlogDisplay() {
 
   return <>
     <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
-    <SingleImage id={article.authorImgID} image={authorImgFile} setImage={setAuthorImgFile}/>
-
+    <Author/>
+    { /*<SingleImage id={article.authorImgID} image={authorImgFile} setImage={setAuthorImgFile}/>*/ }
     <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
+
     { [ "title",
-        "author",
+        //"author",
       ].map(buildparam) }
     { [ "subtitle",
         "synopsis",
       ].map(buildlarger) }
     <MarkdownEdit article={article} setArticle={setArticle}/>
+
+    <TagSelect article={article} setArticle={setArticle} prop={"industries"} getFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
+    <TagSelect article={article} setArticle={setArticle} prop={"categories"} getFunc={getCategories} createFunc={createCategory} deleteFunc={deleteCategory} />
+
     <button onClick={onSubmit}>Submit</button>
-    <TagSelect article={article} setArticle={setArticle} prop={"industries"} fetchFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
-    <TagSelect article={article} setArticle={setArticle} prop={"categories"} fetchFunc={getCategories} createFunc={createCategory} deleteFunc={deleteCategory} />
   </>
 }
 
@@ -235,7 +239,7 @@ function ImageUpload({ images, addImages, deleteImage }) {
 
   return <form ref={form}>
       <input id="upload" multiple type="file" accept="image/*" onChange={onChange}/>
-      { images.map(id => <ImageFromID id={id} deleteCallback={() => deleteImage(id)}/>) }
+      { images.map(id => <ImageFromID key={id} id={id} deleteCallback={() => deleteImage(id)}/>) }
     </form>
 }
 
@@ -250,52 +254,57 @@ function MarkdownEdit({ article, setArticle }) {
 }
 
 function ParamEditFactory(article, setArticle) {
-  return param => ParamEdit({ param, article, setArticle })
+  return param => <ParamEdit param={param} article={article} setArticle={setArticle} key={param}/>
 }
 
 function ParamEdit({ param, article, setArticle }) {
   const onChange = e => setArticle({ ...article, [param]: e.target.value })
   
   return <>
-      <label for={param}>{param}</label>
+      <label htmlFor={param}>{param}</label>
       <input id={param} value={article[param]} onChange={onChange}/>
     </>
 }
 
 function LargerEditFactory(article, setArticle) {
-  return param => LargerEdit({ param, article, setArticle })
+  return param => <LargerEdit param={param} article={article} setArticle={setArticle} key={param}/>
 }
 
 function LargerEdit({ param, article, setArticle }) {
   const onChange = e => setArticle({ ...article, [param]: e.target.value })
   return <>
-      <label for={param}>{param}</label>
+      <label htmlFor={param}>{param}</label>
       <TextareaAutosize minRows="4" id={param} value={article[param]} onChange={onChange}/>
     </>
 }
 
-function Checkbox({ tag, article, setArticle, prop, deleteFunc }) {
+function Checkbox({ tag, article, setArticle, prop, deleteFunc, tags, setTags }) {
   
-  function handleChange(event) { 
-    if (event.target.value) setArticle({ ...article, [prop]: [...article[prop], name] })
-    else setArticle({ ...article, [prop]: article[prop].filter(a => a != name)})
+  function handleChange() { 
+    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
+    else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
+  }
+  function handleDelete() {
+    setTags(tags.filter(a => a._id != tag._id))
+    deleteFunc(tag._id)
   }
 
   return <>
-      <input type="checkbox"
-        checked={article[prop].includes(tag.content)}
-        onChange={handleChange}>
-          {tag.content}
-      </input>
-      <button onClick={() => { deleteFunc(tag._id) }}>X</button>
+      <label>
+        <input type="checkbox"
+          checked={article[prop].includes(tag.content)}
+          onChange={handleChange}/>
+        {tag.content}
+      </label>
+      <button onClick={handleDelete}>X</button>
     </>
 }
 
-function TagSelect({ article, setArticle, prop, fetchFunc, createFunc, deleteFunc }) {
+function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc }) {
   
   const [tags, setTags] = useState([])
   
-  useEffect(() => {  setTags(fetchFunc())  }, [])
+  useEffect(() => { getFunc().then(setTags) }, [])
 
   const [inputState, setInputState] = useState(false)
   const [input, setInput] = useState("")
@@ -304,6 +313,8 @@ function TagSelect({ article, setArticle, prop, fetchFunc, createFunc, deleteFun
   }
   function handleSubmit() {
     createFunc(input)
+      .then(tag => setTags([...tags, tag]))
+
     setInputState(false)
     setInput("")
   }
@@ -315,20 +326,25 @@ function TagSelect({ article, setArticle, prop, fetchFunc, createFunc, deleteFun
   return <>
       { tags.map(tag =>
         <Checkbox
+          key={tag._id}
           tag={tag}
           article={article}
           setArticle={setArticle}
           prop={prop}
           deleteFunc={deleteFunc}/>
       )}
-      <button onClick={handleNew} style={inputState ? "" : "display: none"}>new</button>
-      <div style={inputState ? "display: none" : ""}>
-        <input value={input} onChange={e => setInputState(e.target.value)}></input>
+      <button onClick={handleNew} style={{display: inputState ? "none" : ""}}>new</button>
+      <div style={{display: inputState ? "" : "none"}}>
+        <input value={input} onChange={e => setInput(e.target.value)}></input>
         <button onClick={handleSubmit}>submit</button>
         <button onClick={handleCancel}>cancel</button>
       </div>
     </>
 
+}
+
+function Author() {
+  return <></>
 }
 
 
