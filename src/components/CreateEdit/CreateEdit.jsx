@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import { Remarkable } from "remarkable"
-import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import {
   BASE_URL,
   getArticle,
@@ -14,7 +13,12 @@ import {
   putFormData,
   getTempImages,
   postTempImage,
-  deleteTempImage
+  deleteTempImage,
+  getIndustries,
+  createIndustry,
+  getCategories,
+  createCategory,
+  deleteIndustry,
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
@@ -35,7 +39,9 @@ export default function BlogDisplay() {
     authorImgID: "",
     content: "",
     contentImgID: "",
-    images: []
+    images: [],
+    industries: [],
+    categories: []
   })
 
   //these states are necessary to get the actual files outside
@@ -164,6 +170,8 @@ export default function BlogDisplay() {
       ].map(buildlarger) }
     <MarkdownEdit article={article} setArticle={setArticle}/>
     <button onClick={onSubmit}>Submit</button>
+    <TagSelect article={article} setArticle={setArticle} prop={"industries"} fetchFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
+    <TagSelect article={article} setArticle={setArticle} prop={"categories"} fetchFunc={getCategories} createFunc={createCategory} deleteFunc={deleteCategory} />
   </>
 }
 
@@ -265,6 +273,64 @@ function LargerEdit({ param, article, setArticle }) {
       <TextareaAutosize minRows="4" id={param} value={article[param]} onChange={onChange}/>
     </>
 }
+
+function Checkbox({ tag, article, setArticle, prop, deleteFunc }) {
+  
+  function handleChange(event) { 
+    if (event.target.value) setArticle({ ...article, [prop]: [...article[prop], name] })
+    else setArticle({ ...article, [prop]: article[prop].filter(a => a != name)})
+  }
+
+  return <>
+      <input type="checkbox"
+        checked={article[prop].includes(tag.content)}
+        onChange={handleChange}>
+          {tag.content}
+      </input>
+      <button onClick={() => { deleteFunc(tag._id) }}>X</button>
+    </>
+}
+
+function TagSelect({ article, setArticle, prop, fetchFunc, createFunc, deleteFunc }) {
+  
+  const [tags, setTags] = useState([])
+  
+  useEffect(() => {  setTags(fetchFunc())  }, [])
+
+  const [inputState, setInputState] = useState(false)
+  const [input, setInput] = useState("")
+  function handleNew() {
+    setInputState(true)
+  }
+  function handleSubmit() {
+    createFunc(input)
+    setInputState(false)
+    setInput("")
+  }
+  function handleCancel() {
+    setInputState(false)
+    setInput("")
+  }
+  
+  return <>
+      { tags.map(tag =>
+        <Checkbox
+          tag={tag}
+          article={article}
+          setArticle={setArticle}
+          prop={prop}
+          deleteFunc={deleteFunc}/>
+      )}
+      <button onClick={handleNew} style={inputState ? "" : "display: none"}>new</button>
+      <div style={inputState ? "display: none" : ""}>
+        <input value={input} onChange={e => setInputState(e.target.value)}></input>
+        <button onClick={handleSubmit}>submit</button>
+        <button onClick={handleCancel}>cancel</button>
+      </div>
+    </>
+
+}
+
 
 
 //function originally from https://stackoverflow.com/questions/12368910/html-display-image-after-selecting-filename
