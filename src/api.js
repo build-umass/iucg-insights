@@ -86,18 +86,18 @@ export async function getAuthors() {
     .then(a => a.json())
 }
 
-export async function createAuthor(content, imageID) {
+export async function createAuthor(name, imageID) {
   return fetch(BASE_URL+`/api/categories`, {
     method: "POST",
-    body: { content, imageID },
+    body: { name, imageID },
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
 
-export async function updateAuthor(id, content, imageID) {
+export async function updateAuthor(id, name, imageID) {
   return fetch(BASE_URL+`/api/categories/${id}`, {
     method: "PUT",
-    body: { content, imageID },
+    body: { name, imageID },
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
