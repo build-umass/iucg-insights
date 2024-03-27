@@ -94,6 +94,20 @@ export async function createAuthor(name, imageID) {
   }).then(a => a.json())
 }
 
+export async function updateCategory(id, content) {
+  return fetch(BASE_URL+`/api/categories/${id}`, {
+    method: "PUT",
+    body: { content },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
+}
+export async function updateIndustry(id, content) {
+  return fetch(BASE_URL+`/api/industries/${id}`, {
+    method: "PUT",
+    body: { content },
+    headers: {"Content-Type": "application/json"}
+  }).then(a => a.json())
+}
 export async function updateAuthor(id, name, imageID) {
   return fetch(BASE_URL+`/api/categories/${id}`, {
     method: "PUT",
