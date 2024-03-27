@@ -60,6 +60,10 @@ app.post("/api/articles", wrap(async (req, res) => {
   const article = new Article(req.body);
   await article.save();
 
+  //increment categories and industries
+  article.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: 1}}))
+  article.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: 1}}))
+
   //when creating an article we also have to flush tempimages
   await TempImage.deleteMany({})
   
@@ -68,20 +72,39 @@ app.post("/api/articles", wrap(async (req, res) => {
 
 //update article
 app.put("/api/articles/:id", wrap(async (req, res) => {
-    const { id } = req.params;
-    const updatedArticle = await Article.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedArticle) {
-      return res.status(404).json({ message: "Article not found." });
-    }
-    res.json(updatedArticle);
+  const id = req.params.id;
+  const before = await Article.findById(id)
+  const after = req.body
+
+  //if our industries are different
+  if (before.industries.length != after.industries.length ||
+    !before.every((a, i) => a == after.industries[i])) {
+    
+    before.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: -1}}))
+    after.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: 1}}))
+  }
+
+  //if our categories are different
+  if (before.categories.length != after.categories.length ||
+    !before.every((a, i) => a == after.categories[i])) {
+    
+    before.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: -1}}))
+    after.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: 1}}))
+  }
+
+  res.json(await Article.findByIdAndUpdate(id, req.body, { new: true }));
 }));
 
 //delete article
 app.delete("/api/articles/:id", wrap(async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id;
   const article = await Article.findByIdAndDelete(id);
 
-  for (const img of [article.contentImgID, article.authorImgID, ...article.images]) {
+  //decrement categories and industries
+  article.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: -1}}))
+  article.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: -1}}))
+
+  for (const img of [article.contentImgID, ...article.images]) {
     await fetch(process.env.AWS_URL + img, {
       method: "DELETE",
       headers: { "x-api-key": process.env.AWS_API_KEY }
@@ -206,8 +229,13 @@ app.post("/api/authors", wrap(async (req, res) => {
   await author.save();
   res.json(author);
 }))
-app.put("/api/authors", wrap(async (req, res) => {
+app.put("/api/authors/:id", wrap(async (req, res) => {
+
+  //we also need to update all currently existing authors of this name
+  Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
+  
   const author = await Author.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  
   res.json(author);
 }))
 
