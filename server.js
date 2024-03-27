@@ -219,7 +219,7 @@ app.post("/api/categories", wrap(async (req, res) => {
   await category.save();
   res.json(category);
 }));
-app.post("/api/induestries", wrap(async (req, res) => {
+app.post("/api/industries", wrap(async (req, res) => {
   const industry = new Industry(req.body)
   await industry.save();
   res.json(industry);
