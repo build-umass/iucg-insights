@@ -106,9 +106,6 @@ export default function CreateEdit() {
       .then(setBaseArticle({...article}))
   }, [])
 
-  const buildparam = ParamEditFactory(article, setArticle)
-  const buildlarger = LargerEditFactory(article, setArticle)
-
   //submit our stuff
   const [submitLock, setSubmitLock] = useState(false)
   const onSubmit = async () => {
@@ -164,12 +161,9 @@ export default function CreateEdit() {
     { /*<SingleImage id={article.authorImgID} image={authorImgFile} setImage={setAuthorImgFile}/>*/ }
     <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
 
-    { [ "title",
-        //"author",
-      ].map(buildparam) }
-    { [ "subtitle",
-        "synopsis",
-      ].map(buildlarger) }
+    <ParamEdit param={"title"} article={article} setArticle={setArticle}/>
+    <LargerEdit param={"subtitle"} article={article} setArticle={setArticle}/>
+    <LargerEdit param={"synopsis"} article={article} setArticle={setArticle}/>
     <MarkdownEdit article={article} setArticle={setArticle}/>
 
     <TagSelect article={article} setArticle={setArticle} prop={"industries"} getFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
@@ -253,10 +247,6 @@ function MarkdownEdit({ article, setArticle }) {
     </div>
 }
 
-function ParamEditFactory(article, setArticle) {
-  return param => <ParamEdit param={param} article={article} setArticle={setArticle} key={param}/>
-}
-
 function ParamEdit({ param, article, setArticle }) {
   const onChange = e => setArticle({ ...article, [param]: e.target.value })
   
@@ -264,10 +254,6 @@ function ParamEdit({ param, article, setArticle }) {
       <label htmlFor={param}>{param}</label>
       <input id={param} value={article[param]} onChange={onChange}/>
     </>
-}
-
-function LargerEditFactory(article, setArticle) {
-  return param => <LargerEdit param={param} article={article} setArticle={setArticle} key={param}/>
 }
 
 function LargerEdit({ param, article, setArticle }) {
