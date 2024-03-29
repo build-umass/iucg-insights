@@ -75,21 +75,23 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
   const id = req.params.id;
   const before = await Article.findById(id)
   const after = req.body
+  console.log(before.industries, after.industries)
 
   //if our industries are different
   if (before.industries.length != after.industries.length ||
-    !before.industries.every((a, i) => a == after.industries[i])) {
+    JSON.stringify(before.industries) != JSON.stringify(after.industries)) {
     
-    before.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: -1}}))
-    after.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: 1}}))
+    console.log("updating")
+    before.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: -1}}))
+    after.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: 1}}))
   }
 
   //if our categories are different
   if (before.categories.length != after.categories.length ||
     !before.industries.every((a, i) => a == after.categories[i])) {
     
-    before.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: -1}}))
-    after.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: 1}}))
+    before.categories.forEach(async content => await Category.updateOne({ content }, {$inc: {count: -1}}))
+    after.categories.forEach(async content => await Category.updateOne({ content }, {$inc: {count: 1}}))
   }
 
   res.json(await Article.findByIdAndUpdate(id, req.body, { new: true }));
