@@ -61,8 +61,8 @@ app.post("/api/articles", wrap(async (req, res) => {
   await article.save();
 
   //increment categories and industries
-  article.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: 1}}))
-  article.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: 1}}))
+  article.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: 1}}))
+  article.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: 1}}))
 
   //when creating an article we also have to flush tempimages
   await TempImage.deleteMany({})
@@ -80,16 +80,16 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
   if (before.industries.length != after.industries.length ||
     !before.industries.every((a, i) => a == after.industries[i])) {
     
-    before.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: -1}}))
-    after.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: 1}}))
+    before.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: -1}}))
+    after.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: 1}}))
   }
 
   //if our categories are different
   if (before.categories.length != after.categories.length ||
     !before.industries.every((a, i) => a == after.categories[i])) {
     
-    before.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: -1}}))
-    after.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: 1}}))
+    before.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: -1}}))
+    after.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: 1}}))
   }
 
   res.json(await Article.findByIdAndUpdate(id, req.body, { new: true }));
@@ -101,8 +101,8 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
   const article = await Article.findByIdAndDelete(id);
 
   //decrement categories and industries
-  article.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: -1}}))
-  article.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: -1}}))
+  article.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: -1}}))
+  article.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: -1}}))
 
   for (const img of [article.contentImgID, ...article.images]) {
     await fetch(process.env.AWS_URL + img, {
@@ -120,7 +120,6 @@ app.get("/api/images/:id", wrap(async (req, res) => {
 }))
 
 app.put("/api/images", upload.array("files"), async (req, res) => {
-  console.log("hit here")
   console.log(req.files)
   
   for (const file of req.files) {
@@ -173,19 +172,16 @@ app.get("/api/tempimages", wrap(async (_, res) => {
 }))
 
 app.delete("/api/tempimages", wrap(async (_, res) => {
-  console.log("clear temp images")
   await TempImage.deleteMany({})
   res.send({ message: "tempimages flushed" })
 }))
 
 app.delete("/api/tempimages/:id", wrap(async (req, res) => {
-  console.log("delete temp image")
   await TempImage.findOneAndDelete({ id: req.params.id })
   res.send({ id: req.params.id })
 }))
 
 app.post("/api/tempimages/:id", wrap(async (req, res) => {
-  console.log("making tempimg")
   const img = TempImage({ id: req.params.id })
   await img.save()
   res.json(img)
@@ -218,7 +214,7 @@ app.post("/api/categories", wrap(async (req, res) => {
   const category = new Category(req.body)
 
   //disallow dupes
-  if (Category.find({ content: req.body.content }).length)
+  if (await Category.exists({ content: req.body.content }))
     return res.status(500).json({ message: "No duplicate category names allowed"})
 
   await category.save();
@@ -228,7 +224,7 @@ app.post("/api/industries", wrap(async (req, res) => {
   const industry = new Industry(req.body)
 
   //disallow dupes
-  if (Industry.find({ content: req.body.content }).length)
+  if (await Industry.exists({ content: req.body.content }))
     return res.status(500).json({ message: "No duplicate industry names allowed"})
 
   await industry.save();
@@ -243,40 +239,41 @@ app.post("/api/authors", wrap(async (req, res) => {
 //tiny guy puts but they're actually just less tiny
 app.put("/api/categories/:id", wrap(async (req, res) => {
 
-  const before = Category.findById(req.param.id)
+  const before = await Category.findById(req.param.id)
 
   //disallow dupes
-  if (Category.find({ content: req.body.content }).length)
+  if (await Category.exists({ content: req.body.content }) )
     return res.status(500).json({ message: "No duplicate category names allowed"})
 
-  //rename everything in articles :/
-  Article.find({ categories: before.content }).map(({ _id, categories }) =>
-    Article.findByIdAndUpdate(_id, { categories: [...categories.filter(a => a != before.content), req.body.content] }))
+  //rename everything in articles
+  await Article.updateMany({ categories: before.content}, {$pull: {categories: before.content}})
+  await Article.updateMany({ categories: before.content}, {$push: {categories: req.body.content}})
 
   //update actual category
-  Category.findByIdAndUpdate(req.param.id, { content: req.body.content })
+  await Category.findByIdAndUpdate(req.param.id, { content: req.body.content })
   
+  res.json({ message: "updated" })
 }))
 app.put("/api/industries/:id", wrap(async (req, res) => {
 
-  const before = Industry.findById(req.param.id)
+  const before = await Industry.findById(req.param.id)
 
-  //disallow dupes
-  if (Industry.find({ content: req.body.content }).length)
-    return res.status(500).json({ message: "No duplicate industry names allowed"})
+  if (await Industry.exists({ content: req.body.content }) )
+    return res.status(500).json({ message: "No duplicate category names allowed"})
 
-  //rename everything in articles :/
-  Article.find({ industries: before.content }).map(({ _id, industries }) =>
-    Article.findByIdAndUpdate(_id, { industries: [...industries.filter(a => a != before.content), req.body.content] }))
+  //rename everything in articles
+  await Article.updateMany({ industries: before.content}, {$pull: {industries: before.content}})
+  await Article.updateMany({ industries: before.content}, {$push: {industries: req.body.content}})
 
   //update actual category
-  Industry.findByIdAndUpdate(req.param.id, { content: req.body.content })
-  
+  await Industry.findByIdAndUpdate(req.param.id, { content: req.body.content })
+
+  res.json({ message: "updated" })
 }))
 app.put("/api/authors/:id", wrap(async (req, res) => {
 
   //we also need to update all currently existing authors of this name
-  Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
+  await Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
   
   const author = await Author.findByIdAndUpdate(req.params.id, req.body, { new: true });
   
@@ -296,16 +293,37 @@ app.get("/api/authors", wrap(async (_, res) => {
 
 //tiny guy deletes
 app.delete('/api/categories/:id', wrap(async (req, res) => {
+  //remove from all articles
+  const category = await Category.findById(req.params.id)
+  console.log(category)
+  await Article.updateMany(
+    {categories: {$elemMatch: { $eq: category.content }}},
+    {$pull: {categories: category.content}}
+  )
+
   await Category.findByIdAndDelete(req.params.id);
   res.json({ message: 'Category deleted successfully' });
 }));
 app.delete('/api/industries/:id', wrap(async (req, res) => {
+  //remove from all articles
+  const industry = await Industry.findById(req.params.id)
+  await Article.updateMany(
+    {industries: {$elemMatch: { $eq: industry.content }}},
+    {$pull: {industries: industry.content}}
+  )
+
   await Industry.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));
 app.delete('/api/authors/:id', wrap(async (req, res) => {
   //delete the image
-  const author = Author.findById(req.params.id)
+  const articles = await Article.find({ authorID: req.params.id })
+  if (articles.length > 0) return res.status(500).json({
+    message: "the following articles are still using this author:\n" +
+      articles.map(a => a.title).join("\n")
+  })
+  
+  const author = await Author.findById(req.params.id)
   await fetch(process.env.AWS_URL + author.imageID, {
     method: "DELETE",
     headers: { "x-api-key": process.env.AWS_API_KEY }
