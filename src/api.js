@@ -87,9 +87,9 @@ export async function getAuthors() {
 }
 
 export async function createAuthor(name, imageID) {
-  return fetch(BASE_URL+`/api/categories`, {
+  return fetch(BASE_URL+`/api/authors`, {
     method: "POST",
-    body: { name, imageID },
+    body: JSON.stringify({ name, imageID }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
@@ -97,21 +97,21 @@ export async function createAuthor(name, imageID) {
 export async function updateCategory(id, content) {
   return fetch(BASE_URL+`/api/categories/${id}`, {
     method: "PUT",
-    body: { content },
+    body: JSON.stringify({ content }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
 export async function updateIndustry(id, content) {
   return fetch(BASE_URL+`/api/industries/${id}`, {
     method: "PUT",
-    body: { content },
+    body: JSON.stringify({ content }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
 export async function updateAuthor(id, name, imageID) {
-  return fetch(BASE_URL+`/api/categories/${id}`, {
+  return fetch(BASE_URL+`/api/authors/${id}`, {
     method: "PUT",
-    body: { name, imageID },
+    body: JSON.stringify({ name, imageID }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }

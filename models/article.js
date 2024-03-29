@@ -7,6 +7,7 @@ const articleSchema = new mongoose.Schema({
   synopsis: String,
   author: String,
   authorImgID: String,
+  authorID: String,
   content: String,
   contentImgID: String,
   industries: [String],
