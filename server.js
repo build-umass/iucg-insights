@@ -216,18 +216,62 @@ app.post("/api/articles/search", wrap(async (req, res) => {
 //tiny guy posts
 app.post("/api/categories", wrap(async (req, res) => {
   const category = new Category(req.body)
+
+  //disallow dupes
+  if (Category.find({ content: req.body.content }).length)
+    return res.status(500).json({ message: "No duplicate category names allowed"})
+
   await category.save();
   res.json(category);
 }));
 app.post("/api/industries", wrap(async (req, res) => {
   const industry = new Industry(req.body)
+
+  //disallow dupes
+  if (Industry.find({ content: req.body.content }).length)
+    return res.status(500).json({ message: "No duplicate industry names allowed"})
+
   await industry.save();
   res.json(industry);
 }));
 app.post("/api/authors", wrap(async (req, res) => {
+  console.log(req.body)
   const author = new Author(req.body)
   await author.save();
   res.json(author);
+}))
+//tiny guy puts but they're actually just less tiny
+app.put("/api/categories/:id", wrap(async (req, res) => {
+
+  const before = Category.findById(req.param.id)
+
+  //disallow dupes
+  if (Category.find({ content: req.body.content }).length)
+    return res.status(500).json({ message: "No duplicate category names allowed"})
+
+  //rename everything in articles :/
+  Article.find({ categories: before.content }).map(({ _id, categories }) =>
+    Article.findByIdAndUpdate(_id, { categories: [...categories.filter(a => a != before.content), req.body.content] }))
+
+  //update actual category
+  Category.findByIdAndUpdate(req.param.id, { content: req.body.content })
+  
+}))
+app.put("/api/industries/:id", wrap(async (req, res) => {
+
+  const before = Industry.findById(req.param.id)
+
+  //disallow dupes
+  if (Industry.find({ content: req.body.content }).length)
+    return res.status(500).json({ message: "No duplicate industry names allowed"})
+
+  //rename everything in articles :/
+  Article.find({ industries: before.content }).map(({ _id, industries }) =>
+    Article.findByIdAndUpdate(_id, { industries: [...industries.filter(a => a != before.content), req.body.content] }))
+
+  //update actual category
+  Industry.findByIdAndUpdate(req.param.id, { content: req.body.content })
+  
 }))
 app.put("/api/authors/:id", wrap(async (req, res) => {
 
@@ -259,7 +303,15 @@ app.delete('/api/industries/:id', wrap(async (req, res) => {
   await Industry.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));
-app.delete('/api/author/:id', wrap(async (req, res) => {
+app.delete('/api/authors/:id', wrap(async (req, res) => {
+  //delete the image
+  const author = Author.findById(req.params.id)
+  await fetch(process.env.AWS_URL + author.imageID, {
+    method: "DELETE",
+    headers: { "x-api-key": process.env.AWS_API_KEY }
+  })
+  
+  //then we can delete
   await Author.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));

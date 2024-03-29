@@ -20,6 +20,10 @@ import {
   getCategories,
   createCategory,
   deleteCategory,
+  getAuthors,
+  deleteAuthor,
+  createAuthor,
+  updateAuthor,
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
@@ -38,6 +42,7 @@ export default function CreateEdit() {
     synopsis: "",
     author: "",
     authorImgID: "",
+    authorID: "",
     content: "",
     contentImgID: "",
     images: [],
@@ -47,7 +52,6 @@ export default function CreateEdit() {
 
   //these states are necessary to get the actual files outside
   //of the scope of the SingleImage component
-  const [authorImgFile, setAuthorImgFile] = useState()
   const [contentImgFile, setContentImgFile] = useState()
 
   //this is used for keeping it constant while editing images
@@ -115,11 +119,10 @@ export default function CreateEdit() {
     setSubmitLock(true)
 
     //ensure we have nonempty properties
-    for (const prop of ["title", "subtitle", "synopsis", "author", "content"])
+    for (const prop of ["title", "subtitle", "synopsis", "author", "content", "authorID"])
       if (!article[prop]) return alert(`${prop} must be nonemptyy`)
 
     //ensure we have images
-    if (!authorImgFile && !article.authorImgID) return alert("must upload an author image")
     if (!contentImgFile && !article.contentImgID) return alert("must upload a content image")
 
     //list of functions that return promises bc I want to run them all
@@ -134,7 +137,7 @@ export default function CreateEdit() {
     //all asynchronously so we have the highest chance of not having issues
 
     //first we make our new form datas and ids
-    for (const [file, prop] of [[authorImgFile, "authorImgID"], [contentImgFile, "contentImgID"]]) {
+    for (const [file, prop] of [[contentImgFile, "contentImgID"]]) {
       if (!file) continue
 
       const [[id], data] = makeForm([file])
@@ -157,8 +160,7 @@ export default function CreateEdit() {
 
   return <>
     <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
-    <Author/>
-    { /*<SingleImage id={article.authorImgID} image={authorImgFile} setImage={setAuthorImgFile}/>*/ }
+    <Author article={article} setArticle={setArticle}/>
     <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
 
     <ParamEdit param={"title"} article={article} setArticle={setArticle}/>
@@ -329,8 +331,134 @@ function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc 
 
 }
 
-function Author() {
-  return <></>
+function Author({ article, setArticle }) {
+  
+  const [edit, setEdit] = useState("")
+  const [editing, setEditing] = useState(false)
+  const [authors, setAuthors] = useState([])
+  const [authorImgID, setAuthorImageID] = useState("")
+  const [image, setImage] = useState()
+  const select = React.createRef()
+  const [selected, setSelected] = useState("none")
+
+  useEffect(() => { getAuthors().then(setAuthors) }, [])
+  function emptyAuthor() { setArticle({
+    ...article,
+    author: "",
+    authorImgID: "",
+    authorID: ""
+  })}
+
+  function onOptionSelect(e) {
+    console.log(authors)
+    const id = e.target.options[e.target.selectedIndex].getAttribute("value")
+    console.log(id)
+    if (id == "none") {
+      emptyAuthor()
+      setSelected(id)
+      return
+    }
+    
+    //update article stuff
+    const author = authors.find(a => a._id == id)
+    setArticle({
+      ...article,
+      author: author.name,
+      authorImgID: author.imageID,
+      authorID: author._id
+    })
+    setAuthorImageID(author.imageID)
+    setSelected(id)
+  }
+
+  function newOnClick() {
+    emptyAuthor()
+    setEditing(true)
+  }
+  function editOnClick() {
+    setArticle({ ...article, author: "" })
+    setEditing(true)
+  }
+  function deleteOnClick() {
+    //should never not have an id but just in case
+    if (!article.authorID) return
+    deleteAuthor(article.authorID)
+    select.current.selectedIndex = "0"
+    setAuthors(authors.filter(a => a._id != article.authorID))
+    emptyAuthor()
+  }
+  async function saveOnClick() {
+    //if we don't have a name
+    if (!edit) return
+
+    const requests = []
+
+    let imgID = article.authorImgID
+    if (image) {
+      const [[id], data] = makeForm([image])
+      requests.push(() => putFormData(data))
+      imgID = id
+    }
+    //if I still dont ave an image don't let me save
+    if (!imgID) return
+    
+    let id = article.authorID
+    requests.push(() => {
+      if (id) updateAuthor(id, edit, imgID)
+      else createAuthor(edit, imgID)
+        .then(a => { id = a._id })
+    })
+    
+    //before our requests finish, don't let them submit
+    setArticle({ ...article, authorID: "" })
+
+    await Promise.all(requests.map(a => a()))
+
+    setArticle({
+      ...article,
+      author: edit,
+      authorImgID: imgID,
+      authorID: id
+    })
+    console.log(authors)
+    setAuthors([...authors, {
+      name: edit,
+      imageID: imgID,
+      _id: id
+    }])
+    setSelected(id)
+    setEditing(false)
+  }
+  function cancelOnClick() {
+
+    if (!article.authorID) {
+      emptyAuthor()
+      setEditing(false)
+      return
+    }
+
+    setImage(undefined)
+    setEditing(false)
+  }
+  
+  return <>
+      <SingleImage id={authorImgID} image={image} setImage={setImage}/>
+      <span>{article.author}</span>
+      <button onClick={newOnClick}>new</button>
+      <div style={{display: editing ? "none" : ""}}>
+        <button onClick={editOnClick}>edit</button>
+        <button onClick={deleteOnClick} style={{disply: article.authorID ? "" : "none"}}>delete</button>
+      </div>
+      <div style={{display: editing ? "" : "none"}}>
+        <input value={edit} onChange={e => setEdit(e.target.value)}/>
+        <button onClick={saveOnClick}>save</button>
+        <button onClick={cancelOnClick}>cancel</button>
+      </div>
+      <select ref={select} onChange={onOptionSelect} value={selected}>
+        <option value={"none"}></option>
+        { authors.map(author =>  <option value={author._id} key={author._id}>{author.name}</option> )}
+      </select>
+    </>
 }
 
 
