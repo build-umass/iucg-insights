@@ -55,7 +55,7 @@ export async function getIndustries() {
 export async function createIndustry(name) {
   return fetch(BASE_URL+`/api/industries`, {
     method: "POST",
-    body: JSON.stringify({ content: name }),
+    body: JSON.stringify({ content: name, count: 0 }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
@@ -72,13 +72,13 @@ export async function getCategories() {
 export async function createCategory(name) {
   return fetch(BASE_URL+`/api/categories`, {
     method: "POST",
-    body: JSON.stringify({ content: name }),
+    body: JSON.stringify({ content: name, count: 0 }),
     headers: {"Content-Type": "application/json"}
   }).then(a => a.json())
 }
 
 export async function deleteCategory(id) {
-  return fetch(BASE_URL+`/api/industries/${id}`, { method: "DELETE" })
+  return fetch(BASE_URL+`/api/categories/${id}`, { method: "DELETE" })
 }
 
 export async function getAuthors() {

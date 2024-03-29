@@ -279,7 +279,11 @@ function Checkbox({ tag, article, setArticle, prop, deleteFunc, tags, setTags })
     else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
   }
   function handleDelete() {
+    //delete if it's in it
+    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
+    //delete in ui
     setTags(tags.filter(a => a._id != tag._id))
+    //delete for real
     deleteFunc(tag._id)
   }
 
@@ -297,6 +301,7 @@ function Checkbox({ tag, article, setArticle, prop, deleteFunc, tags, setTags })
 function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc }) {
   
   const [tags, setTags] = useState([])
+  console.log(tags)
   
   useEffect(() => { getFunc().then(setTags) }, [])
 
@@ -325,6 +330,8 @@ function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc 
           article={article}
           setArticle={setArticle}
           prop={prop}
+          tags={tags}
+          setTags={setTags}
           deleteFunc={deleteFunc}/>
       )}
       <button onClick={handleNew} style={{display: inputState ? "none" : ""}}>new</button>
