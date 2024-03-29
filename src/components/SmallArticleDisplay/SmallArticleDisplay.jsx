@@ -42,7 +42,7 @@ export default function SmallArticleDisplay({ article, removeCallback }) {
     <Image onClick={navArticle} src={article.contentImgID} style={{height: "240px"}}/>
     <div className="textcontainer" onClick={navArticle}>
       <div className="tags">
-        {article.tags.map((tag, index) => (
+        {article.categories.map((tag, index) => (
           <span key={index}>{tag+'   '}</span>
         ))}
       </div>

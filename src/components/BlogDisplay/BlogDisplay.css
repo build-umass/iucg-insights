@@ -99,6 +99,9 @@
   justify-content: left;
   width: 100%;
 }
+.blogdisplay .content img {
+  width: 800px;
+}
 
 .blogdisplay .content .author .authorimg {
   width: 60px;
@@ -131,5 +134,5 @@
 
 @media (max-width:calc(800px + 30px + 300px)) {
   .readmore { display: none }
-  .blogdisplay .content { grid-template-columns: auto }
+  .blogdisplay .content { grid-template-columns: min(800px, 100vw) }
 }
