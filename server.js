@@ -75,13 +75,11 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
   const id = req.params.id;
   const before = await Article.findById(id)
   const after = req.body
-  console.log(before.industries, after.industries)
 
   //if our industries are different
   if (before.industries.length != after.industries.length ||
     JSON.stringify(before.industries) != JSON.stringify(after.industries)) {
     
-    console.log("updating")
     before.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: -1}}))
     after.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: 1}}))
   }
@@ -122,7 +120,6 @@ app.get("/api/images/:id", wrap(async (req, res) => {
 }))
 
 app.put("/api/images", upload.array("files"), async (req, res) => {
-  console.log(req.files)
   
   for (const file of req.files) {
     await fetch(process.env.AWS_URL + file.originalname, {
@@ -149,7 +146,6 @@ app.put("/api/images/:id", upload.single("file"), async (req, res) => {
 
 
 app.delete("/api/images/:id", wrap(async (req, res) => {
-  console.log("delete image")
   await fetch(process.env.AWS_URL + req.params.id, {
     method: "DELETE",
     headers: { "x-api-key": process.env.AWS_API_KEY }
@@ -233,7 +229,6 @@ app.post("/api/industries", wrap(async (req, res) => {
   res.json(industry);
 }));
 app.post("/api/authors", wrap(async (req, res) => {
-  console.log(req.body)
   const author = new Author(req.body)
   await author.save();
   res.json(author);
@@ -241,34 +236,40 @@ app.post("/api/authors", wrap(async (req, res) => {
 //tiny guy puts but they're actually just less tiny
 app.put("/api/categories/:id", wrap(async (req, res) => {
 
-  const before = await Category.findById(req.param.id)
+  const before = await Category.findById(req.params.id)
 
   //disallow dupes
   if (await Category.exists({ content: req.body.content }) )
     return res.status(500).json({ message: "No duplicate category names allowed"})
 
   //rename everything in articles
-  await Article.updateMany({ categories: before.content}, {$pull: {categories: before.content}})
-  await Article.updateMany({ categories: before.content}, {$push: {categories: req.body.content}})
+  await Article.updateMany(
+    { categories: before.content },
+    { $set: {"categories.$[filter]": req.body.content}},
+    { arrayFilters: [{ filter: before.content }]}
+  )
 
   //update actual category
-  await Category.findByIdAndUpdate(req.param.id, { content: req.body.content })
+  await Category.findByIdAndUpdate(req.params.id, { content: req.body.content })
   
   res.json({ message: "updated" })
 }))
 app.put("/api/industries/:id", wrap(async (req, res) => {
 
-  const before = await Industry.findById(req.param.id)
+  const before = await Industry.findById(req.params.id)
 
   if (await Industry.exists({ content: req.body.content }) )
     return res.status(500).json({ message: "No duplicate category names allowed"})
 
   //rename everything in articles
-  await Article.updateMany({ industries: before.content}, {$pull: {industries: before.content}})
-  await Article.updateMany({ industries: before.content}, {$push: {industries: req.body.content}})
+  await Article.updateMany(
+    { industries: before.content },
+    { $set: {"industries.$[filter]": req.body.content}},
+    { arrayFilters: [{ filter: before.content }]}
+  )
 
   //update actual category
-  await Industry.findByIdAndUpdate(req.param.id, { content: req.body.content })
+  await Industry.findByIdAndUpdate(req.params.id, { content: req.body.content })
 
   res.json({ message: "updated" })
 }))
@@ -297,7 +298,6 @@ app.get("/api/authors", wrap(async (_, res) => {
 app.delete('/api/categories/:id', wrap(async (req, res) => {
   //remove from all articles
   const category = await Category.findById(req.params.id)
-  console.log(category)
   await Article.updateMany(
     {categories: {$elemMatch: { $eq: category.content }}},
     {$pull: {categories: category.content}}

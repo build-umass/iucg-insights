@@ -24,6 +24,8 @@ import {
   deleteAuthor,
   createAuthor,
   updateAuthor,
+  updateCategory,
+  updateIndustry
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
@@ -81,7 +83,6 @@ export default function CreateEdit() {
   }
 
   const deleteCallback = async id => {
-    console.log(id)
     const requests = []
     const images = article.images.filter(a => a != id)
     
@@ -175,9 +176,23 @@ export default function CreateEdit() {
     <MarkdownEdit article={article} setArticle={setArticle}/>
 
     <h2>Industries</h2>
-    <TagSelect article={article} setArticle={setArticle} prop={"industries"} getFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
+    <TagSelect
+      article={article}
+      setArticle={setArticle}
+      prop={"industries"}
+      getFunc={getIndustries}
+      createFunc={createIndustry}
+      deleteFunc={deleteIndustry}
+      updateFunc={updateIndustry}/>
     <h2>Categories</h2>
-    <TagSelect article={article} setArticle={setArticle} prop={"categories"} getFunc={getCategories} createFunc={createCategory} deleteFunc={deleteCategory} />
+    <TagSelect
+      article={article}
+      setArticle={setArticle}
+      prop={"categories"}
+      getFunc={getCategories}
+      createFunc={createCategory}
+      deleteFunc={deleteCategory}
+      updateFunc={updateCategory}/>
 
     <button onClick={onSubmit}>Submit</button>
   </>
@@ -272,7 +287,10 @@ function LargerEdit({ param, article, setArticle }) {
     </>
 }
 
-function Checkbox({ tag, article, setArticle, prop, deleteFunc, tags, setTags }) {
+function Checkbox({ tag, article, setArticle, prop, deleteFunc, updateFunc, tags, setTags }) {
+
+  const [edit, setEdit] = useState("")
+  const [editing, setEditing] = useState(false)
   
   function handleChange() { 
     if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
@@ -286,28 +304,57 @@ function Checkbox({ tag, article, setArticle, prop, deleteFunc, tags, setTags })
     //delete for real
     deleteFunc(tag._id)
   }
+  function handleEdit() {
+    setEdit("")
+    setEditing(true)
+  }
+  function handleSave() {
+
+    //if it's not original don't allow saving
+    if (!tags.every(({ content }) => content != edit)) return
+    
+    //actually update
+    updateFunc(tag._id, edit)
+    //update in article, tag UI
+    //it should update in backend when calling updateFunc
+    setArticle({...article, [prop]: article[prop].map(a => a == tag.content ? edit : a)})
+    setTags(tags.map(a => a._id == tag._id ? { ...a, content: edit } : a))
+    //update in article
+    setEditing(false)
+  }
+  function handleCancel() {
+    setEditing(false)
+  }
 
   return <>
-      <label>
-        <input type="checkbox"
-          checked={article[prop].includes(tag.content)}
-          onChange={handleChange}/>
-        {tag.content}
-      </label>
-      <button onClick={handleDelete}>X</button>
+      <div style={{display: editing ? "none" : ""}}>
+        <label>
+          <input type="checkbox"
+            checked={article[prop].includes(tag.content)}
+            onChange={handleChange}/>
+          {tag.content}
+        </label>
+        <button onClick={handleDelete}>X</button>
+        <button onClick={handleEdit}>edit</button>
+      </div>
+      <div style={{display: editing ? "" : "none"}}>
+        <input value={edit} onChange={e=>setEdit(e.target.value)}/>
+        <button onClick={handleSave}>save</button>
+        <button onClick={handleCancel}>cancel</button>
+      </div>
     </>
 }
 
-function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc }) {
+function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc, updateFunc, }) {
   
   const [tags, setTags] = useState([])
-  console.log(tags)
   
   useEffect(() => { getFunc().then(setTags) }, [])
 
   const [inputState, setInputState] = useState(false)
   const [input, setInput] = useState("")
   function handleNew() {
+    setInput("")
     setInputState(true)
   }
   function handleSubmit() {
@@ -315,11 +362,9 @@ function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc 
       .then(tag => setTags([...tags, tag]))
 
     setInputState(false)
-    setInput("")
   }
   function handleCancel() {
     setInputState(false)
-    setInput("")
   }
   
   return <>
@@ -332,7 +377,8 @@ function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc 
           prop={prop}
           tags={tags}
           setTags={setTags}
-          deleteFunc={deleteFunc}/>
+          deleteFunc={deleteFunc}
+          updateFunc={updateFunc}/>
       )}
       <button onClick={handleNew} style={{display: inputState ? "none" : ""}}>new</button>
       <div style={{display: inputState ? "" : "none"}}>
@@ -363,9 +409,7 @@ function Author({ article, setArticle }) {
   })}
 
   function onOptionSelect(e) {
-    console.log(authors)
     const id = e.target.options[e.target.selectedIndex].getAttribute("value")
-    console.log(id)
     if (id == "none") {
       emptyAuthor()
       setSelected(id)
@@ -433,7 +477,6 @@ function Author({ article, setArticle }) {
       authorImgID: imgID,
       authorID: id
     })
-    console.log(authors)
     setAuthors([...authors, {
       name: edit,
       imageID: imgID,
