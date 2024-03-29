@@ -78,7 +78,7 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
 
   //if our industries are different
   if (before.industries.length != after.industries.length ||
-    !before.every((a, i) => a == after.industries[i])) {
+    !before.industries.every((a, i) => a == after.industries[i])) {
     
     before.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: -1}}))
     after.industries.forEach(name => Industry.updateOne({ name }, {$inc: {count: 1}}))
@@ -86,7 +86,7 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
 
   //if our categories are different
   if (before.categories.length != after.categories.length ||
-    !before.every((a, i) => a == after.categories[i])) {
+    !before.industries.every((a, i) => a == after.categories[i])) {
     
     before.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: -1}}))
     after.categories.forEach(name => Category.updateOne({ name }, {$inc: {count: 1}}))

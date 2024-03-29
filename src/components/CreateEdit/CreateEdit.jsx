@@ -159,16 +159,24 @@ export default function CreateEdit() {
   }
 
   return <>
+    <h1>Content Image</h1>
     <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
+    <h1>Author</h1>
     <Author article={article} setArticle={setArticle}/>
     <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
 
+    <h2>Title</h2>
     <ParamEdit param={"title"} article={article} setArticle={setArticle}/>
+    <h2>Subtitle</h2>
     <LargerEdit param={"subtitle"} article={article} setArticle={setArticle}/>
+    <h2>Synposis</h2>
     <LargerEdit param={"synopsis"} article={article} setArticle={setArticle}/>
+    <h2>Content</h2>
     <MarkdownEdit article={article} setArticle={setArticle}/>
 
+    <h2>Industries</h2>
     <TagSelect article={article} setArticle={setArticle} prop={"industries"} getFunc={getIndustries} createFunc={createIndustry} deleteFunc={deleteIndustry} />
+    <h2>Categories</h2>
     <TagSelect article={article} setArticle={setArticle} prop={"categories"} getFunc={getCategories} createFunc={createCategory} deleteFunc={deleteCategory} />
 
     <button onClick={onSubmit}>Submit</button>
@@ -200,7 +208,7 @@ function SingleImage({ id, image, setImage }) {
   return <form ref={form}>
       <input id="upload" type="file" accept="image/*" onChange={onChange}/>
       <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
-      <div onClick={onDelete}>delete</div>
+      <button onClick={onDelete}>delete</button>
     </form>
 }
 
@@ -210,9 +218,9 @@ function ImageFromID({ id, deleteCallback }) {
 
   return <div>
       <img className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
-      <div onClick={() => console.log("preview")}>preview</div>
-      <div onClick={() => copy(`![](/api/images/${id})`)}>copy</div>
-      <div onClick={deleteCallback}>delete</div>
+      <button onClick={() => console.log("preview")}>preview</button>
+      <button onClick={() => copy(`![](${BASE_URL}/api/images/${id})`)}>copy</button>
+      <button onClick={deleteCallback}>delete</button>
     </div>
 }
 
@@ -253,7 +261,6 @@ function ParamEdit({ param, article, setArticle }) {
   const onChange = e => setArticle({ ...article, [param]: e.target.value })
   
   return <>
-      <label htmlFor={param}>{param}</label>
       <input id={param} value={article[param]} onChange={onChange}/>
     </>
 }
@@ -261,7 +268,6 @@ function ParamEdit({ param, article, setArticle }) {
 function LargerEdit({ param, article, setArticle }) {
   const onChange = e => setArticle({ ...article, [param]: e.target.value })
   return <>
-      <label htmlFor={param}>{param}</label>
       <TextareaAutosize minRows="4" id={param} value={article[param]} onChange={onChange}/>
     </>
 }
@@ -443,11 +449,11 @@ function Author({ article, setArticle }) {
   
   return <>
       <SingleImage id={authorImgID} image={image} setImage={setImage}/>
-      <span>{article.author}</span>
-      <button onClick={newOnClick}>new</button>
+      <span>{article.author || "no author selected"}</span>
       <div style={{display: editing ? "none" : ""}}>
-        <button onClick={editOnClick}>edit</button>
-        <button onClick={deleteOnClick} style={{disply: article.authorID ? "" : "none"}}>delete</button>
+        <button onClick={newOnClick}>new</button>
+        <button onClick={editOnClick} style={{display: article.authorID ? "" : "none"}}>edit</button>
+        <button onClick={deleteOnClick} style={{display: article.authorID ? "" : "none"}}>delete</button>
       </div>
       <div style={{display: editing ? "" : "none"}}>
         <input value={edit} onChange={e => setEdit(e.target.value)}/>
@@ -455,7 +461,7 @@ function Author({ article, setArticle }) {
         <button onClick={cancelOnClick}>cancel</button>
       </div>
       <select ref={select} onChange={onOptionSelect} value={selected}>
-        <option value={"none"}></option>
+        <option value={"none"}>no author selected</option>
         { authors.map(author =>  <option value={author._id} key={author._id}>{author.name}</option> )}
       </select>
     </>
