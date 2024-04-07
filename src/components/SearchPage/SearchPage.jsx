@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getCategories, getIndustries, searchArticle } from "../../api";
 import "./SearchPage.css";
 import SearchPageArticle from "../SearchPageArticle/SearchPageArticle";
+import 'material-symbols';
 
 
 /**
@@ -24,6 +25,15 @@ function deselect(value, list){
   return list.filter(x => x !== value);
 }
 
+/**
+ * Converts a list into null if it is empty
+ * @param {string[]} list 
+ * @returns {string[] | null}
+ */
+function nullify(list){
+  return list.length === 0 ? null : list;
+}
+
 export default function SearchPage() {
   /**
    * Currently does nothing since articles are sorted by relevance by default.
@@ -34,6 +44,7 @@ export default function SearchPage() {
   const [industries, setIndustries] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState([]);
   const [industryFilter, setIndustryFilter] = useState([]);
+  const [titleQuery, setTitleQuery] = useState("");
   const [articles, setArticles] = useState([]);
 
   // Fetch Async Data
@@ -42,21 +53,10 @@ export default function SearchPage() {
     getIndustries().then(setIndustries);
   }, []);
 
-  // Sync default filters with lists
-  useEffect(() => {
-    if(categories)
-      setCategoryFilter(categories.map(category => category.content))
-  }, [categories]);
-  useEffect(() => {
-    if(industries)
-      setIndustryFilter(industries.map(industry => industry.content))
-  }, [industries]);
-
   // Fetch articles
   useEffect(() => {
-    // TODO: add title functionality
-    searchArticle("", categoryFilter, industryFilter).then(setArticles)
-  }, [categoryFilter, industryFilter]);
+    searchArticle(titleQuery, nullify(categoryFilter), nullify(industryFilter)).then(setArticles)
+  }, [titleQuery, categoryFilter, industryFilter]);
 
   // Generate category menu
   let categoryMenu = <div>Loading...</div>
@@ -66,7 +66,7 @@ export default function SearchPage() {
         const name = category.content;
         const count = category.count;
         const isSelected = categoryFilter.includes(name);
-        const text = `${name}(${count})`;
+        const text = `${name} (${count})`;
         if (isSelected) {
           return <div
             className="selected search-option"
@@ -95,7 +95,7 @@ export default function SearchPage() {
         const name = industry.content;
         const count = industry.count;
         const isSelected = industryFilter.includes(name);
-        const text = `${name}(${count})`;
+        const text = `${name} (${count})`;
         if (isSelected) {
           return <div
             className="selected search-option"
@@ -123,21 +123,34 @@ export default function SearchPage() {
       key={key}
     ></SearchPageArticle>);
 
+  // Add horizontal bars
+  // TODO add more articles in order to test this
+  const articleCount = articleList.length;
+  for(let i = articleCount - 2; i >= 0; i--){
+    articleList.splice(i, 0, <hr key={`bar ${i}`}></hr>)
+  }
+
   return <div className="search-page-container">
-    <div className="flex-row">Showing {articles.length} results for</div>
-    <div className="flex-row">
-      <input id="search-bar"></input>
-      <label for="search-bar">TODO Mag Glass</label>
-      <div onClick={sortByRelevance}>Sort By Relevance</div>
+    <div className="flex-row results-counter">Showing {articles.length} results for</div>
+    <div className="flex-row search-row">
+      <input id="search-bar" onChange={e => setTitleQuery(e.target.value)}></input>
+      <label for="search-bar">
+        <span className="search-icon">search</span>
+      </label>
+      <div onClick={sortByRelevance} className="sort-by-relevance">Sort By Relevance</div>
     </div>
-    <div className="flex-row">
-      <div className="">
-        TOPIC
-        <hr />
-        {categoryMenu}
-        INDUSTRY
-        <hr />
-        {industryMenu}
+    <div className="flex-row bottom-panel">
+      <div className="control-panel flex-column">
+        <div>
+          <h3>TOPIC</h3>
+          <hr />
+          {categoryMenu}
+        </div>
+        <div>
+          <h3>INDUSTRY</h3>
+          <hr />
+          {industryMenu}
+        </div>
       </div>
       <div className="flex-column">
         {articleList}

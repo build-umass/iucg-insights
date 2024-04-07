@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "./SearchPageArticle.css"
 
 /**
@@ -21,10 +22,12 @@ import "./SearchPageArticle.css"
  * }} props 
  */
 export default function SearchPageArticle(props) {
-    return <div className="search-page-article">
-        <h1>{props.article.title}</h1>
-        <h2>{props.article.subtitle}</h2>
-        <h3>by {props.article.author}</h3>
-        {props.article.content}
+    const navigate = useNavigate();
+    const navArticle=()=>navigate(`/articles/${props.article._id}`)
+    return <div className="search-page-article" onClick={navArticle}>
+        <h2 className="article-title">{props.article.title}</h2>
+        <h3 className="article-subtitle">{props.article.subtitle}</h3>
+        <div className="author-credits">by {props.article.author}</div>
+        <div className="article-preview">{props.article.synopsis}</div>
     </div>
 }

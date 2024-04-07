@@ -1,0 +1,28 @@
+.search-page-article{
+    font-size: 20px;
+    color: #5b5b5b;
+    font-weight: 400;
+}
+
+.article-title{
+    margin: 0;
+    font-size: 30px;
+    color: black;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.article-subtitle{
+    margin: 0;
+    color: #a00c0c;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.author-credits{
+    font-size: 16px;
+}
+
+.article-preview{
+    margin-top: 10px;
+}
