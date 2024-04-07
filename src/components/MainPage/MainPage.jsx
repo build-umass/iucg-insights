@@ -5,6 +5,7 @@ import Titlebar from "../Titlebar/Titlebar"
 import { getArticles, deleteArticle } from "../../api"
 import IUCGFooter from "../IUCGFooter/IUCGFooter";
 import SearchSection from "../SearchSection/SearchSection";
+import SearchPage from "../SearchPage/SearchPage";
 
 // This is the main page of the website. It displays all the articles in the database.
 export default function MainPage() {
@@ -36,6 +37,8 @@ export default function MainPage() {
       {/*Featured Insights*/}
 
       <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
+
+      <SearchPage></SearchPage>
 
       <IUCGFooter />
     </div>
