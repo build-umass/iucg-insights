@@ -38,8 +38,6 @@ export default function MainPage() {
 
       <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
 
-      <SearchPage></SearchPage>
-
       <IUCGFooter />
     </div>
 }
