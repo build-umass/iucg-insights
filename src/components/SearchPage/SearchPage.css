@@ -1,7 +1,3 @@
-.search-page-container{
-    padding: 50px;
-}
-
 .flex-row{
     display: flex;
     flex-direction: row;
@@ -12,6 +8,73 @@
     flex-direction: column;
 }
 
-.selected{
-    color: red;
+.search-page-container{
+    padding: 50px;
+    border: 1px solid black;/* //TODO Debug only */
+}
+
+.results-counter{
+    color: gray;
+    font-weight: 100;
+    font-size: 24px;
+    line-height: 1.5;
+}
+
+.search-row{
+    font-size: 64px;
+    line-height: 1;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.search-row input{
+    font-size: inherit;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+    outline: none;
+    width: 0;
+    flex-grow: 1;
+}
+
+.search-icon{
+    font-family: "Material Symbols Outlined";
+    color: gray;
+}
+
+.sort-by-relevance{
+    font-size: 24px;
+    margin-left: 100px;
+    margin-right: 100px;
+    color: gray;
+    font-weight: 500;
+}
+
+.bottom-panel{
+    gap: 100px;
+}
+
+.control-panel {
+    width: 25%;
+    gap: 100px;
+}
+
+.control-panel h3{
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+    margin: 0px;
+}
+
+.control-panel hr{
+    border-color: #9a9a9a;
+}
+
+.control-panel .search-option{
+    font-size: 20px;
+    color: #5b5b5b;
+}
+
+.control-panel .search-option.selected{
+    color: #a00c0c;
 }
