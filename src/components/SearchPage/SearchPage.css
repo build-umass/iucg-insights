@@ -9,7 +9,20 @@
 }
 
 .search-page-container{
+    z-index: 20;
+    overflow: hidden;
+    background-color: white;
+    position: absolute;
+    top: 0px;
+    bottom: 0vh;
+    left: 0px;
+    right: 0px;
     padding: 50px;
+    transition: all 1s ease;
+}
+
+.search-page-container.before-transition{
+    bottom: 100vh;
 }
 
 .results-counter{
@@ -76,4 +89,12 @@
 
 .control-panel .search-option.selected{
     color: #a00c0c;
+}
+
+.transition-backer{
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
 }
