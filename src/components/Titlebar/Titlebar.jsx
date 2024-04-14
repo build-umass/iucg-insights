@@ -10,7 +10,7 @@ export default function Titlebar({ setArticles }) {
   const [cookies, , removeCookie] = useCookies(['myCookie']);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   
   const handleSubmit = async (event) => {
     const articles = await searchArticle(search);
@@ -23,12 +23,14 @@ export default function Titlebar({ setArticles }) {
       <img src="logo_light.png" alt="Isenberg Undergraduate Consulting Group"></img>
     </div>
     <div className={"nav center-content"}>
-      <span className="material-symbols-outlined" onClick={() => {setOpen(!open)}}>search</span>
+      <label className="material-symbols-outlined" onClick={() => {setOpen(!open)}} htmlFor="top-search-bar">search</label>
       <input
+        id="top-search-bar"
         className={`search-bar ${open ? " open" : ""}`}
         type="search"
         value={search}
         onChange={e=>{setSearch(e.target.value)}}
+        onKeyUp={e=>{if(e.key === "Enter")navigate(`/search?query=${search}`)}}
         placeholder="Search"
       />
     </div>
