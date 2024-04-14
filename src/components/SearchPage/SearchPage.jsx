@@ -3,6 +3,7 @@ import { getCategories, getIndustries, searchArticle } from "../../api";
 import "./SearchPage.css";
 import SearchPageArticle from "../SearchPageArticle/SearchPageArticle";
 import 'material-symbols';
+import { useSearchParams } from "react-router-dom";
 
 
 /**
@@ -39,12 +40,13 @@ export default function SearchPage() {
    * Currently does nothing since articles are sorted by relevance by default.
    */
   function sortByRelevance() { }
+  const searchParams = useSearchParams()[0];
 
   const [categories, setCategories] = useState(null);
   const [industries, setIndustries] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState([]);
   const [industryFilter, setIndustryFilter] = useState([]);
-  const [titleQuery, setTitleQuery] = useState("");
+  const [titleQuery, setTitleQuery] = useState(searchParams.get("query"));
   const [articles, setArticles] = useState([]);
 
   // Fetch Async Data
@@ -133,8 +135,8 @@ export default function SearchPage() {
   return <div className="search-page-container">
     <div className="flex-row results-counter">Showing {articles.length} results for</div>
     <div className="flex-row search-row">
-      <input id="search-bar" onChange={e => setTitleQuery(e.target.value)}></input>
-      <label for="search-bar">
+      <input id="search-bar" onChange={e => setTitleQuery(e.target.value)} defaultValue={searchParams.get("query") ?? ""}></input>
+      <label htmlFor="search-bar">
         <span className="search-icon">search</span>
       </label>
       <div onClick={sortByRelevance} className="sort-by-relevance">Sort By Relevance</div>
