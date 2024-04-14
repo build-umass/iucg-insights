@@ -4,6 +4,7 @@ import "./SearchPage.css";
 import SearchPageArticle from "../SearchPageArticle/SearchPageArticle";
 import 'material-symbols';
 import { useSearchParams } from "react-router-dom";
+import MainPage from "../MainPage/MainPage"
 
 
 /**
@@ -11,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
  * @param {string[]} list 
  * @returns {string[]}
  */
-function select(value, list){
+function select(value, list) {
   const out = list.map(x => x);
   out.push(value);
   return out;
@@ -22,7 +23,7 @@ function select(value, list){
  * @param {string[]} list 
  * @returns {string[]}
  */
-function deselect(value, list){
+function deselect(value, list) {
   return list.filter(x => x !== value);
 }
 
@@ -31,7 +32,7 @@ function deselect(value, list){
  * @param {string[]} list 
  * @returns {string[] | null}
  */
-function nullify(list){
+function nullify(list) {
   return list.length === 0 ? null : list;
 }
 
@@ -48,6 +49,7 @@ export default function SearchPage() {
   const [industryFilter, setIndustryFilter] = useState([]);
   const [titleQuery, setTitleQuery] = useState(searchParams.get("query"));
   const [articles, setArticles] = useState([]);
+  const [transitionFromMainPage, setTransitionFromMainPage] = useState("before");
 
   // Fetch Async Data
   useEffect(() => {
@@ -59,6 +61,14 @@ export default function SearchPage() {
   useEffect(() => {
     searchArticle(titleQuery, nullify(categoryFilter), nullify(industryFilter)).then(setArticles)
   }, [titleQuery, categoryFilter, industryFilter]);
+
+  useEffect(() => {
+    setTransitionFromMainPage("during");
+    console.log("hi");
+    setTimeout(() => {
+      setTransitionFromMainPage("after");
+    }, 1000);
+  }, [])
 
   // Generate category menu
   let categoryMenu = <div>Loading...</div>
@@ -119,7 +129,7 @@ export default function SearchPage() {
   }
 
   // Generate article elements
-  let articleList = articles.map((article, key) => 
+  let articleList = articles.map((article, key) =>
     <SearchPageArticle
       article={article}
       key={key}
@@ -128,35 +138,44 @@ export default function SearchPage() {
   // Add horizontal bars
   // TODO add more articles in order to test this
   const articleCount = articleList.length;
-  for(let i = articleCount - 2; i >= 0; i--){
+  for (let i = articleCount - 2; i >= 0; i--) {
     articleList.splice(i, 0, <hr key={`bar ${i}`}></hr>)
   }
 
-  return <div className="search-page-container">
-    <div className="flex-row results-counter">Showing {articles.length} results for</div>
-    <div className="flex-row search-row">
-      <input id="search-bar" onChange={e => setTitleQuery(e.target.value)} defaultValue={searchParams.get("query") ?? ""}></input>
-      <label htmlFor="search-bar">
-        <span className="search-icon">search</span>
-      </label>
-      <div onClick={sortByRelevance} className="sort-by-relevance">Sort By Relevance</div>
-    </div>
-    <div className="flex-row bottom-panel">
-      <div className="control-panel flex-column">
-        <div>
-          <h3>TOPIC</h3>
-          <hr />
-          {categoryMenu}
+  return <>
+    <div className={`search-page-container ${transitionFromMainPage === "before" ? "before-transition" : ""}`}>
+      <div className="flex-row results-counter">Showing {articles.length} results for</div>
+      <div className="flex-row search-row">
+        <input id="search-bar" onChange={e => setTitleQuery(e.target.value)} defaultValue={searchParams.get("query") ?? ""}></input>
+        <label htmlFor="search-bar">
+          <span className="search-icon">search</span>
+        </label>
+        <div onClick={sortByRelevance} className="sort-by-relevance">Sort By Relevance</div>
+      </div>
+      <div className="flex-row bottom-panel">
+        <div className="control-panel flex-column">
+          <div>
+            <h3>TOPIC</h3>
+            <hr />
+            {categoryMenu}
+          </div>
+          <div>
+            <h3>INDUSTRY</h3>
+            <hr />
+            {industryMenu}
+          </div>
         </div>
-        <div>
-          <h3>INDUSTRY</h3>
-          <hr />
-          {industryMenu}
+        <div className="flex-column article-listing">
+          {articleList}
         </div>
       </div>
-      <div className="flex-column">
-        {articleList}
-      </div>
     </div>
-  </div>;
+    {transitionFromMainPage === "after" ?
+      <></>
+      :
+      <div className="transition-backer">
+        <MainPage />
+      </div>
+    }
+  </>;
 }
