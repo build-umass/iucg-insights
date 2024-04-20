@@ -23,8 +23,7 @@ const multer = require('multer');
 const upload = multer({
   storage: multer.diskStorage({
     destination: (_, __, cb) => cb(null, "./uploads"),
-    filename: (req, file, cb) => {
-      console.log(file)
+    filename: (_, file, cb) => {
       cb(null, file.originalname)
     }
   })
@@ -66,12 +65,8 @@ function wrap(func, message = "Internal server error.") {
 // type is either "industry" or "category"
 // name is the name of the category or industry whose count we want to update
 async function updateCounts(prop, name) {
-  let res = await Article.aggregate([
-    { $match: { [prop]: { $elemMatch: { $in: [name] } } } },
-    { $count: "totalMatchingDocuments" }
-  ])
-  let count = res.length ? res[0].totalMatchingDocuments : 0
-  console.log(prop, name, count)
+  let count = await Article.count({ [prop]: { $elemMatch: { $in: [name] } }})
+  console.log(count)
   if (prop == "industries") await Industry.updateOne({ content: name }, { count })
   if (prop == "categories") await Category.updateOne({ content: name }, { count })
 }
@@ -80,6 +75,7 @@ function deleteFile(id) {
   let path = `./uploads/${id}`
   if (fs.existsSync(path)) fs.rmSync(path)
 }
+
 
 /*** API routes ***/
 //get all articles
@@ -90,9 +86,12 @@ app.get("/api/articles", wrap(async (_, res) => {
 
 //get article
 app.get("/api/articles/:id", wrap(async (req, res) => {
-  const { id } = req.params;
-  const article = await Article.findById(id);
-  res.json(article)
+  res.json(await Article.findById(req.params.id))
+}))
+//get and READ article
+app.get("/api/articles/read/:id", wrap(async (req, res) => {
+  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1} })
+  res.json(await Article.findById(req.params.id))
 }))
 
 //create article
@@ -128,7 +127,7 @@ app.put("/api/articles/:id", authenticate, wrap(async (req, res) => {
     ...after.categories.map(async name => updateCounts("categories", name))
   ])
 
-  res.json(await Article.findByIdAndUpdate(id, req.body, { new: true }));
+  res.json(await Article.findByIdAndUpdate(id, { ...req.body, edited: Date.now() }, { new: true }));
 }));
 
 //delete article
@@ -250,15 +249,64 @@ app.get("/securetest", authenticate, wrap(async (req, res) => {
 
 //search for article by everything
 app.post("/api/articles/search", wrap(async (req, res) => {
-  const { title, categories, industries, authors } = req.body;
-  const query = { title: { $regex: title, $options: "i" } };
-  if (categories) query.categories = { $elemMatch: { $in: categories } }
-  if (industries) query.industries = { $elemMatch: { $in: industries } }
-  if (authors) query.authors = { $elemMatch: { $in: authors } }
 
-  res.json(await Article.find(query))
+  const { title, categories, industries, authors, relevance } = req.body;
+  const query = { $text: { $search: title }};
+  if (categories) query.categories = { $elemMatch: { $in: categories }}
+  if (industries) query.industries = { $elemMatch: { $in: industries }}
+  if (authors) query.authors = { $elemMatch: { $in: authors }}
+
+  //decay all searched stuff
+  let today = new Date()
+  today.setUTCHours(0,0,0,0)
+  const articles = await Article.find({ ...query, lastDecayed: { $lt: today }})
+  const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp} = getSettings()
+
+  await Promise.all(articles.map(async article => {
+    const age = Math.round(Date.now() - article.created.getTime() / (1000 * 3600 * 24))
+    const decays = Math.floor(Date.now() - article.lastDecayed.getTime() / (1000 * 3600 * 24))
+
+    await Article.findByIdAndUpdate(article._id, {
+      relevance: age_coef ** (-1 * age * age_exp) 
+        + decay_coef * (article.clicksDecaying ** decay_exp)
+        + clicks_coef * (article.clicks ** clicks_exp),
+      clicksDecaying: article.clicksDecaying * decay_rate ** decays,
+      lastDecayed: today
+    })
+  }));
+
+  const sort = { score: { $meta: "textScore" }}
+  if (relevance) sort = { relevance: 1 }
+
+  res.json(await Article.find(query).sort(sort))
 }));
 
+/*** SETTINGS STUFF ***/
+function getSettings() {
+  if (!fs.existsSync("./settings.json")) return {
+    clicks_coef: 1,
+    clicks_exp: 0.5,
+    decay_coef: 5,
+    decay_exp: 1,
+    decay_rate: 0.99,
+    age_coef: 40,
+    age_exp: 3,
+    allowed_emails: ["maxwelltang@umass.edu", "bgillg@umass.edu"]
+  }
+  
+  return JSON.parse(fs.readFileSync("./settings.json"))
+}
+function setSettings(json) {
+  fs.writeFileSync("./settings.json", JSON.stringify(json))
+}
+
+app.get("/api/settings", wrap(async (_, res) => {
+  res.json(getSettings())
+}))
+app.put("/api/settings", wrap(async (req, res) => {
+  setSettings(req.body)
+  res.end()
+}))
 
 /*** TINY GUYS ***/
 //tiny guy posts

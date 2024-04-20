@@ -10,6 +10,7 @@ import CreateEdit from './components/CreateEdit/CreateEdit';
 import BlogDisplay from './components/BlogDisplay/BlogDisplay'
 import SearchPage from './components/SearchPage/SearchPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Settings from './components/Settings/Settings';
 
 const root = createRoot(document.getElementById("root"))
 root.render(
@@ -24,6 +25,7 @@ root.render(
           <Route path="/login" element={<LoginPage />} />
           <Route path="/articles/:id" element={<BlogDisplay />} />
           <Route path="/search/" element={<SearchPage />} />
+          <Route path="/settings/" element={<Settings />} />
         </Routes>
       </CookiesProvider>
     </BrowserRouter>
