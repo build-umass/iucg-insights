@@ -158,3 +158,17 @@ export async function login(password) {
   }))
 }
 
+/*** SETTINGS ***/
+export async function getSettings() {
+  return fetch(`${BASE_URL}/api/settings`)
+}
+
+export async function setSettings(settings) {
+  return fetch(`${BASE_URL}/api/settings`, {
+    method: "POST",
+    body: JSON.stringify(settings),
+  })
+}
+
+
+

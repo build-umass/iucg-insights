@@ -14,7 +14,12 @@ const articleSchema = new mongoose.Schema({
   categories: [String],
   images: [String],
   created: { type: Date, default: Date.now },
-  edited: { type: Date, default: Date.now }
+  edited: { type: Date, default: Date.now },
+  clicks: { type: Number, default: 0},
+  clicksDecaying: { type: Number, default: 0},
+  lastDecayed: { type: Date, default: Date.now },
+  relevance: { type: Number, default: 0},
 });
+articleSchema.index({ title: "text" })
 
 module.exports = mongoose.model("Article", articleSchema);
