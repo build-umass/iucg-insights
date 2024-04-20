@@ -31,7 +31,7 @@ const upload = multer({
 
 const app = express(); //create express app
 
-const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client, auth } = require('google-auth-library');
 const client = new OAuth2Client()
 
 const admins = ["amoinus@gmail.com"];
@@ -215,6 +215,10 @@ app.post("/login", wrap(async (req, res) => {
       res.status(401).send("Login Failed");
     })
 }));
+
+app.get("/pingauthentication", authenticate, wrap((req, res) => {
+  res.status(200).send("Authenticated");
+}))
 
 async function authenticate(req, res, next) {
   const loginToken = req.cookies.loginToken;

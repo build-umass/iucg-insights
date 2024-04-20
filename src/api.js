@@ -217,5 +217,10 @@ export async function setSettings(settings) {
   })
 }
 
-
+export async function isAuthenticated(){
+  return fetch(`${BASE_URL}/pingauthentication`, {
+    mode: "cors",
+    credentials: "include",
+  }).then(() => true, () => false);
+}
 
