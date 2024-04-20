@@ -165,8 +165,9 @@ export async function getSettings() {
 
 export async function setSettings(settings) {
   return fetch(`${BASE_URL}/api/settings`, {
-    method: "POST",
+    method: "PUT",
     body: JSON.stringify(settings),
+    headers: {"Content-Type": "application/json"}
   })
 }
 
