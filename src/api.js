@@ -35,114 +35,152 @@ export async function searchArticle(title, categories, industries, authors) {
   return fetch(BASE_URL + `/api/articles/search`, {
     method: "POST",
     body: JSON.stringify({ title, categories, industries, authors }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function createArticle(article) {
   return fetch(BASE_URL + "/api/articles", {
+    mode: "cors",
+    credentials: "include",
     method: "POST",
     body: JSON.stringify(article),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function deleteArticle(id) {
-  return fetch(BASE_URL + `/api/articles/${id}`, { method: "DELETE" })
+  return fetch(BASE_URL + `/api/articles/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  })
 }
 
 export async function updateArticle(id, article) {
-  return fetch(BASE_URL+`/api/articles/${id}`, {
+  return fetch(BASE_URL + `/api/articles/${id}`, {
+    mode: "cors",
+    credentials: "include",
     method: "PUT",
     body: JSON.stringify(article),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function getIndustries() {
-  return fetch(BASE_URL+`/api/industries`, { headers: { "Content-Type": "application/json"}})
+  return fetch(BASE_URL + `/api/industries`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
 
 export async function createIndustry(name) {
-  return fetch(BASE_URL+`/api/industries`, {
+  return fetch(BASE_URL + `/api/industries`, {
+    mode: "cors",
+    credentials: "include",
     method: "POST",
     body: JSON.stringify({ content: name, count: 0 }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function deleteIndustry(id) {
-  return fetch(BASE_URL+`/api/industries/${id}`, { method: "DELETE" })
+  return fetch(BASE_URL + `/api/industries/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  })
 }
 
 export async function getCategories() {
-  return fetch(BASE_URL+`/api/categories`, { headers: { "Content-Type": "application/json"}})
+  return fetch(BASE_URL + `/api/categories`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
 
 export async function createCategory(name) {
-  return fetch(BASE_URL+`/api/categories`, {
+  return fetch(BASE_URL + `/api/categories`, {
+    mode: "cors",
+    credentials: "include",
     method: "POST",
     body: JSON.stringify({ content: name, count: 0 }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function deleteCategory(id) {
-  return fetch(BASE_URL+`/api/categories/${id}`, { method: "DELETE" })
+  return fetch(BASE_URL + `/api/categories/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  })
 }
 
 export async function getAuthors() {
-  return fetch(BASE_URL+`/api/authors`, { headers: { "Content-Type": "application/json"}})
+  return fetch(BASE_URL + `/api/authors`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
 
 export async function createAuthor(name, imageID) {
-  return fetch(BASE_URL+`/api/authors`, {
+  return fetch(BASE_URL + `/api/authors`, {
+    mode: "cors",
+    credentials: "include",
     method: "POST",
     body: JSON.stringify({ name, imageID }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function updateCategory(id, content) {
-  return fetch(BASE_URL+`/api/categories/${id}`, {
+  return fetch(BASE_URL + `/api/categories/${id}`, {
+    mode: "cors",
+    credentials: "include",
     method: "PUT",
     body: JSON.stringify({ content }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 export async function updateIndustry(id, content) {
-  return fetch(BASE_URL+`/api/industries/${id}`, {
+  return fetch(BASE_URL + `/api/industries/${id}`, {
+    mode: "cors",
+    credentials: "include",
     method: "PUT",
     body: JSON.stringify({ content }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 export async function updateAuthor(id, name, imageID) {
-  return fetch(BASE_URL+`/api/authors/${id}`, {
+  return fetch(BASE_URL + `/api/authors/${id}`, {
+    mode: "cors",
+    credentials: "include",
     method: "PUT",
     body: JSON.stringify({ name, imageID }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
 
 export async function deleteAuthor(id) {
-  return fetch(BASE_URL+`/api/authors/${id}`, { method: "DELETE" })
+  return fetch(BASE_URL + `/api/authors/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  })
 }
 
 
 
 export async function putFormData(data) {
-  return fetch(BASE_URL+"/api/images", {
+  return fetch(BASE_URL + "/api/images", {
+    mode: "cors",
+    credentials: "include",
     method: "PUT",
     body: data,
   }).then(a => a.json())
 }
 
 export async function deleteImage(id) {
-  return fetch(`${BASE_URL}/api/images/${id}`, { method: "DELETE" }).then(a => a.json())
+  return fetch(`${BASE_URL}/api/images/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  }).then(a => a.json())
 }
 
 /*** TEMPIMAGES ELSE ***/
@@ -152,10 +190,18 @@ export async function getTempImages() {
     .then(a => a.map(a => a.id))
 }
 export async function postTempImage(id) {
-  return fetch(`${BASE_URL}/api/tempimages/${id}`, { method: "POST"})
+  return fetch(`${BASE_URL}/api/tempimages/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "POST"
+  })
 }
 export async function deleteTempImage(id) {
-  return fetch(`${BASE_URL}/api/tempimages/${id}`, { method: "DELETE"})
+  return fetch(`${BASE_URL}/api/tempimages/${id}`, {
+    mode: "cors",
+    credentials: "include",
+    method: "DELETE"
+  })
 }
 
 /*** LOGIN ***/
@@ -183,5 +229,10 @@ export async function setSettings(settings) {
   })
 }
 
-
+export async function isAuthenticated(){
+  return fetch(`${BASE_URL}/pingauthentication`, {
+    mode: "cors",
+    credentials: "include",
+  }).then(response => response.text(), () => false);
+}
 

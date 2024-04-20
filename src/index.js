@@ -9,23 +9,26 @@ import LoginPage from './components/LoginPage/LoginPage';
 import CreateEdit from './components/CreateEdit/CreateEdit';
 import BlogDisplay from './components/BlogDisplay/BlogDisplay'
 import SearchPage from './components/SearchPage/SearchPage';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Settings from './components/Settings/Settings';
 import Drafts from './components/Drafts/Drafts';
 
 const root = createRoot(document.getElementById("root"))
 root.render(
-  <BrowserRouter>
-    <CookiesProvider>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/create" element={<CreateEdit />} />
-        <Route path="/create/:id" element={<CreateEdit />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/articles/:id" element={<BlogDisplay/>} />
-        <Route path="/search/" element={<SearchPage/>} />
-        <Route path="/settings/" element={<Settings/>} />
-        <Route path="/drafts/" element={<Drafts/>} />
-      </Routes>
-    </CookiesProvider>
-  </BrowserRouter>
+  <GoogleOAuthProvider clientId='55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com'>
+    <BrowserRouter>
+      <CookiesProvider>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/create" element={<CreateEdit />} />
+          <Route path="/create/:id" element={<CreateEdit />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/articles/:id" element={<BlogDisplay />} />
+          <Route path="/search/" element={<SearchPage />} />
+          <Route path="/settings/" element={<Settings />} />
+          <Route path="/drafts/" element={<Drafts />} />
+        </Routes>
+      </CookiesProvider>
+    </BrowserRouter>
+  </GoogleOAuthProvider>
 )

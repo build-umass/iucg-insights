@@ -10,9 +10,6 @@ function LoginForm() {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
-    login(password).then(
-      () => { setCookie("isAdmin", password, {maxAge: 604800}); navigate("/") },
-      () => console.log("bad :("));
   };
   
   return <form id="loginform" onSubmit={handleSubmit}>
