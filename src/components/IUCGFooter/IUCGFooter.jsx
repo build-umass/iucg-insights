@@ -120,7 +120,7 @@ export default function IUCGFooter() {
                                     theme="outline"
                                     shape="circle"
                                     onSuccess={async (response) => {
-                                        console.log(response.credential);
+                                        // TODO migrate to api.js
                                         await fetch("http://localhost:5000/login", {
                                             method: "POST",
                                             mode: "cors",
