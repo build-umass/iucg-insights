@@ -3,7 +3,6 @@ import "../../common.css"
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
-import { Remarkable } from "remarkable"
 import {
   BASE_URL,
   getArticle,
@@ -116,6 +115,7 @@ export default function CreateEdit() {
   //submit our stuff
   const [submitLock, setSubmitLock] = useState(false)
   const onSubmit = async () => {
+    console.log(article)
 
     //disallow clicking a bunch of times
     if (submitLock) return
@@ -123,7 +123,11 @@ export default function CreateEdit() {
 
     //ensure we have nonempty properties
     for (const prop of ["title", "subtitle", "synopsis", "author", "content", "authorID"])
-      if (!article[prop]) return alert(`${prop} must be nonemptyy`)
+      if (!article[prop]) {
+        setSubmitLock(false)
+        alert(`${prop} must be nonemptyy`)
+        return
+      }
 
     //ensure we have images
     if (!contentImgFile && !article.contentImgID) return alert("must upload a content image")
@@ -225,7 +229,7 @@ function SingleImage({ id, image, setImage }) {
 
   //TODO: have better pdf preview
   return <form ref={form}>
-      <input id="upload" type="file" accept="image/*,application/pdf" onChange={onChange}/>
+      <input id="upload" type="file" accept="image/*" onChange={onChange}/>
       <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <button onClick={onDelete}>delete</button>
     </form>
@@ -271,7 +275,7 @@ function ImageUpload({ images, addImages, deleteImage }) {
   }
 
   return <form ref={form}>
-      <input id="upload" multiple type="file" accept="image/*" onChange={onChange}/>
+      <input id="upload" multiple type="file" accept="image/*,application/pdf" onChange={onChange}/>
       { images.map(id => <ImageFromID key={id} id={id} deleteCallback={() => deleteImage(id)}/>) }
     </form>
 }
