@@ -24,7 +24,6 @@
     "react-scripts": "5.0.1",
     "react-tag-input": "^6.8.1",
     "react-textarea-autosize": "^8.5.3",
-    "remarkable": "^2.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

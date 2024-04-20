@@ -30,8 +30,10 @@ import {
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
 import copy from "copy-text-to-clipboard"
+import { marked } from "marked"
+import { pdfrender } from "../../pdf-marked"
 
-const md = new Remarkable();
+marked.use({ extensions: [pdfrender] })
 
 export default function CreateEdit() {
   //get our ID if it exists
@@ -205,13 +207,14 @@ function SingleImage({ id, image, setImage }) {
   const form = React.createRef()
   
   //when we get raw data, save it
-  const onChange = async e => {
+  async function onChange(e) {
     if (!e.target.files && !e.target.files[0]) return
     setImage(e.target.files[0])
   }
 
   //reset the form and un-display the image
-  const onDelete = () => {
+  function onDelete(e) {
+    e.preventDefault()
     form.current.reset()
     setImageData(undefined)
     setImage(undefined)
@@ -220,8 +223,9 @@ function SingleImage({ id, image, setImage }) {
   //when we get new raw data, display it
   useEffect(() => { if (image) imageToDataURL(image).then(setImageData) }, [image])
 
+  //TODO: have better pdf preview
   return <form ref={form}>
-      <input id="upload" type="file" accept="image/*" onChange={onChange}/>
+      <input id="upload" type="file" accept="image/*,application/pdf" onChange={onChange}/>
       <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <button onClick={onDelete}>delete</button>
     </form>
@@ -231,10 +235,20 @@ function SingleImage({ id, image, setImage }) {
 //these are the images to be used in the article
 function ImageFromID({ id, deleteCallback }) {
 
+  function onPreview(e) {
+    e.preventDefault()
+    console.log("doing preview :3")
+  }
+  function onCopy(e) {
+    e.preventDefault()
+    copy(`![](${BASE_URL}/api/images/${id})`)
+  }
+  
+
   return <div>
       <img className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
-      <button onClick={() => console.log("preview")}>preview</button>
-      <button onClick={() => copy(`![](${BASE_URL}/api/images/${id})`)}>copy</button>
+      <button onClick={onPreview}>preview</button>
+      <button onClick={onCopy}>copy</button>
       <button onClick={deleteCallback}>delete</button>
     </div>
 }
@@ -267,7 +281,7 @@ function MarkdownEdit({ article, setArticle }) {
   const onChange = e => setArticle({ ...article, content: e.target.value })
 
   return <div>
-      <div dangerouslySetInnerHTML={{ __html: md.render(article.content) }}></div>
+      <div dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div>
       <TextareaAutosize minRows="4" id="content" value={article.content} onChange={onChange}/>
     </div>
 }
@@ -527,11 +541,12 @@ const imageToDataURL = file => new Promise(resolve => {
 })
 
 function makeForm(files) {
+  console.log([...files])
   const data = new FormData()
   const ids = []
 
   for (const f of files) {
-    const id = randomstring.generate(32)
+    const id = randomstring.generate(32) + "." + f.type.match(/(?<=\/).*$/)
     data.append("files", f, id)
     ids.push(id)
   }
