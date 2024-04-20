@@ -9,6 +9,7 @@ require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require('cookie-parser')
 const Article = require("./models/article");
 // const Tag = require("./models/tags");
 const Category = require("./models/categories")
@@ -22,13 +23,22 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const app = express(); //create express app
 
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client()
+
+const admins = ["amoinus@gmail.com"];
+
 // Connect to MongoDB database  
 mongoose.connect("mongodb://localhost:27017/iucg", { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB', err));
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json());
 
 //serve the website
@@ -36,18 +46,20 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, './build')))
 
 //error handling
-function wrap(func, message="Internal server error.") { return async (...a) => {
-  try { return func(...a) }
-  catch (error) { console.error(error); res.status(500).json({ message }) }
-}}
+function wrap(func, message = "Internal server error.") {
+  return async (...a) => {
+    try { return func(...a) }
+    catch (error) { console.error(error); res.status(500).json({ message }) }
+  }
+}
 
 //helpful little category/industry update thing
 // type is either "industry" or "category"
 // name is the name of the category or industry whose count we want to update
 async function updateCounts(prop, name) {
   let res = await Article.aggregate([
-    { $match: { [prop]: { $elemMatch: { $in: [name] }}}},
-    { $count: "totalMatchingDocuments"}
+    { $match: { [prop]: { $elemMatch: { $in: [name] } } } },
+    { $count: "totalMatchingDocuments" }
   ])
   let count = res.length ? res[0].totalMatchingDocuments : 0
   console.log(prop, name, count)
@@ -58,7 +70,7 @@ async function updateCounts(prop, name) {
 /*** API routes ***/
 //get all articles
 app.get("/api/articles", wrap(async (_, res) => {
-  const articles = await Article.find().sort({created: -1});
+  const articles = await Article.find().sort({ created: -1 });
   res.json(articles);
 }));
 
@@ -82,7 +94,7 @@ app.post("/api/articles", wrap(async (req, res) => {
 
   //when creating an article we also have to flush tempimages
   await TempImage.deleteMany({})
-  
+
   res.json(article);
 }));
 
@@ -122,7 +134,7 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
       headers: { "x-api-key": process.env.AWS_API_KEY }
     })
   }
-  
+
   res.json({ message: "Article deleted." });
 }));
 
@@ -132,7 +144,7 @@ app.get("/api/images/:id", wrap(async (req, res) => {
 }))
 
 app.put("/api/images", upload.array("files"), async (req, res) => {
-  
+
   for (const file of req.files) {
     await fetch(process.env.AWS_URL + file.originalname, {
       method: "PUT",
@@ -142,8 +154,8 @@ app.put("/api/images", upload.array("files"), async (req, res) => {
   }
 
   res.json(req.files.map(a => ({ id: a.originalname })))
-  
-}) 
+
+})
 
 app.put("/api/images/:id", upload.single("file"), async (req, res) => {
 
@@ -164,7 +176,7 @@ app.delete("/api/images/:id", wrap(async (req, res) => {
   })
 
   res.send({ id: req.params.id })
- 
+
 }))
 
 /*** TEMP IMAGES ***/
@@ -200,19 +212,56 @@ app.post("/api/tempimages/:id", wrap(async (req, res) => {
 /*** AUTH STUFF ***/
 //TODO: login should give password for crud operations
 app.post("/login", wrap(async (req, res) => {
-  if (req.body.password === "secretpwd")
-    res.send("The request was successful, as we wish all people to be");
+  client.verifyIdToken({
+    idToken: req.body.credential,
+    audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
+  })
+    .then(ticket => {
+      console.log(ticket.getPayload().email);
+      res.set("Access-Control-Allow-Origin", "http://localhost:3000").status(200).send("Login Successful");
+      console.log(`${ticket.getUserId()} has logged in`);
+    })
+    .catch(() => {
+      res.status(401).send("Login Failed");
+    })
+}));
 
-  else res.status(401).send("Incorrect Password");
+async function authenticate(req) {
+  const loginToken = req.cookies.loginToken;
+  if (!loginToken) {
+    return "";
+  }
+  const ticket = await client.verifyIdToken({
+    idToken: loginToken,
+    audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
+  })
+    .catch(() => undefined);
+  if (!ticket) {
+    return "";
+  }
+  const email = ticket.getPayload().email;
+  if(!admins.includes(email)){
+    return "";
+  }
+  return ticket.getPayload().email;
+}
+
+app.get("/securetest", wrap(async (req, res) => {
+  const identity = await authenticate(req);
+  if (!identity) {
+    res.status(401).send("Incorrect Login Cookie");
+    return;
+  }
+  res.status(200).send("Secret Documents");
 }));
 
 //search for article by everything
 app.post("/api/articles/search", wrap(async (req, res) => {
   const { title, categories, industries, authors } = req.body;
-  const query = { title: { $regex: title, $options: "i" }};
-  if (categories) query.categories = { $elemMatch: { $in: categories }}
-  if (industries) query.industries = { $elemMatch: { $in: industries }}
-  if (authors) query.authors = { $elemMatch: { $in: authors }}
+  const query = { title: { $regex: title, $options: "i" } };
+  if (categories) query.categories = { $elemMatch: { $in: categories } }
+  if (industries) query.industries = { $elemMatch: { $in: industries } }
+  if (authors) query.authors = { $elemMatch: { $in: authors } }
 
   res.json(await Article.find(query))
 }));
@@ -225,7 +274,7 @@ app.post("/api/categories", wrap(async (req, res) => {
 
   //disallow dupes
   if (await Category.exists({ content: req.body.content }))
-    return res.status(500).json({ message: "No duplicate category names allowed"})
+    return res.status(500).json({ message: "No duplicate category names allowed" })
 
   await category.save();
   res.json(category);
@@ -235,7 +284,7 @@ app.post("/api/industries", wrap(async (req, res) => {
 
   //disallow dupes
   if (await Industry.exists({ content: req.body.content }))
-    return res.status(500).json({ message: "No duplicate industry names allowed"})
+    return res.status(500).json({ message: "No duplicate industry names allowed" })
 
   await industry.save();
   res.json(industry);
@@ -251,33 +300,33 @@ app.put("/api/categories/:id", wrap(async (req, res) => {
   const before = await Category.findById(req.params.id)
 
   //disallow dupes
-  if (await Category.exists({ content: req.body.content }) )
-    return res.status(500).json({ message: "No duplicate category names allowed"})
+  if (await Category.exists({ content: req.body.content }))
+    return res.status(500).json({ message: "No duplicate category names allowed" })
 
   //rename everything in articles
   await Article.updateMany(
     { categories: before.content },
-    { $set: {"categories.$[filter]": req.body.content}},
-    { arrayFilters: [{ filter: before.content }]}
+    { $set: { "categories.$[filter]": req.body.content } },
+    { arrayFilters: [{ filter: before.content }] }
   )
 
   //update actual category
   await Category.findByIdAndUpdate(req.params.id, { content: req.body.content })
-  
+
   res.json({ message: "updated" })
 }))
 app.put("/api/industries/:id", wrap(async (req, res) => {
 
   const before = await Industry.findById(req.params.id)
 
-  if (await Industry.exists({ content: req.body.content }) )
-    return res.status(500).json({ message: "No duplicate category names allowed"})
+  if (await Industry.exists({ content: req.body.content }))
+    return res.status(500).json({ message: "No duplicate category names allowed" })
 
   //rename everything in articles
   await Article.updateMany(
     { industries: before.content },
-    { $set: {"industries.$[filter]": req.body.content}},
-    { arrayFilters: [{ filter: before.content }]}
+    { $set: { "industries.$[filter]": req.body.content } },
+    { arrayFilters: [{ filter: before.content }] }
   )
 
   //update actual category
@@ -289,9 +338,9 @@ app.put("/api/authors/:id", wrap(async (req, res) => {
 
   //we also need to update all currently existing authors of this name
   await Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
-  
+
   const author = await Author.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  
+
   res.json(author);
 }))
 
@@ -311,8 +360,8 @@ app.delete('/api/categories/:id', wrap(async (req, res) => {
   //remove from all articles
   const category = await Category.findById(req.params.id)
   await Article.updateMany(
-    {categories: {$elemMatch: { $eq: category.content }}},
-    {$pull: {categories: category.content}}
+    { categories: { $elemMatch: { $eq: category.content } } },
+    { $pull: { categories: category.content } }
   )
 
   await Category.findByIdAndDelete(req.params.id);
@@ -322,8 +371,8 @@ app.delete('/api/industries/:id', wrap(async (req, res) => {
   //remove from all articles
   const industry = await Industry.findById(req.params.id)
   await Article.updateMany(
-    {industries: {$elemMatch: { $eq: industry.content }}},
-    {$pull: {industries: industry.content}}
+    { industries: { $elemMatch: { $eq: industry.content } } },
+    { $pull: { industries: industry.content } }
   )
 
   await Industry.findByIdAndDelete(req.params.id);
@@ -336,19 +385,17 @@ app.delete('/api/authors/:id', wrap(async (req, res) => {
     message: "the following articles are still using this author:\n" +
       articles.map(a => a.title).join("\n")
   })
-  
+
   const author = await Author.findById(req.params.id)
   await fetch(process.env.AWS_URL + author.imageID, {
     method: "DELETE",
     headers: { "x-api-key": process.env.AWS_API_KEY }
   })
-  
+
   //then we can delete
   await Author.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));
-
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}.`));
