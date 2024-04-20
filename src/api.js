@@ -5,9 +5,21 @@ export const BASE_URL = "http://localhost:5000"
 export async function getArticle(id) {
   return fetch(BASE_URL + `/api/articles/${id}`).then(a => a.json())
 }
-
+export async function readArticle(id) {
+  return fetch(`${BASE_URL }/api/readarticle/${id}`).then(a => a.json())
+}
 export async function getArticles() {
   return fetch(BASE_URL + `/api/articles`).then(a => a.json())
+}
+export async function getHiddenArticles() {
+  return fetch(`${BASE_URL}/api/hiddenarticles`).then(a => a.json())
+}
+export async function setArticlePublish(id, published) {
+  return fetch(`${BASE_URL}/api/hiddenarticles/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ published }),
+    headers: {"Content-Type": "application/json"}
+  })
 }
 
 /**

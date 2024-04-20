@@ -11,10 +11,10 @@ import BlogDisplay from './components/BlogDisplay/BlogDisplay'
 import SearchPage from './components/SearchPage/SearchPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Settings from './components/Settings/Settings';
+import Drafts from './components/Drafts/Drafts';
 
 const root = createRoot(document.getElementById("root"))
 root.render(
-
   <GoogleOAuthProvider clientId='55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com'>
     <BrowserRouter>
       <CookiesProvider>
@@ -26,6 +26,7 @@ root.render(
           <Route path="/articles/:id" element={<BlogDisplay />} />
           <Route path="/search/" element={<SearchPage />} />
           <Route path="/settings/" element={<Settings />} />
+          <Route path="/drafts/" element={<Drafts />} />
         </Routes>
       </CookiesProvider>
     </BrowserRouter>

@@ -114,7 +114,7 @@ export default function CreateEdit() {
 
   //submit our stuff
   const [submitLock, setSubmitLock] = useState(false)
-  const onSubmit = async () => {
+  const onSubmit = async (published) => {
     console.log(article)
 
     //disallow clicking a bunch of times
@@ -138,7 +138,7 @@ export default function CreateEdit() {
 
     //finalArticle because state mutations are too slow so we
     //will act on a single new dictionary instead of using setArticle anymore
-    const finalArticle = { ...article }
+    const finalArticle = { ...article, published }
 
     //we wanna upload the new images, delete the old images and upload the article
     //all asynchronously so we have the highest chance of not having issues
@@ -200,7 +200,8 @@ export default function CreateEdit() {
       deleteFunc={deleteCategory}
       updateFunc={updateCategory}/>
 
-    <button onClick={onSubmit}>Submit</button>
+    <button onClick={()=>{onSubmit(true)}}>Publish</button>
+    <button onClick={()=>{onSubmit(false)}}>Save to Drafts</button>
   </>
 }
 

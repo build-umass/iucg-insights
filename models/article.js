@@ -19,6 +19,7 @@ const articleSchema = new mongoose.Schema({
   clicksDecaying: { type: Number, default: 0},
   lastDecayed: { type: Date, default: Date.now },
   relevance: { type: Number, default: 0},
+  published: Boolean
 });
 articleSchema.index({ title: "text" })
 

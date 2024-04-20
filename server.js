@@ -111,7 +111,7 @@ async function authenticateAdmin(req, res, next) {
 /*** API routes ***/
 //get all articles
 app.get("/api/articles", wrap(async (_, res) => {
-  const articles = await Article.find().sort({ created: -1 });
+  const articles = await Article.find({ published: true, }, { content: 0}).sort({created: -1});
   res.json(articles);
 }));
 
@@ -120,9 +120,20 @@ app.get("/api/articles/:id", wrap(async (req, res) => {
   res.json(await Article.findById(req.params.id))
 }))
 //get and READ article
-app.get("/api/articles/read/:id", wrap(async (req, res) => {
-  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1 } })
+app.get("/api/readarticle/:id", wrap(async (req, res) => {
+  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1} })
   res.json(await Article.findById(req.params.id))
+}))
+
+//get hidden articles
+app.get("/api/hiddenarticles", wrap(async (_, res) => {
+  const articles = await Article.find(undefined, { content: 0 });
+  res.json(articles);
+}))
+//set article hidden
+app.put("/api/hiddenarticles/:id", wrap(async (req, res) => {
+  await Article.findByIdAndUpdate(req.params.id, { published: req.body.published })
+  res.end()
 }))
 
 //create article
@@ -259,10 +270,10 @@ app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
 app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
-  const query = { $text: { $search: title } };
-  if (categories) query.categories = { $elemMatch: { $in: categories } }
-  if (industries) query.industries = { $elemMatch: { $in: industries } }
-  if (authors) query.authors = { $elemMatch: { $in: authors } }
+  const query = { $text: { $search: title }, published: true };
+  if (categories) query.categories = { $elemMatch: { $in: categories }}
+  if (industries) query.industries = { $elemMatch: { $in: industries }}
+  if (authors) query.authors = { $elemMatch: { $in: authors }}
 
   //decay all searched stuff
   let today = new Date()
