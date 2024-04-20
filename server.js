@@ -23,7 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const app = express(); //create express app
 
 // Connect to MongoDB database  
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
+mongoose.connect("mongodb://localhost:27017/iucg", { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB', err));
 
@@ -40,6 +40,20 @@ function wrap(func, message="Internal server error.") { return async (...a) => {
   try { return func(...a) }
   catch (error) { console.error(error); res.status(500).json({ message }) }
 }}
+
+//helpful little category/industry update thing
+// type is either "industry" or "category"
+// name is the name of the category or industry whose count we want to update
+async function updateCounts(prop, name) {
+  let res = await Article.aggregate([
+    { $match: { [prop]: { $elemMatch: { $in: [name] }}}},
+    { $count: "totalMatchingDocuments"}
+  ])
+  let count = res.length ? res[0].totalMatchingDocuments : 0
+  console.log(prop, name, count)
+  if (prop == "industries") await Industry.updateOne({ content: name }, { count })
+  if (prop == "categories") await Category.updateOne({ content: name }, { count })
+}
 
 /*** API routes ***/
 //get all articles
@@ -61,8 +75,10 @@ app.post("/api/articles", wrap(async (req, res) => {
   await article.save();
 
   //increment categories and industries
-  article.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: 1}}))
-  article.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: 1}}))
+  await Promise.all([
+    ...article.industries.map(async name => updateCounts("industries", name)),
+    ...article.categories.map(async name => updateCounts("categories", name))
+  ])
 
   //when creating an article we also have to flush tempimages
   await TempImage.deleteMany({})
@@ -76,21 +92,15 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
   const before = await Article.findById(id)
   const after = req.body
 
-  //if our industries are different
-  if (before.industries.length != after.industries.length ||
-    JSON.stringify(before.industries) != JSON.stringify(after.industries)) {
-    
-    before.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: -1}}))
-    after.industries.forEach(async content => await Industry.updateOne({ content }, {$inc: {count: 1}}))
-  }
-
-  //if our categories are different
-  if (before.categories.length != after.categories.length ||
-    !before.industries.every((a, i) => a == after.categories[i])) {
-    
-    before.categories.forEach(async content => await Category.updateOne({ content }, {$inc: {count: -1}}))
-    after.categories.forEach(async content => await Category.updateOne({ content }, {$inc: {count: 1}}))
-  }
+  //update category and industry counts
+  await Promise.all([
+    ...before.industries.map(async name => updateCounts("industries", name)),
+    ...after.industries.map(async name => updateCounts("industries", name))
+  ])
+  await Promise.all([
+    ...before.categories.map(async name => updateCounts("categories", name)),
+    ...after.categories.map(async name => updateCounts("categories", name))
+  ])
 
   res.json(await Article.findByIdAndUpdate(id, req.body, { new: true }));
 }));
@@ -101,8 +111,10 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
   const article = await Article.findByIdAndDelete(id);
 
   //decrement categories and industries
-  article.industries.forEach(async name => await Industry.updateOne({ name }, {$inc: {count: -1}}))
-  article.categories.forEach(async name => await Category.updateOne({ name }, {$inc: {count: -1}}))
+  await Promise.all([
+    ...article.industries.map(async name => updateCounts("industries", name)),
+    ...article.categories.map(async name => updateCounts("categories", name))
+  ])
 
   for (const img of [article.contentImgID, ...article.images]) {
     await fetch(process.env.AWS_URL + img, {
