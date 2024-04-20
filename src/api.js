@@ -191,16 +191,3 @@ export async function deleteTempImage(id) {
     method: "DELETE"
   })
 }
-
-/*** LOGIN ***/
-export async function login(password) {
-  return new Promise((resolve, reject) => fetch(`${BASE_URL}/login`, {
-    method: "POST",
-    body: JSON.stringify({ password }),
-    headers: { "Content-Type": "application/json" }
-  }).then(res => {
-    if (res.status == 401) reject()
-    else resolve()
-  }))
-}
-
