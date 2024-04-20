@@ -3,12 +3,14 @@ import "../../common.css"
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import React from "react";
-import { Remarkable } from "remarkable"
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
 import { BASE_URL, getArticle, getArticles } from "../../api"
 
-const md = new Remarkable();
+import { marked } from "marked"
+import { pdfrender } from "../../pdf-marked"
+
+marked.use({ extensions: [pdfrender] })
 
 export default function BlogDisplay() {
   const { id } = useParams()
@@ -29,7 +31,7 @@ export default function BlogDisplay() {
     <div className="content">
       <Title title={article.title}/>
       <Author author={article.author} src={article.authorImgID}/>
-      <Content markdown={md.render(article.content)}/>
+      <Content markdown={marked.parse(article.content)}/>
       <ReadMore/>
     </div>
   </div>
