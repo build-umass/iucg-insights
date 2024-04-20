@@ -10,6 +10,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require('cookie-parser')
+const fs = require("fs");
 const Article = require("./models/article");
 // const Tag = require("./models/tags");
 const Category = require("./models/categories")
@@ -19,7 +20,15 @@ const Author = require("./models/authors")
 const TempImage = require("./models/tempimage")
 
 const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (_, __, cb) => cb(null, "./uploads"),
+    filename: (req, file, cb) => {
+      console.log(file)
+      cb(null, file.originalname)
+    }
+  })
+});
 
 const app = express(); //create express app
 
@@ -65,6 +74,11 @@ async function updateCounts(prop, name) {
   console.log(prop, name, count)
   if (prop == "industries") await Industry.updateOne({ content: name }, { count })
   if (prop == "categories") await Category.updateOne({ content: name }, { count })
+}
+
+function deleteFile(id) {
+  let path = `./uploads/${id}`
+  if (fs.existsSync(path)) fs.rmSync(path)
 }
 
 /*** API routes ***/
@@ -144,19 +158,16 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
   ])
 
   for (const img of [article.contentImgID, ...article.images]) {
-    await fetch(process.env.AWS_URL + img, {
-      method: "DELETE",
-      headers: { "x-api-key": process.env.AWS_API_KEY }
-    })
+    deleteFile(img)
   }
 
   res.json({ message: "Article deleted." });
 }));
 
 /*** IMAGES ***/
-app.get("/api/images/:id", wrap(async (req, res) => {
-  res.redirect(process.env.AWS_URL + req.params.id)
-}))
+//serve all our images
+if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads")
+app.use("/api/images", express.static("./uploads"));
 
 app.put("/api/images", upload.array("files"), async (req, res) => {
   const identity = await authenticate(req);
@@ -165,14 +176,7 @@ app.put("/api/images", upload.array("files"), async (req, res) => {
     return;
   }
 
-  for (const file of req.files) {
-    await fetch(process.env.AWS_URL + file.originalname, {
-      method: "PUT",
-      body: file.buffer,
-      headers: { "x-api-key": process.env.AWS_API_KEY }
-    })
-  }
-
+  //multer handles actual upload
   res.json(req.files.map(a => ({ id: a.originalname })))
 
 })
@@ -183,13 +187,7 @@ app.put("/api/images/:id", upload.single("file"), async (req, res) => {
     res.status(401).send("Incorrect Login Cookie");
     return;
   }
-
-  await fetch(process.env.AWS_URL + req.params.id, {
-    method: "PUT",
-    body: req.file.buffer,
-    headers: { "x-api-key": process.env.AWS_API_KEY }
-  })
-
+  //multer handles actual upload
   res.json({ id: req.params.id })
 })
 
@@ -200,13 +198,9 @@ app.delete("/api/images/:id", wrap(async (req, res) => {
     res.status(401).send("Incorrect Login Cookie");
     return;
   }
-  await fetch(process.env.AWS_URL + req.params.id, {
-    method: "DELETE",
-    headers: { "x-api-key": process.env.AWS_API_KEY }
-  })
 
+  deleteFile(req.params.id)
   res.send({ id: req.params.id })
-
 }))
 
 /*** TEMP IMAGES ***/
@@ -485,11 +479,8 @@ app.delete('/api/authors/:id', wrap(async (req, res) => {
   })
 
   const author = await Author.findById(req.params.id)
-  await fetch(process.env.AWS_URL + author.imageID, {
-    method: "DELETE",
-    headers: { "x-api-key": process.env.AWS_API_KEY }
-  })
-
+  deleteFile(author.imageID)
+  
   //then we can delete
   await Author.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
