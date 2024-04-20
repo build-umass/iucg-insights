@@ -10,6 +10,7 @@ import CreateEdit from './components/CreateEdit/CreateEdit';
 import BlogDisplay from './components/BlogDisplay/BlogDisplay'
 import SearchPage from './components/SearchPage/SearchPage';
 import Settings from './components/Settings/Settings';
+import Drafts from './components/Drafts/Drafts';
 
 const root = createRoot(document.getElementById("root"))
 root.render(
@@ -23,6 +24,7 @@ root.render(
         <Route path="/articles/:id" element={<BlogDisplay/>} />
         <Route path="/search/" element={<SearchPage/>} />
         <Route path="/settings/" element={<Settings/>} />
+        <Route path="/drafts/" element={<Drafts/>} />
       </Routes>
     </CookiesProvider>
   </BrowserRouter>
