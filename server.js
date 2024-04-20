@@ -247,15 +247,15 @@ function getSettings() {
   return JSON.parse(fs.readFileSync("./settings.json"))
 }
 function setSettings(json) {
-  fs.writeFileSync("./settings", json)
+  fs.writeFileSync("./settings.json", JSON.stringify(json))
 }
 
 app.get("/api/settings", wrap(async (_, res) => {
   res.json(getSettings())
 }))
-app.put("/api/settings", wrap(async (req, _) => {
+app.put("/api/settings", wrap(async (req, res) => {
   setSettings(req.body)
-  res.send()
+  res.end()
 }))
 
 /*** TINY GUYS ***/
