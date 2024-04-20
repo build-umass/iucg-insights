@@ -65,7 +65,7 @@ function wrap(func, message = "Internal server error.") {
 // type is either "industry" or "category"
 // name is the name of the category or industry whose count we want to update
 async function updateCounts(prop, name) {
-  let count = await Article.count({ [prop]: { $elemMatch: { $in: [name] } }})
+  let count = await Article.count({ [prop]: { $elemMatch: { $in: [name] } } })
   console.log(count)
   if (prop == "industries") await Industry.updateOne({ content: name }, { count })
   if (prop == "categories") await Category.updateOne({ content: name }, { count })
@@ -76,6 +76,37 @@ function deleteFile(id) {
   if (fs.existsSync(path)) fs.rmSync(path)
 }
 
+async function authenticate(req, res, next) {
+  const loginToken = req.cookies.loginToken;
+  if (!loginToken) {
+    res.status(401).send("No Token Found");
+    console.log("Rejected empty token");
+    return;
+  }
+  const ticket = await client.verifyIdToken({
+    idToken: loginToken,
+    audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
+  })
+    .catch(() => undefined);
+  if (!ticket) {
+    res.status(401).send("Invalid Token");
+    console.log("Rejected bad token");
+    return;
+  }
+  req.email = ticket.getPayload().email;
+  next();
+}
+
+async function authenticateAdmin(req, res, next) {
+  await authenticate(req, res, () => {
+    if (!admins.includes(req.email)) {
+      res.status(401).send("Non-Admin Token");
+      console.log("Rejected non-admin token");
+      return;
+    }
+    next();
+  });
+}
 
 /*** API routes ***/
 //get all articles
@@ -90,12 +121,12 @@ app.get("/api/articles/:id", wrap(async (req, res) => {
 }))
 //get and READ article
 app.get("/api/articles/read/:id", wrap(async (req, res) => {
-  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1} })
+  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1 } })
   res.json(await Article.findById(req.params.id))
 }))
 
 //create article
-app.post("/api/articles", authenticate, wrap(async (req, res) => {
+app.post("/api/articles", authenticateAdmin, wrap(async (req, res) => {
   const article = new Article(req.body);
   await article.save();
 
@@ -112,7 +143,7 @@ app.post("/api/articles", authenticate, wrap(async (req, res) => {
 }));
 
 //update article
-app.put("/api/articles/:id", authenticate, wrap(async (req, res) => {
+app.put("/api/articles/:id", authenticateAdmin, wrap(async (req, res) => {
   const id = req.params.id;
   const before = await Article.findById(id)
   const after = req.body
@@ -131,7 +162,7 @@ app.put("/api/articles/:id", authenticate, wrap(async (req, res) => {
 }));
 
 //delete article
-app.delete("/api/articles/:id", authenticate, wrap(async (req, res) => {
+app.delete("/api/articles/:id", authenticateAdmin, wrap(async (req, res) => {
   const id = req.params.id;
   const article = await Article.findByIdAndDelete(id);
 
@@ -153,19 +184,19 @@ app.delete("/api/articles/:id", authenticate, wrap(async (req, res) => {
 if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads")
 app.use("/api/images", express.static("./uploads"));
 
-app.put("/api/images", authenticate, upload.array("files"), async (req, res) => {
+app.put("/api/images", authenticateAdmin, upload.array("files"), async (req, res) => {
   //multer handles actual upload
   res.json(req.files.map(a => ({ id: a.originalname })))
 
 })
 
-app.put("/api/images/:id", authenticate, upload.single("file"), async (req, res) => {
+app.put("/api/images/:id", authenticateAdmin, upload.single("file"), async (req, res) => {
   //multer handles actual upload
   res.json({ id: req.params.id })
 })
 
 
-app.delete("/api/images/:id", authenticate, wrap(async (req, res) => {
+app.delete("/api/images/:id", authenticateAdmin, wrap(async (req, res) => {
   deleteFile(req.params.id)
   res.send({ id: req.params.id })
 }))
@@ -184,17 +215,17 @@ app.get("/api/tempimages", wrap(async (_, res) => {
   res.json(articles)
 }))
 
-app.delete("/api/tempimages", authenticate, wrap(async (req, res) => {
+app.delete("/api/tempimages", authenticateAdmin, wrap(async (req, res) => {
   await TempImage.deleteMany({})
   res.send({ message: "tempimages flushed" })
 }))
 
-app.delete("/api/tempimages/:id", authenticate, wrap(async (req, res) => {
+app.delete("/api/tempimages/:id", authenticateAdmin, wrap(async (req, res) => {
   await TempImage.findOneAndDelete({ id: req.params.id })
   res.send({ id: req.params.id })
 }))
 
-app.post("/api/tempimages/:id", authenticate, wrap(async (req, res) => {
+app.post("/api/tempimages/:id", authenticateAdmin, wrap(async (req, res) => {
   const img = TempImage({ id: req.params.id })
   await img.save()
   res.json(img)
@@ -217,37 +248,10 @@ app.post("/login", wrap(async (req, res) => {
 }));
 
 app.get("/pingauthentication", authenticate, wrap((req, res) => {
-  res.status(200).send("Authenticated");
+  res.status(200).send(admins.includes(req.email));
 }))
 
-async function authenticate(req, res, next) {
-  const loginToken = req.cookies.loginToken;
-  if (!loginToken) {
-    res.status(401).send("No Token Found");
-    console.log("Rejected empty token");
-    return;
-  }
-  const ticket = await client.verifyIdToken({
-    idToken: loginToken,
-    audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
-  })
-    .catch(() => undefined);
-  if (!ticket) {
-    res.status(401).send("Invalid Token");
-    console.log("Rejected bad token");
-    return;
-  }
-  const email = ticket.getPayload().email;
-  if(!admins.includes(email)){
-    res.status(401).send("Non-Admin Token");
-    console.log("Rejected non-admin token");
-    return;
-  }
-  req.email = ticket.getPayload().email;
-  next();
-}
-
-app.get("/securetest", authenticate, wrap(async (req, res) => {
+app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
   res.status(200).send("Secret Documents");
 }));
 
@@ -255,23 +259,23 @@ app.get("/securetest", authenticate, wrap(async (req, res) => {
 app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
-  const query = { $text: { $search: title }};
-  if (categories) query.categories = { $elemMatch: { $in: categories }}
-  if (industries) query.industries = { $elemMatch: { $in: industries }}
-  if (authors) query.authors = { $elemMatch: { $in: authors }}
+  const query = { $text: { $search: title } };
+  if (categories) query.categories = { $elemMatch: { $in: categories } }
+  if (industries) query.industries = { $elemMatch: { $in: industries } }
+  if (authors) query.authors = { $elemMatch: { $in: authors } }
 
   //decay all searched stuff
   let today = new Date()
-  today.setUTCHours(0,0,0,0)
-  const articles = await Article.find({ ...query, lastDecayed: { $lt: today }})
-  const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp} = getSettings()
+  today.setUTCHours(0, 0, 0, 0)
+  const articles = await Article.find({ ...query, lastDecayed: { $lt: today } })
+  const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp } = getSettings()
 
   await Promise.all(articles.map(async article => {
     const age = Math.round(Date.now() - article.created.getTime() / (1000 * 3600 * 24))
     const decays = Math.floor(Date.now() - article.lastDecayed.getTime() / (1000 * 3600 * 24))
 
     await Article.findByIdAndUpdate(article._id, {
-      relevance: age_coef ** (-1 * age * age_exp) 
+      relevance: age_coef ** (-1 * age * age_exp)
         + decay_coef * (article.clicksDecaying ** decay_exp)
         + clicks_coef * (article.clicks ** clicks_exp),
       clicksDecaying: article.clicksDecaying * decay_rate ** decays,
@@ -279,7 +283,7 @@ app.post("/api/articles/search", wrap(async (req, res) => {
     })
   }));
 
-  const sort = { score: { $meta: "textScore" }}
+  const sort = { score: { $meta: "textScore" } }
   if (relevance) sort = { relevance: 1 }
 
   res.json(await Article.find(query).sort(sort))
@@ -297,7 +301,7 @@ function getSettings() {
     age_exp: 3,
     allowed_emails: ["maxwelltang@umass.edu", "bgillg@umass.edu"]
   }
-  
+
   return JSON.parse(fs.readFileSync("./settings.json"))
 }
 function setSettings(json) {
@@ -314,7 +318,7 @@ app.put("/api/settings", wrap(async (req, res) => {
 
 /*** TINY GUYS ***/
 //tiny guy posts
-app.post("/api/categories", authenticate,  wrap(async (req, res) => {
+app.post("/api/categories", authenticateAdmin, wrap(async (req, res) => {
   const category = new Category(req.body)
 
   //disallow dupes
@@ -324,7 +328,7 @@ app.post("/api/categories", authenticate,  wrap(async (req, res) => {
   await category.save();
   res.json(category);
 }));
-app.post("/api/industries", authenticate, wrap(async (req, res) => {
+app.post("/api/industries", authenticateAdmin, wrap(async (req, res) => {
   const industry = new Industry(req.body)
 
   //disallow dupes
@@ -334,13 +338,13 @@ app.post("/api/industries", authenticate, wrap(async (req, res) => {
   await industry.save();
   res.json(industry);
 }));
-app.post("/api/authors", authenticate, wrap(async (req, res) => {
+app.post("/api/authors", authenticateAdmin, wrap(async (req, res) => {
   const author = new Author(req.body)
   await author.save();
   res.json(author);
 }))
 //tiny guy puts but they're actually just less tiny
-app.put("/api/categories/:id", authenticate, wrap(async (req, res) => {
+app.put("/api/categories/:id", authenticateAdmin, wrap(async (req, res) => {
   const before = await Category.findById(req.params.id)
 
   //disallow dupes
@@ -359,7 +363,7 @@ app.put("/api/categories/:id", authenticate, wrap(async (req, res) => {
 
   res.json({ message: "updated" })
 }))
-app.put("/api/industries/:id", authenticate, wrap(async (req, res) => {
+app.put("/api/industries/:id", authenticateAdmin, wrap(async (req, res) => {
 
   const before = await Industry.findById(req.params.id)
 
@@ -378,7 +382,7 @@ app.put("/api/industries/:id", authenticate, wrap(async (req, res) => {
 
   res.json({ message: "updated" })
 }))
-app.put("/api/authors/:id", authenticate, wrap(async (req, res) => {
+app.put("/api/authors/:id", authenticateAdmin, wrap(async (req, res) => {
 
   //we also need to update all currently existing authors of this name
   await Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
@@ -400,7 +404,7 @@ app.get("/api/authors", wrap(async (_, res) => {
 }));
 
 //tiny guy deletes
-app.delete('/api/categories/:id', authenticate, wrap(async (req, res) => {
+app.delete('/api/categories/:id', authenticateAdmin, wrap(async (req, res) => {
   //remove from all articles
   const category = await Category.findById(req.params.id)
   await Article.updateMany(
@@ -411,7 +415,7 @@ app.delete('/api/categories/:id', authenticate, wrap(async (req, res) => {
   await Category.findByIdAndDelete(req.params.id);
   res.json({ message: 'Category deleted successfully' });
 }));
-app.delete('/api/industries/:id', authenticate, wrap(async (req, res) => {
+app.delete('/api/industries/:id', authenticateAdmin, wrap(async (req, res) => {
   //remove from all articles
   const industry = await Industry.findById(req.params.id)
   await Article.updateMany(
@@ -422,7 +426,7 @@ app.delete('/api/industries/:id', authenticate, wrap(async (req, res) => {
   await Industry.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));
-app.delete('/api/authors/:id', authenticate, wrap(async (req, res) => {
+app.delete('/api/authors/:id', authenticateAdmin, wrap(async (req, res) => {
   //delete the image
   const articles = await Article.find({ authorID: req.params.id })
   if (articles.length > 0) return res.status(500).json({
@@ -432,7 +436,7 @@ app.delete('/api/authors/:id', authenticate, wrap(async (req, res) => {
 
   const author = await Author.findById(req.params.id)
   deleteFile(author.imageID)
-  
+
   //then we can delete
   await Author.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });

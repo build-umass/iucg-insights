@@ -3,6 +3,7 @@ import "./IUCGFonts.css"
 import { useCookies } from "react-cookie"
 import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from '@react-oauth/google';
+import { isAuthenticated } from "../../api";
 
 export default function IUCGFooter() {
     const [cookies, setCookie, removeCookie] = useCookies(['myCookie']);
@@ -72,6 +73,7 @@ export default function IUCGFooter() {
                                             body: JSON.stringify(response)
                                         });
                                         setCookie("loginToken", response.credential);
+                                        setCookie("isAdmin", await isAuthenticated());
                                         navigator(0);
                                     }}
                                     onError={() => {

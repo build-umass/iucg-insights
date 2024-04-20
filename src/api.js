@@ -221,6 +221,6 @@ export async function isAuthenticated(){
   return fetch(`${BASE_URL}/pingauthentication`, {
     mode: "cors",
     credentials: "include",
-  }).then(() => true, () => false);
+  }).then(response => response.text(), () => false);
 }
 
