@@ -34,7 +34,7 @@
     "eject": "react-scripts eject",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "dev-deploy": "npm run build; npm run server",
-    "server": "nodemon server.js"
+    "server": "docker volume create iucg; docker run -v iucg:/data/db -p 27017:27017 --rm --name iucg-db -d mongo; nodemon server.js"
   },
   "eslintConfig": {
     "extends": [

@@ -23,7 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const app = express(); //create express app
 
 // Connect to MongoDB database  
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
+mongoose.connect("mongodb://localhost:27017/iucg", { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB', err));
 
