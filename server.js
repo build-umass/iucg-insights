@@ -96,12 +96,7 @@ app.get("/api/articles/:id", wrap(async (req, res) => {
 }))
 
 //create article
-app.post("/api/articles", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.post("/api/articles", authenticate, wrap(async (req, res) => {
   const article = new Article(req.body);
   await article.save();
 
@@ -118,12 +113,7 @@ app.post("/api/articles", wrap(async (req, res) => {
 }));
 
 //update article
-app.put("/api/articles/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.put("/api/articles/:id", authenticate, wrap(async (req, res) => {
   const id = req.params.id;
   const before = await Article.findById(id)
   const after = req.body
@@ -142,12 +132,7 @@ app.put("/api/articles/:id", wrap(async (req, res) => {
 }));
 
 //delete article
-app.delete("/api/articles/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete("/api/articles/:id", authenticate, wrap(async (req, res) => {
   const id = req.params.id;
   const article = await Article.findByIdAndDelete(id);
 
@@ -169,36 +154,19 @@ app.delete("/api/articles/:id", wrap(async (req, res) => {
 if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads")
 app.use("/api/images", express.static("./uploads"));
 
-app.put("/api/images", upload.array("files"), async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
-
+app.put("/api/images", authenticate, upload.array("files"), async (req, res) => {
   //multer handles actual upload
   res.json(req.files.map(a => ({ id: a.originalname })))
 
 })
 
-app.put("/api/images/:id", upload.single("file"), async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.put("/api/images/:id", authenticate, upload.single("file"), async (req, res) => {
   //multer handles actual upload
   res.json({ id: req.params.id })
 })
 
 
-app.delete("/api/images/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
-
+app.delete("/api/images/:id", authenticate, wrap(async (req, res) => {
   deleteFile(req.params.id)
   res.send({ id: req.params.id })
 }))
@@ -217,32 +185,17 @@ app.get("/api/tempimages", wrap(async (_, res) => {
   res.json(articles)
 }))
 
-app.delete("/api/tempimages", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete("/api/tempimages", authenticate, wrap(async (req, res) => {
   await TempImage.deleteMany({})
   res.send({ message: "tempimages flushed" })
 }))
 
-app.delete("/api/tempimages/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete("/api/tempimages/:id", authenticate, wrap(async (req, res) => {
   await TempImage.findOneAndDelete({ id: req.params.id })
   res.send({ id: req.params.id })
 }))
 
-app.post("/api/tempimages/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.post("/api/tempimages/:id", authenticate, wrap(async (req, res) => {
   const img = TempImage({ id: req.params.id })
   await img.save()
   res.json(img)
@@ -269,12 +222,11 @@ app.post("/login", wrap(async (req, res) => {
  * @param { } req 
  * @returns 
  */
-async function authenticate(req) {
-  console.log("authenticating");
+async function authenticate(req, res, next) {
   const loginToken = req.cookies.loginToken;
   if (!loginToken) {
     console.log("Rejected empty token");
-    return "";
+    return;
   }
   const ticket = await client.verifyIdToken({
     idToken: loginToken,
@@ -283,22 +235,18 @@ async function authenticate(req) {
     .catch(() => undefined);
   if (!ticket) {
     console.log("Rejected bad token");
-    return "";
+    return;
   }
   const email = ticket.getPayload().email;
   if(!admins.includes(email)){
     console.log("Rejected non-admin token");
-    return "";
-  }
-  return ticket.getPayload().email;
-}
-
-app.get("/securetest", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
     return;
   }
+  req.email = ticket.getPayload().email;
+  next();
+}
+
+app.get("/securetest", authenticate, wrap(async (req, res) => {
   res.status(200).send("Secret Documents");
 }));
 
@@ -316,12 +264,7 @@ app.post("/api/articles/search", wrap(async (req, res) => {
 
 /*** TINY GUYS ***/
 //tiny guy posts
-app.post("/api/categories", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.post("/api/categories", authenticate,  wrap(async (req, res) => {
   const category = new Category(req.body)
 
   //disallow dupes
@@ -331,12 +274,7 @@ app.post("/api/categories", wrap(async (req, res) => {
   await category.save();
   res.json(category);
 }));
-app.post("/api/industries", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.post("/api/industries", authenticate, wrap(async (req, res) => {
   const industry = new Industry(req.body)
 
   //disallow dupes
@@ -346,24 +284,13 @@ app.post("/api/industries", wrap(async (req, res) => {
   await industry.save();
   res.json(industry);
 }));
-app.post("/api/authors", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.post("/api/authors", authenticate, wrap(async (req, res) => {
   const author = new Author(req.body)
   await author.save();
   res.json(author);
 }))
 //tiny guy puts but they're actually just less tiny
-app.put("/api/categories/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
-
+app.put("/api/categories/:id", authenticate, wrap(async (req, res) => {
   const before = await Category.findById(req.params.id)
 
   //disallow dupes
@@ -382,12 +309,7 @@ app.put("/api/categories/:id", wrap(async (req, res) => {
 
   res.json({ message: "updated" })
 }))
-app.put("/api/industries/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.put("/api/industries/:id", authenticate, wrap(async (req, res) => {
 
   const before = await Industry.findById(req.params.id)
 
@@ -406,12 +328,7 @@ app.put("/api/industries/:id", wrap(async (req, res) => {
 
   res.json({ message: "updated" })
 }))
-app.put("/api/authors/:id", wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.put("/api/authors/:id", authenticate, wrap(async (req, res) => {
 
   //we also need to update all currently existing authors of this name
   await Article.updateMany({ authorID: req.params.id }, { author: req.body.name, authorImgID: req.body.imageID })
@@ -433,12 +350,7 @@ app.get("/api/authors", wrap(async (_, res) => {
 }));
 
 //tiny guy deletes
-app.delete('/api/categories/:id', wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete('/api/categories/:id', authenticate, wrap(async (req, res) => {
   //remove from all articles
   const category = await Category.findById(req.params.id)
   await Article.updateMany(
@@ -449,12 +361,7 @@ app.delete('/api/categories/:id', wrap(async (req, res) => {
   await Category.findByIdAndDelete(req.params.id);
   res.json({ message: 'Category deleted successfully' });
 }));
-app.delete('/api/industries/:id', wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete('/api/industries/:id', authenticate, wrap(async (req, res) => {
   //remove from all articles
   const industry = await Industry.findById(req.params.id)
   await Article.updateMany(
@@ -465,12 +372,7 @@ app.delete('/api/industries/:id', wrap(async (req, res) => {
   await Industry.findByIdAndDelete(req.params.id);
   res.json({ message: 'Industry deleted successfully' });
 }));
-app.delete('/api/authors/:id', wrap(async (req, res) => {
-  const identity = await authenticate(req);
-  if (!identity) {
-    res.status(401).send("Incorrect Login Cookie");
-    return;
-  }
+app.delete('/api/authors/:id', authenticate, wrap(async (req, res) => {
   //delete the image
   const articles = await Article.find({ authorID: req.params.id })
   if (articles.length > 0) return res.status(500).json({
