@@ -217,14 +217,10 @@ app.post("/login", wrap(async (req, res) => {
     })
 }));
 
-/**
- * Returns empty string on reject
- * @param { } req 
- * @returns 
- */
 async function authenticate(req, res, next) {
   const loginToken = req.cookies.loginToken;
   if (!loginToken) {
+    res.status(401).send("No Token Found");
     console.log("Rejected empty token");
     return;
   }
@@ -234,11 +230,13 @@ async function authenticate(req, res, next) {
   })
     .catch(() => undefined);
   if (!ticket) {
+    res.status(401).send("Invalid Token");
     console.log("Rejected bad token");
     return;
   }
   const email = ticket.getPayload().email;
   if(!admins.includes(email)){
+    res.status(401).send("Non-Admin Token");
     console.log("Rejected non-admin token");
     return;
   }
