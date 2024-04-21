@@ -65,11 +65,7 @@ export default function IUCGFooter() {
                                     theme="outline"
                                     shape="circle"
                                     onSuccess={async (credential) => {
-                                        const token = await login(credential);
-                                        setCookie("loginToken", token);
-                                        const identity = await getIdentity();
-                                        console.log(identity);
-                                        setCookie("isAdmin", identity.isAdmin);
+                                        await login(credential);
                                         navigator(0);
                                     }}
                                     onError={() => {

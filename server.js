@@ -112,7 +112,7 @@ async function authenticateAdmin(req, res, next) {
 /*** API routes ***/
 //get all articles
 app.get("/api/articles", wrap(async (_, res) => {
-  const articles = await Article.find({ published: true, }, { content: 0}).sort({created: -1});
+  const articles = await Article.find({ published: true, }, { content: 0 }).sort({ created: -1 });
   res.json(articles);
 }));
 
@@ -122,7 +122,7 @@ app.get("/api/articles/:id", wrap(async (req, res) => {
 }))
 //get and READ article
 app.get("/api/readarticle/:id", wrap(async (req, res) => {
-  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1} })
+  await Article.findByIdAndUpdate(req.params.id, { $inc: { clicks: 1 } })
   res.json(await Article.findById(req.params.id))
 }))
 
@@ -251,8 +251,17 @@ app.post("/login", wrap(async (req, res) => {
     audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
   })
     .then(ticket => {
-      res.status(200).send("Login Successful");
-      console.log(`${ticket.getPayload().email} has logged in`);
+      const payload = ticket.getPayload();
+      res
+        .status(200)
+        .cookie("loginToken", req.body.credential, {
+          expires: new Date(payload.exp * 1000)
+        })
+        .cookie("isAdmin", admins.includes(payload.email), {
+          expires: new Date(payload.exp * 1000)
+        })
+        .send("Login Successful");
+      console.log(`${payload.email} has logged in`);
     })
     .catch(() => {
       res.status(401).send("Login Failed");
@@ -275,9 +284,9 @@ app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
   const query = { $text: { $search: title }, published: true };
-  if (categories) query.categories = { $elemMatch: { $in: categories }}
-  if (industries) query.industries = { $elemMatch: { $in: industries }}
-  if (authors) query.authors = { $elemMatch: { $in: authors }}
+  if (categories) query.categories = { $elemMatch: { $in: categories } }
+  if (industries) query.industries = { $elemMatch: { $in: industries } }
+  if (authors) query.authors = { $elemMatch: { $in: authors } }
 
   //decay all searched stuff
   let today = new Date()

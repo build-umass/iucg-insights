@@ -215,7 +215,6 @@ export async function login(credential) {
     },
     body: JSON.stringify(credential)
   });
-  return credential.credential;
 }
 
 /*** SETTINGS ***/
