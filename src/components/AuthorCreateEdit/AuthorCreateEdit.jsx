@@ -26,6 +26,7 @@ export default function AuthorCreateEdit() {
 
   useEffect(() => {
     if (id) getAuthor(id).then(setAuthor)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function submit() {
@@ -99,7 +100,7 @@ function SingleImage({ id, image, setImage }) {
   //TODO: have better pdf preview
   return <form ref={form}>
       <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
+      <img alt="what you uploaded" src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <button onClick={onDelete}>delete</button>
     </form>
 }

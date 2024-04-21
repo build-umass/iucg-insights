@@ -22,10 +22,11 @@ export default function AuthorDisplay() {
       searchArticle(undefined, undefined, undefined, [a.name])
         .then(setArticle)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <>
-      <img src={author.imageID && `${BASE_URL}/api/images/${author.imageID}`}/>
+      <img alt="author's pfp" src={author.imageID && `${BASE_URL}/api/images/${author.imageID}`}/>
       <div>{author.name}</div>
       <div dangerouslySetInnerHTML={{__html: marked.parse(author.content)}}></div>
 
