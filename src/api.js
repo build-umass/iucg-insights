@@ -6,7 +6,7 @@ export async function getArticle(id) {
   return fetch(BASE_URL + `/api/articles/${id}`).then(a => a.json())
 }
 export async function readArticle(id) {
-  return fetch(`${BASE_URL }/api/readarticle/${id}`).then(a => a.json())
+  return fetch(`${BASE_URL}/api/readarticle/${id}`).then(a => a.json())
 }
 export async function getArticles() {
   return fetch(BASE_URL + `/api/articles`).then(a => a.json())
@@ -18,12 +18,13 @@ export async function setArticlePublish(id, published) {
   return fetch(`${BASE_URL}/api/hiddenarticles/${id}`, {
     method: "PUT",
     body: JSON.stringify({ published }),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   })
 }
 
 /**
  *
+
  * @param {string} title
  * @param {string[]} categories
  * @param {string[]} industries
@@ -117,13 +118,16 @@ export async function getAuthors() {
   return fetch(BASE_URL + `/api/authors`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
+export async function getAuthor(id) {
+  return fetch(`${BASE_URL}/api/authors/${id}`).then(a => a.json())
+}
 
-export async function createAuthor(name, imageID) {
+export async function createAuthor(author) {
   return fetch(BASE_URL + `/api/authors`, {
     mode: "cors",
     credentials: "include",
     method: "POST",
-    body: JSON.stringify({ name, imageID }),
+    body: JSON.stringify(author),
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
@@ -146,12 +150,12 @@ export async function updateIndustry(id, content) {
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
-export async function updateAuthor(id, name, imageID) {
+export async function updateAuthor(id, author) {
   return fetch(BASE_URL + `/api/authors/${id}`, {
     mode: "cors",
     credentials: "include",
     method: "PUT",
-    body: JSON.stringify({ name, imageID }),
+    body: JSON.stringify(author),
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
@@ -205,15 +209,16 @@ export async function deleteTempImage(id) {
 }
 
 /*** LOGIN ***/
-export async function login(password) {
-  return new Promise((resolve, reject) => fetch(`${BASE_URL}/login`, {
+export async function login(credential) {
+  await fetch("http://localhost:5000/login", {
     method: "POST",
-    body: JSON.stringify({ password }),
-    headers: {"Content-Type": "application/json"}
-  }).then(res => {
-    if (res.status == 401) reject()
-    else resolve()
-  }))
+    mode: "cors",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credential)
+  });
 }
 
 /*** SETTINGS ***/
@@ -221,18 +226,18 @@ export async function getSettings() {
   return fetch(`${BASE_URL}/api/settings`).then(a => a.json())
 }
 
-export async function setSettings(settings) {
+export async function writeSettings(settings) {
   return fetch(`${BASE_URL}/api/settings`, {
     method: "PUT",
     body: JSON.stringify(settings),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   })
 }
 
-export async function isAuthenticated(){
-  return fetch(`${BASE_URL}/pingauthentication`, {
+export async function getIdentity() {
+  return fetch(`${BASE_URL}/whoami`, {
     mode: "cors",
     credentials: "include",
-  }).then(response => response.text(), () => false);
+  }).then(response => response.json());
 }
 

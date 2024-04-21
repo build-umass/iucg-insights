@@ -14,27 +14,23 @@ import {
   postTempImage,
   deleteTempImage,
   getIndustries,
-  createIndustry,
-  deleteIndustry,
   getCategories,
-  createCategory,
-  deleteCategory,
   getAuthors,
   deleteAuthor,
   createAuthor,
   updateAuthor,
-  updateCategory,
-  updateIndustry
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
 import copy from "copy-text-to-clipboard"
 import { marked } from "marked"
 import { pdfrender } from "../../pdf-marked"
+import { useCookies } from "react-cookie";
 
 marked.use({ extensions: [pdfrender] })
 
 export default function CreateEdit() {
+  const [cookies] = useCookies(['loginToken', 'isAdmin']);
   //get our ID if it exists
   const articleID = useParams().id  
   const navigate = useNavigate()
@@ -85,7 +81,7 @@ export default function CreateEdit() {
 
   const deleteCallback = async id => {
     const requests = []
-    const images = article.images.filter(a => a != id)
+    const images = article.images.filter(a => a !== id)
     
     requests.push(deleteImage(id))
     if (articleID) requests.push(updateArticle(articleID, { ...baseArticle, images }))
@@ -110,6 +106,7 @@ export default function CreateEdit() {
     else getTempImages()
       .then(images => setArticle({ ...article, images }))
       .then(setBaseArticle({...article}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   //submit our stuff
@@ -165,6 +162,11 @@ export default function CreateEdit() {
     
   }
 
+  if(cookies.isAdmin === "false"){
+    return <div>
+      You must be admin in order to create articles
+    </div>
+  }
   return <>
     <h1>Content Image</h1>
     <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
@@ -183,22 +185,16 @@ export default function CreateEdit() {
 
     <h2>Industries</h2>
     <TagSelect
+      prop={"industries"}
       article={article}
       setArticle={setArticle}
-      prop={"industries"}
-      getFunc={getIndustries}
-      createFunc={createIndustry}
-      deleteFunc={deleteIndustry}
-      updateFunc={updateIndustry}/>
+      getFunc={getIndustries}/>
     <h2>Categories</h2>
     <TagSelect
+      prop={"categories"}
       article={article}
       setArticle={setArticle}
-      prop={"categories"}
-      getFunc={getCategories}
-      createFunc={createCategory}
-      deleteFunc={deleteCategory}
-      updateFunc={updateCategory}/>
+      getFunc={getCategories}/>
 
     <button onClick={()=>{onSubmit(true)}}>Publish</button>
     <button onClick={()=>{onSubmit(false)}}>Save to Drafts</button>
@@ -231,7 +227,7 @@ function SingleImage({ id, image, setImage }) {
   //TODO: have better pdf preview
   return <form ref={form}>
       <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
+      <img alt="what you uploaded" src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <button onClick={onDelete}>delete</button>
     </form>
 }
@@ -251,7 +247,7 @@ function ImageFromID({ id, deleteCallback }) {
   
 
   return <div>
-      <img className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
+      <img alt="what you uploaded" className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
       <button onClick={onPreview}>preview</button>
       <button onClick={onCopy}>copy</button>
       <button onClick={deleteCallback}>delete</button>
@@ -306,106 +302,36 @@ function LargerEdit({ param, article, setArticle }) {
     </>
 }
 
-function Checkbox({ tag, article, setArticle, prop, deleteFunc, updateFunc, tags, setTags }) {
+function Checkbox({ tag, article, setArticle, prop }) {
 
-  const [edit, setEdit] = useState("")
-  const [editing, setEditing] = useState(false)
-  
   function handleChange() { 
-    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
+    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a !== tag.content)})
     else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
   }
-  function handleDelete() {
-    //delete if it's in it
-    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
-    //delete in ui
-    setTags(tags.filter(a => a._id != tag._id))
-    //delete for real
-    deleteFunc(tag._id)
-  }
-  function handleEdit() {
-    setEdit("")
-    setEditing(true)
-  }
-  function handleSave() {
 
-    //if it's not original don't allow saving
-    if (!tags.every(({ content }) => content != edit)) return
-    
-    //actually update
-    updateFunc(tag._id, edit)
-    //update in article, tag UI
-    //it should update in backend when calling updateFunc
-    setArticle({...article, [prop]: article[prop].map(a => a == tag.content ? edit : a)})
-    setTags(tags.map(a => a._id == tag._id ? { ...a, content: edit } : a))
-    //update in article
-    setEditing(false)
-  }
-  function handleCancel() {
-    setEditing(false)
-  }
-
-  return <>
-      <div style={{display: editing ? "none" : ""}}>
-        <label>
-          <input type="checkbox"
-            checked={article[prop].includes(tag.content)}
-            onChange={handleChange}/>
-          {tag.content}
-        </label>
-        <button onClick={handleDelete}>X</button>
-        <button onClick={handleEdit}>edit</button>
-      </div>
-      <div style={{display: editing ? "" : "none"}}>
-        <input value={edit} onChange={e=>setEdit(e.target.value)}/>
-        <button onClick={handleSave}>save</button>
-        <button onClick={handleCancel}>cancel</button>
-      </div>
-    </>
+  return <label>
+      <input type="checkbox"
+        checked={article[prop].includes(tag.content)}
+        onChange={handleChange}/>
+      {tag.content}
+    </label>
 }
 
-function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc, updateFunc, }) {
+function TagSelect({ article, setArticle, prop, getFunc }) {
   
   const [tags, setTags] = useState([])
-  
-  useEffect(() => { getFunc().then(setTags) }, [])
+  useEffect(() => {
+    getFunc().then(setTags)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const [inputState, setInputState] = useState(false)
-  const [input, setInput] = useState("")
-  function handleNew() {
-    setInput("")
-    setInputState(true)
-  }
-  function handleSubmit() {
-    createFunc(input)
-      .then(tag => setTags([...tags, tag]))
-
-    setInputState(false)
-  }
-  function handleCancel() {
-    setInputState(false)
-  }
-  
-  return <>
-      { tags.map(tag =>
-        <Checkbox
-          key={tag._id}
-          tag={tag}
-          article={article}
-          setArticle={setArticle}
-          prop={prop}
-          tags={tags}
-          setTags={setTags}
-          deleteFunc={deleteFunc}
-          updateFunc={updateFunc}/>
-      )}
-      <button onClick={handleNew} style={{display: inputState ? "none" : ""}}>new</button>
-      <div style={{display: inputState ? "" : "none"}}>
-        <input value={input} onChange={e => setInput(e.target.value)}></input>
-        <button onClick={handleSubmit}>submit</button>
-        <button onClick={handleCancel}>cancel</button>
-      </div>
-    </>
+  return tags.map(tag =>
+    <Checkbox
+      key={tag._id}
+      tag={tag}
+      article={article}
+      setArticle={setArticle}
+      prop={prop}/>)
 
 }
 
@@ -429,14 +355,14 @@ function Author({ article, setArticle }) {
 
   function onOptionSelect(e) {
     const id = e.target.options[e.target.selectedIndex].getAttribute("value")
-    if (id == "none") {
+    if (id === "none") {
       emptyAuthor()
       setSelected(id)
       return
     }
     
     //update article stuff
-    const author = authors.find(a => a._id == id)
+    const author = authors.find(a => a._id === id)
     setArticle({
       ...article,
       author: author.name,
@@ -460,7 +386,7 @@ function Author({ article, setArticle }) {
     if (!article.authorID) return
     deleteAuthor(article.authorID)
     select.current.selectedIndex = "0"
-    setAuthors(authors.filter(a => a._id != article.authorID))
+    setAuthors(authors.filter(a => a._id !== article.authorID))
     emptyAuthor()
   }
   async function saveOnClick() {

@@ -14,31 +14,35 @@ export default function MainPage() {
   const [articles, setArticles] = useState([]);
 
   //get articles
-  useEffect(()=>{getArticles().then(setArticles)}, []);
-  
+  useEffect(() => { getArticles().then(setArticles) }, []);
+
   //our delete callback
   function remove(article) {
-    setArticles(articles.filter(a=>a!=article))
-    deleteArticle(article._id)
+    deleteArticle(article._id).then(
+      res => {
+        if (res.status === 200)
+          setArticles(articles.filter(a => a !== article))
+      }
+    )
   }
 
   return <div className="mainpage">
-      <Titlebar setArticles={setArticles}/>
+    <Titlebar setArticles={setArticles} />
 
-      <div className="hero-banner">
-        <h1>IUCG INSIGHTS</h1>
-        At IUCG we value the insights we gain through industry experience.
-        Below you can view our Industry Reports, Case Studies, and Client Projects.
-        We hope you enjoy learning about our insights.
-        <div className="linkedin-logo">
-          <a href="https://www.linkedin.com/company/iucg/" />
-        </div>
-      </div> 
-
-      <FeaturedInsights></FeaturedInsights>
-
-      <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
-
-      <IUCGFooter />
+    <div className="hero-banner">
+      <h1>IUCG INSIGHTS</h1>
+      At IUCG we value the insights we gain through industry experience.
+      Below you can view our Industry Reports, Case Studies, and Client Projects.
+      We hope you enjoy learning about our insights.
+      <div className="linkedin-logo">
+        <a href="https://www.linkedin.com/company/iucg/" />
+      </div>
     </div>
+
+    <FeaturedInsights></FeaturedInsights>
+
+    <SearchSection articles={articles} removeCallBack={article => remove(article)} />
+
+    <IUCGFooter />
+  </div>
 }
