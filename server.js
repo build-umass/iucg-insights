@@ -94,6 +94,7 @@ async function authenticate(req, res, next) {
     return;
   }
   req.email = ticket.getPayload().email;
+  req.identity = ticket.getPayload();
   next();
 }
 
@@ -250,7 +251,7 @@ app.post("/login", wrap(async (req, res) => {
     audience: "55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com"
   })
     .then(ticket => {
-      res.set("Access-Control-Allow-Origin", "http://localhost:3000").status(200).send("Login Successful");
+      res.status(200).send("Login Successful");
       console.log(`${ticket.getPayload().email} has logged in`);
     })
     .catch(() => {
@@ -258,8 +259,11 @@ app.post("/login", wrap(async (req, res) => {
     })
 }));
 
-app.get("/pingauthentication", authenticate, wrap((req, res) => {
-  res.status(200).send(admins.includes(req.email));
+app.get("/whoami", authenticate, wrap((req, res) => {
+  res.status(200).send({
+    ...req.identity,
+    admin: admins.includes(req.email)
+  });
 }))
 
 app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
