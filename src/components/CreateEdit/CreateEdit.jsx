@@ -20,6 +20,7 @@ import {
 import TextareaAutosize from 'react-textarea-autosize'
 import Select from 'react-select'
 import Titlebar from "../Titlebar/Titlebar"
+import SingleImage from "../SingleImage/SingleImage"
 import randomstring from "randomstring"
 import copy from "copy-text-to-clipboard"
 import { marked } from "marked"
@@ -230,47 +231,6 @@ export default function CreateEdit() {
   </>
 }
 
-//single image display with delete capabilities
-function SingleImage({ id, image, setImage }) {
-
-  const [imageData, setImageData] = useState("")
-  const form = React.createRef()
-  
-  //when we get raw data, save it
-  async function onChange(e) {
-    if (!e.target.files && !e.target.files[0]) return
-    setImage(e.target.files[0])
-  }
-
-  //reset the form and un-display the image
-  function onDelete(e) {
-    e.preventDefault()
-    form.current.reset()
-    setImageData(undefined)
-    setImage(undefined)
-  }
-
-  //when we get new raw data, display it
-  useEffect(() => { if (image) imageToDataURL(image).then(setImageData) }, [image])
-
-  //TODO: have better pdf preview
-  return <form ref={form} className="singleimage">
-      <input id="upload" type="file" accept="image/*" onChange={onChange} hidden/>
-      <label htmlFor="upload">
-        { imageData || id ? 
-          <>
-            <img alt="what you uploaded" src={imageData ? imageData : BASE_URL + `/api/images/${id}`} className="imageimage"></img>
-            <span onClick={onDelete} class="material-symbols-outlined resetbutton">reset_image</span>
-          </> :
-          <div>
-            <span className="material-symbols-outlined uploadicon">cloud_upload</span><br/>
-            <span className="smalltext">Click to Upload Image</span>
-          </div>
-        }
-      </label>
-    </form>
-}
-
 //displays an image based off its id given by the api
 //these are the images to be used in the article
 function ImageFromID({ id, deleteCallback }) {
@@ -372,14 +332,6 @@ function Author({ article, setArticle }) {
 
   return <Select options={authors.map(a => ({ value: a._id, label: a.name }))} onChange={onChange}/>
 }
-
-
-//function originally from https://stackoverflow.com/questions/12368910/html-display-image-after-selecting-filename
-const imageToDataURL = file => new Promise(resolve => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result)
-  reader.readAsDataURL(file)
-})
 
 function makeForm(files) {
   console.log([...files])

@@ -1,6 +1,6 @@
 import { getHiddenArticles, setArticlePublish, deleteArticle } from "../../api"
 import { useEffect, useState } from "react"
-
+import { useNavigate } from "react-router-dom"
 
 export default function Drafts() {
 
@@ -18,6 +18,7 @@ export default function Drafts() {
 
 function ArticleListItem({ article, articles, setArticles }) {
 
+  const navigate = useNavigate()
   function onToggleHidden() {
     setArticles(articles.map(a => a._id != article._id ? a : { ...a, published: !a.published}))
     setArticlePublish(article._id, !article.published)
@@ -31,6 +32,7 @@ function ArticleListItem({ article, articles, setArticles }) {
       {article.title}
       <button onClick={onDelete}>delete</button>
       <button onClick={onToggleHidden}>{article.published ? "unpublish" : "publish"}</button>
+      <button onClick={()=>navigate(`/create/${article._id}`)}>edit</button>
     </div>
 }
 
