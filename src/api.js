@@ -224,7 +224,7 @@ export async function getSettings() {
   return fetch(`${BASE_URL}/api/settings`).then(a => a.json())
 }
 
-export async function setSettings(settings) {
+export async function writeSettings(settings) {
   return fetch(`${BASE_URL}/api/settings`, {
     method: "PUT",
     body: JSON.stringify(settings),
