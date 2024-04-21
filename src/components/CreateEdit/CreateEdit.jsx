@@ -14,17 +14,11 @@ import {
   postTempImage,
   deleteTempImage,
   getIndustries,
-  createIndustry,
-  deleteIndustry,
   getCategories,
-  createCategory,
-  deleteCategory,
   getAuthors,
   deleteAuthor,
   createAuthor,
   updateAuthor,
-  updateCategory,
-  updateIndustry
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize';
 import randomstring from "randomstring"
@@ -183,22 +177,16 @@ export default function CreateEdit() {
 
     <h2>Industries</h2>
     <TagSelect
+      prop={"industries"}
       article={article}
       setArticle={setArticle}
-      prop={"industries"}
-      getFunc={getIndustries}
-      createFunc={createIndustry}
-      deleteFunc={deleteIndustry}
-      updateFunc={updateIndustry}/>
+      getFunc={getIndustries}/>
     <h2>Categories</h2>
     <TagSelect
+      prop={"categories"}
       article={article}
       setArticle={setArticle}
-      prop={"categories"}
-      getFunc={getCategories}
-      createFunc={createCategory}
-      deleteFunc={deleteCategory}
-      updateFunc={updateCategory}/>
+      getFunc={getCategories}/>
 
     <button onClick={()=>{onSubmit(true)}}>Publish</button>
     <button onClick={()=>{onSubmit(false)}}>Save to Drafts</button>
@@ -306,106 +294,33 @@ function LargerEdit({ param, article, setArticle }) {
     </>
 }
 
-function Checkbox({ tag, article, setArticle, prop, deleteFunc, updateFunc, tags, setTags }) {
+function Checkbox({ tag, article, setArticle, prop }) {
 
-  const [edit, setEdit] = useState("")
-  const [editing, setEditing] = useState(false)
-  
   function handleChange() { 
     if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
     else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
   }
-  function handleDelete() {
-    //delete if it's in it
-    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
-    //delete in ui
-    setTags(tags.filter(a => a._id != tag._id))
-    //delete for real
-    deleteFunc(tag._id)
-  }
-  function handleEdit() {
-    setEdit("")
-    setEditing(true)
-  }
-  function handleSave() {
 
-    //if it's not original don't allow saving
-    if (!tags.every(({ content }) => content != edit)) return
-    
-    //actually update
-    updateFunc(tag._id, edit)
-    //update in article, tag UI
-    //it should update in backend when calling updateFunc
-    setArticle({...article, [prop]: article[prop].map(a => a == tag.content ? edit : a)})
-    setTags(tags.map(a => a._id == tag._id ? { ...a, content: edit } : a))
-    //update in article
-    setEditing(false)
-  }
-  function handleCancel() {
-    setEditing(false)
-  }
-
-  return <>
-      <div style={{display: editing ? "none" : ""}}>
-        <label>
-          <input type="checkbox"
-            checked={article[prop].includes(tag.content)}
-            onChange={handleChange}/>
-          {tag.content}
-        </label>
-        <button onClick={handleDelete}>X</button>
-        <button onClick={handleEdit}>edit</button>
-      </div>
-      <div style={{display: editing ? "" : "none"}}>
-        <input value={edit} onChange={e=>setEdit(e.target.value)}/>
-        <button onClick={handleSave}>save</button>
-        <button onClick={handleCancel}>cancel</button>
-      </div>
-    </>
+  return <label>
+      <input type="checkbox"
+        checked={article[prop].includes(tag.content)}
+        onChange={handleChange}/>
+      {tag.content}
+    </label>
 }
 
-function TagSelect({ article, setArticle, prop, getFunc, createFunc, deleteFunc, updateFunc, }) {
+function TagSelect({ article, setArticle, prop, getFunc }) {
   
   const [tags, setTags] = useState([])
-  
   useEffect(() => { getFunc().then(setTags) }, [])
 
-  const [inputState, setInputState] = useState(false)
-  const [input, setInput] = useState("")
-  function handleNew() {
-    setInput("")
-    setInputState(true)
-  }
-  function handleSubmit() {
-    createFunc(input)
-      .then(tag => setTags([...tags, tag]))
-
-    setInputState(false)
-  }
-  function handleCancel() {
-    setInputState(false)
-  }
-  
-  return <>
-      { tags.map(tag =>
-        <Checkbox
-          key={tag._id}
-          tag={tag}
-          article={article}
-          setArticle={setArticle}
-          prop={prop}
-          tags={tags}
-          setTags={setTags}
-          deleteFunc={deleteFunc}
-          updateFunc={updateFunc}/>
-      )}
-      <button onClick={handleNew} style={{display: inputState ? "none" : ""}}>new</button>
-      <div style={{display: inputState ? "" : "none"}}>
-        <input value={input} onChange={e => setInput(e.target.value)}></input>
-        <button onClick={handleSubmit}>submit</button>
-        <button onClick={handleCancel}>cancel</button>
-      </div>
-    </>
+  return tags.map(tag =>
+    <Checkbox
+      key={tag._id}
+      tag={tag}
+      article={article}
+      setArticle={setArticle}
+      prop={prop}/>)
 
 }
 

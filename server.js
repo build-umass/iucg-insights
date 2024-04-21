@@ -194,6 +194,7 @@ if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads")
 app.use("/api/images", express.static("./uploads"));
 
 app.put("/api/images", authenticateAdmin, upload.array("files"), async (req, res) => {
+  console.log(req.files)
   //multer handles actual upload
   res.json(req.files.map(a => ({ id: a.originalname })))
 
