@@ -81,7 +81,7 @@ export default function CreateEdit() {
 
   const deleteCallback = async id => {
     const requests = []
-    const images = article.images.filter(a => a != id)
+    const images = article.images.filter(a => a !== id)
     
     requests.push(deleteImage(id))
     if (articleID) requests.push(updateArticle(articleID, { ...baseArticle, images }))
@@ -106,6 +106,7 @@ export default function CreateEdit() {
     else getTempImages()
       .then(images => setArticle({ ...article, images }))
       .then(setBaseArticle({...article}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   //submit our stuff
@@ -226,7 +227,7 @@ function SingleImage({ id, image, setImage }) {
   //TODO: have better pdf preview
   return <form ref={form}>
       <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
+      <img alt="what you uploaded" src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
       <button onClick={onDelete}>delete</button>
     </form>
 }
@@ -246,7 +247,7 @@ function ImageFromID({ id, deleteCallback }) {
   
 
   return <div>
-      <img className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
+      <img alt="what you uploaded" className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
       <button onClick={onPreview}>preview</button>
       <button onClick={onCopy}>copy</button>
       <button onClick={deleteCallback}>delete</button>
@@ -304,7 +305,7 @@ function LargerEdit({ param, article, setArticle }) {
 function Checkbox({ tag, article, setArticle, prop }) {
 
   function handleChange() { 
-    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a != tag.content)})
+    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a !== tag.content)})
     else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
   }
 
@@ -319,7 +320,10 @@ function Checkbox({ tag, article, setArticle, prop }) {
 function TagSelect({ article, setArticle, prop, getFunc }) {
   
   const [tags, setTags] = useState([])
-  useEffect(() => { getFunc().then(setTags) }, [])
+  useEffect(() => {
+    getFunc().then(setTags)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return tags.map(tag =>
     <Checkbox
@@ -351,14 +355,14 @@ function Author({ article, setArticle }) {
 
   function onOptionSelect(e) {
     const id = e.target.options[e.target.selectedIndex].getAttribute("value")
-    if (id == "none") {
+    if (id === "none") {
       emptyAuthor()
       setSelected(id)
       return
     }
     
     //update article stuff
-    const author = authors.find(a => a._id == id)
+    const author = authors.find(a => a._id === id)
     setArticle({
       ...article,
       author: author.name,
@@ -382,7 +386,7 @@ function Author({ article, setArticle }) {
     if (!article.authorID) return
     deleteAuthor(article.authorID)
     select.current.selectedIndex = "0"
-    setAuthors(authors.filter(a => a._id != article.authorID))
+    setAuthors(authors.filter(a => a._id !== article.authorID))
     emptyAuthor()
   }
   async function saveOnClick() {
