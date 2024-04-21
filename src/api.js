@@ -117,6 +117,9 @@ export async function getAuthors() {
   return fetch(BASE_URL + `/api/authors`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
+export async function getAuthor(id) {
+  return fetch(`${BASE_URL}/api/authors/${id}`).then(a => a.json())
+}
 
 export async function createAuthor(name, imageID) {
   return fetch(BASE_URL + `/api/authors`, {
