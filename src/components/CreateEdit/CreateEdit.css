@@ -1,4 +1,187 @@
-.imageimage {
-  width: 100px;
-  height: 100px;
+.smalltext {
+  font-size: 15px;
+  color: var(--gray);
+}
+#createedit {
+  width: 800px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.titleinput {
+  border: none;
+  font-size: 48px;
+  width: 100%;
+  outline: none;
+  border-left: gray solid 1px;
+  padding-left: 10px;
+  transition: border-left 0.1s;
+  box-sizing: border-box;
+}
+#createedit textarea {
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  border: none;
+  width: 100%;
+  font-size: 24px;
+  outline: none;
+  border-left: gray solid 1px;
+  padding-left: 10px;
+  transition: border-left 0.1s;
+  box-sizing: border-box;
+}
+#createedit textarea:focus, .titleinput:focus {
+  border-left: var(--gray) solid 3px;
+}
+
+
+.singleimage {
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+}
+
+.singleimage label {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+.uploadicon {
+  font-size: 120px;
+  width: 100%;
+  text-align: center;
+  color: var(--gray);
+}
+
+.singleimage .imageimage {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.singleimage .resetbutton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--gray);
+  background: white;
+  border-radius: 4px;
+}
+
+
+#multiimageupload {
+  width: 100%;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#multiimageupload label {
+  display: grid;
+  grid-template-columns: 100%;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--gray);
+  border-radius: 8px;
+  height: 150px;
+  text-align: center;
+}
+
+#multiimageupload .uploadicon{
+  font-size: 60px;
+}
+
+#multiimageupload .imagegrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-column-gap: 12px;
+  gap: 10x;
+}
+
+#multiimageupload .imagegrid .image {
+  margin-top: 10px;
+  height: 160px;
+  width: 100%;
+  position: relative;
+}
+#multiimageupload .imagegrid .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 3px solid gray;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+#multiimageupload .imagegrid .image .buttons {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+#multiimageupload .imagegrid .image .buttons span {
+  background: white;
+  border-radius: 4px;
+  color: var(--gray);
+  margin-left: 4px;
+}
+
+
+
+
+#markdownedit {
+  font-size: 16px !important;
+}
+#preview {
+  border-left: 3px solid gray;
+  padding-left: 10px;
+  font-size: 16px;
+}
+
+.buttonrow {
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+}
+.buttonrow span {
+  padding: 10px 24px;
+  color: white;
+  background: var(--red);
+  border-radius: 8px;
+  font-size: 16px;
+
+  transition: background 0.1s;
+}
+.buttonrow span:hover {
+  background: var(--redhl);
+}
+
+.buttonrow .btnpreview,
+.buttonrow .btndraft {
+  background: var(--gray);
+}
+.buttonrow .btnpreview:hover,
+.buttonrow .btndraft:hover {
+  background: var(--grayhl);
+}
+
+.buttonrow .btnpreview {
+  width: 60px;
+  text-align: center;
+}
+.feedback {
+  color: red;
+  text-align: right;
 }
