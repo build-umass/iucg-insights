@@ -9,6 +9,7 @@
   border-right: solid gray 1px;
   border-left: solid gray 1px;
   position: relative;
+  overflow: hidden;
 }
 
 .smallarticledisplaycontainer .textcontainer .tags {

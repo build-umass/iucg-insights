@@ -28,25 +28,9 @@
   max-height: 25px;
 }
 
-.blogdisplay .imagecontainer {
-  position: fixed;
-  width: 100%;
-  height: 40vh;
-}
-
 .blogdisplay .content {
-  display: grid;
-  grid-template-columns: 800px 300px;
-
-  position: absolute;
-  justify-content: center;
-  margin-top: 40vh;
-  width: 100%;
-  min-height: calc(40vh + 10px);
-  gap: 30px;
+  padding: 75px;
   background-color: white;
-  
-  transition: margin-top 0.8s;
 }
 
 .blogdisplay .content.editing,
@@ -82,14 +66,18 @@
 }
 
 .blogdisplay .content .title {
-  font-size: 50px;
-  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 30px;
+  font-size: 64px;
+  font-weight: normal;
 }
 
 .blogdisplay .content .author {
   display: flex;
-  margin-bottom: 35px;
-  margin-top: 20px;
+  font-size: 36px;
+  font-weight: lighter;
+  margin-bottom: 20px;
+  margin-top: 0px;
 }
 
 .blogdisplay .content .author .authortext {
@@ -99,25 +87,22 @@
   justify-content: left;
   width: 100%;
 }
-.blogdisplay .content img {
-  width: 800px;
+
+.blog-content p{
+  font-size: 24px;
+  font-weight: lighter;
 }
 
-.blogdisplay .content .author .authorimg {
-  width: 60px;
-  height: 60px;
-  border-radius: 30px;
+.readmore h2 {
+  padding-left: 75px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #A00C0C;
 }
 
-.readmore {
-  padding-top: 30px;
-  position: sticky;
-  width: 300px;
-  top: 0;
-  align-self: flex-start;
-
-  grid-row: 1/3;
-  grid-column: 2;
+.readmore .container {
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
 }
 
 .readmorecard {
@@ -135,4 +120,15 @@
 @media (max-width:calc(800px + 30px + 300px)) {
   .readmore { display: none }
   .blogdisplay .content { grid-template-columns: min(800px, 100vw) }
+}
+
+.date-label{
+  margin-top: 0px;
+  margin-bottom: 40px;
+  font-size: 24px;
+  font-weight: lighter;
+}
+
+.hero-image{
+  height: 600px
 }

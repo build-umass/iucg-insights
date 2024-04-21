@@ -10,7 +10,7 @@ export default function Titlebar() {
  
   return <div className="titlebar">
     <div onClick={() => navigate("/")} className={"title center-content"}>
-      <img src="logo_light.png" alt="Isenberg Undergraduate Consulting Group"></img>
+      <img src="/logo_light.png" alt="Isenberg Undergraduate Consulting Group"></img>
     </div>
     <div className={"nav center-content"}>
       <div
