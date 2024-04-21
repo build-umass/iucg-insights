@@ -36,7 +36,7 @@ function nullify(list) {
   return list.length === 0 ? null : list;
 }
 
-export default function SearchPage() {
+export default function SearchPage({ isActive, close }) {
   /**
    * Currently does nothing since articles are sorted by relevance by default.
    */
@@ -49,7 +49,6 @@ export default function SearchPage() {
   const [industryFilter, setIndustryFilter] = useState([]);
   const [titleQuery, setTitleQuery] = useState(searchParams.get("query"));
   const [articles, setArticles] = useState([]);
-  const [transitionFromMainPage, setTransitionFromMainPage] = useState("before");
 
   // Fetch Async Data
   useEffect(() => {
@@ -61,14 +60,6 @@ export default function SearchPage() {
   useEffect(() => {
     searchArticle(titleQuery, nullify(categoryFilter), nullify(industryFilter)).then(setArticles)
   }, [titleQuery, categoryFilter, industryFilter]);
-
-  useEffect(() => {
-    setTransitionFromMainPage("during");
-    console.log("hi");
-    setTimeout(() => {
-      setTransitionFromMainPage("after");
-    }, 1000);
-  }, [])
 
   // Generate category menu
   let categoryMenu = <div>Loading...</div>
@@ -142,8 +133,8 @@ export default function SearchPage() {
     articleList.splice(i, 0, <hr key={`bar ${i}`}></hr>)
   }
 
-  return <>
-    <div className={`search-page-container ${transitionFromMainPage === "before" ? "before-transition" : ""}`}>
+  return <div className={isActive ? "active" : ""} id="search-outer-container">
+    <div className={"search-page-container"}>
       <div className="flex-row results-counter">Showing {articles.length} results for</div>
       <div className="flex-row search-row">
         <input id="search-bar" onChange={e => setTitleQuery(e.target.value)} defaultValue={searchParams.get("query") ?? ""}></input>
@@ -169,13 +160,10 @@ export default function SearchPage() {
           {articleList}
         </div>
       </div>
+      <div
+        className="material-symbols-outlined close-button"
+        onClick={close}
+        htmlFor="top-search-bar">close</div>
     </div>
-    {transitionFromMainPage === "after" ?
-      <></>
-      :
-      <div className="transition-backer">
-        <MainPage />
-      </div>
-    }
-  </>;
+  </div>;
 }
