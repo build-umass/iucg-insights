@@ -130,5 +130,7 @@
 }
 
 .hero-image{
-  height: 600px
+  width: 960px;
+  height: 540px;
+  object-fit: cover;
 }
