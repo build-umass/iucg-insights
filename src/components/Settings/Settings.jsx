@@ -80,9 +80,9 @@ export default function Settings() {
       { authors.map(author => <div key={author._id}>
           {author.name}
           <button onClick={() => {deleteAuthor(author._id); setAuthors(authors.filter(a => a.id != author._id))}}>X</button>
-          <button onClick={() => navigate("/")}>edit</button>
+          <button onClick={() => navigate(`/createauthor/${author._id}`)}>edit</button>
         </div>)}
-      <button onClick={() => navigate("/")}>new</button>
+      <button onClick={() => navigate("/createauthor")}>new</button>
     </>
 }
 
