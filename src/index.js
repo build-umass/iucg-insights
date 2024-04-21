@@ -12,6 +12,7 @@ import SearchPage from './components/SearchPage/SearchPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Settings from './components/Settings/Settings';
 import Drafts from './components/Drafts/Drafts';
+import AuthorDisplay from './components/AuthorDisplay/AuthorDisplay';
 
 const root = createRoot(document.getElementById("root"))
 root.render(
@@ -24,6 +25,7 @@ root.render(
           <Route path="/create/:id" element={<CreateEdit />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/articles/:id" element={<BlogDisplay />} />
+          <Route path="/authors/:id" element={<AuthorDisplay />} />
           <Route path="/search/" element={<SearchPage />} />
           <Route path="/settings/" element={<Settings />} />
           <Route path="/drafts/" element={<Drafts />} />
