@@ -34,8 +34,6 @@ const app = express(); //create express app
 const { OAuth2Client, auth } = require('google-auth-library');
 const client = new OAuth2Client()
 
-const admins = ["amoinus@gmail.com"];
-
 // Connect to MongoDB database  
 mongoose.connect("mongodb://localhost:27017/iucg", { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
   .then(() => console.log('Connected to MongoDB'))
@@ -100,7 +98,7 @@ async function authenticate(req, res, next) {
 
 async function authenticateAdmin(req, res, next) {
   await authenticate(req, res, () => {
-    if (!admins.includes(req.email)) {
+    if (!getSettings().allowed_emails.includes(req.email)) {
       res.status(401).send("Non-Admin Token");
       console.log("Rejected non-admin token");
       return;
@@ -197,6 +195,7 @@ if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads")
 app.use("/api/images", express.static("./uploads"));
 
 app.put("/api/images", authenticateAdmin, upload.array("files"), async (req, res) => {
+  console.log(req.files)
   //multer handles actual upload
   res.json(req.files.map(a => ({ id: a.originalname })))
 
@@ -269,10 +268,7 @@ app.post("/login", wrap(async (req, res) => {
 }));
 
 app.get("/whoami", authenticate, wrap((req, res) => {
-  res.status(200).send({
-    ...req.identity,
-    admin: admins.includes(req.email)
-  });
+  res.status(200).send(getSettings().allowed_emails.includes(req.email));
 }))
 
 app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
@@ -283,10 +279,11 @@ app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
 app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
-  const query = { $text: { $search: title }, published: true };
-  if (categories) query.categories = { $elemMatch: { $in: categories } }
-  if (industries) query.industries = { $elemMatch: { $in: industries } }
-  if (authors) query.authors = { $elemMatch: { $in: authors } }
+  const query = { published: true };
+  if (title) query.$text = { $search: title }
+  if (categories) query.categories = { $elemMatch: { $in: categories }}
+  if (industries) query.industries = { $elemMatch: { $in: industries }}
+  if (authors) query.author = { $in: authors }
 
   //decay all searched stuff
   let today = new Date()
@@ -307,8 +304,10 @@ app.post("/api/articles/search", wrap(async (req, res) => {
     })
   }));
 
-  const sort = { score: { $meta: "textScore" } }
+  let sort = { created: -1 }
+  if (title) sort = { score: { $meta: "textScore" } }
   if (relevance) sort = { relevance: 1 }
+
 
   res.json(await Article.find(query).sort(sort))
 }));
@@ -323,7 +322,7 @@ function getSettings() {
     decay_rate: 0.99,
     age_coef: 40,
     age_exp: 3,
-    allowed_emails: ["maxwelltang@umass.edu", "bgillg@umass.edu"]
+    allowed_emails: ["maxwelltang@umass.edu", "bgillig@umass.edu"]
   }
 
   return JSON.parse(fs.readFileSync("./settings.json"))
@@ -425,6 +424,9 @@ app.get("/api/industries", wrap(async (_, res) => {
 }));
 app.get("/api/authors", wrap(async (_, res) => {
   res.json(await Author.find());
+}));
+app.get("/api/authors/:id", wrap(async (req, res) => {
+  res.json(await Author.findById(req.params.id));
 }));
 
 //tiny guy deletes

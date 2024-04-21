@@ -24,6 +24,7 @@ export async function setArticlePublish(id, published) {
 
 /**
  *
+
  * @param {string} title
  * @param {string[]} categories
  * @param {string[]} industries
@@ -117,13 +118,16 @@ export async function getAuthors() {
   return fetch(BASE_URL + `/api/authors`, { headers: { "Content-Type": "application/json" } })
     .then(a => a.json())
 }
+export async function getAuthor(id) {
+  return fetch(`${BASE_URL}/api/authors/${id}`).then(a => a.json())
+}
 
-export async function createAuthor(name, imageID) {
+export async function createAuthor(author) {
   return fetch(BASE_URL + `/api/authors`, {
     mode: "cors",
     credentials: "include",
     method: "POST",
-    body: JSON.stringify({ name, imageID }),
+    body: JSON.stringify(author),
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
@@ -146,12 +150,12 @@ export async function updateIndustry(id, content) {
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
-export async function updateAuthor(id, name, imageID) {
+export async function updateAuthor(id, author) {
   return fetch(BASE_URL + `/api/authors/${id}`, {
     mode: "cors",
     credentials: "include",
     method: "PUT",
-    body: JSON.stringify({ name, imageID }),
+    body: JSON.stringify(author),
     headers: { "Content-Type": "application/json" }
   }).then(a => a.json())
 }
@@ -222,7 +226,7 @@ export async function getSettings() {
   return fetch(`${BASE_URL}/api/settings`).then(a => a.json())
 }
 
-export async function setSettings(settings) {
+export async function writeSettings(settings) {
   return fetch(`${BASE_URL}/api/settings`, {
     method: "PUT",
     body: JSON.stringify(settings),
