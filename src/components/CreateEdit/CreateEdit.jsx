@@ -31,10 +31,12 @@ import randomstring from "randomstring"
 import copy from "copy-text-to-clipboard"
 import { marked } from "marked"
 import { pdfrender } from "../../pdf-marked"
+import { useCookies } from "react-cookie";
 
 marked.use({ extensions: [pdfrender] })
 
 export default function CreateEdit() {
+  const [cookies] = useCookies(['loginToken', 'isAdmin']);
   //get our ID if it exists
   const articleID = useParams().id  
   const navigate = useNavigate()
@@ -165,6 +167,11 @@ export default function CreateEdit() {
     
   }
 
+  if(cookies.isAdmin === "false"){
+    return <div>
+      You must be admin in order to create articles
+    </div>
+  }
   return <>
     <h1>Content Image</h1>
     <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
