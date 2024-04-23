@@ -129,8 +129,11 @@
   font-weight: lighter;
 }
 
-.hero-image{
-  width: 960px;
-  height: 540px;
+.blogdisplay img {
+  --width: min(calc(100vw - 160px), 960px);
   object-fit: cover;
+}
+.hero-image{
+  width: var(--width);
+  height: calc(var(--width) * 9 / 16);
 }

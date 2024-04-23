@@ -1,6 +1,5 @@
 import "./Titlebar.css"
 import React, { useState } from "react"
-import React from "react"
 import { useNavigate } from "react-router-dom"
 import 'material-symbols';
 import SearchPage from "../SearchPage/SearchPage";
@@ -12,7 +11,7 @@ export default function Titlebar({ nosearch }) {
  
   return <div className="titlebar">
     <div onClick={() => navigate("/")} className={"title center-content"}>
-      <img src="logo_light.png" alt="Isenberg Undergraduate Consulting Group"></img>
+      <img src="/logo_light.png" alt="Isenberg Undergraduate Consulting Group"></img>
     </div>
     <div className={"nav center-content"} style={{display: nosearch ? "none" : undefined}}>
       <div
