@@ -1,0 +1,31 @@
+.outer-wrapper{
+    padding: 150px;
+}
+
+.author-page-content{
+    display: flex;
+    margin-bottom: 100px;
+}
+
+.author-card{
+    flex-shrink: 0;
+    width: 450px;
+    padding-right: 50px;
+}
+
+.author-profile-picture{
+    border-radius: 100%;
+    width: 275px;
+    height: 275px;
+    object-fit: cover;
+}
+
+.author-name {
+    font-size: 64px;
+    font-weight: normal;
+}
+
+.author-blurb p{
+    font-size: 32px;
+    font-weight: lighter;
+}

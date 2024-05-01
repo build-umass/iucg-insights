@@ -256,7 +256,7 @@ app.post("/login", wrap(async (req, res) => {
         .cookie("loginToken", req.body.credential, {
           expires: new Date(payload.exp * 1000)
         })
-        .cookie("isAdmin", admins.includes(payload.email), {
+        .cookie("isAdmin", getSettings().allowed_emails.includes(payload.email), {
           expires: new Date(payload.exp * 1000)
         })
         .send("Login Successful");
