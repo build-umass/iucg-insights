@@ -67,7 +67,7 @@
 
 .blogdisplay .content .title {
   margin-top: 0px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 64px;
   font-weight: normal;
 }
@@ -75,8 +75,8 @@
 .blogdisplay .content .author {
   display: flex;
   font-size: 36px;
-  font-weight: lighter;
-  margin-bottom: 20px;
+  font-weight: 200;
+  margin-bottom: 5px;
   margin-top: 0px;
 }
 
@@ -90,7 +90,7 @@
 
 .blog-content p{
   font-size: 24px;
-  font-weight: lighter;
+  font-weight: 200;
 }
 
 .readmore h2 {
@@ -126,7 +126,7 @@
   margin-top: 0px;
   margin-bottom: 40px;
   font-size: 24px;
-  font-weight: lighter;
+  font-weight: 150;
 }
 
 .blogdisplay img {
@@ -135,5 +135,5 @@
 }
 .hero-image{
   width: var(--width);
-  height: calc(var(--width) * 9 / 16);
+  max-height: calc(var(--width) * 9 / 16);
 }

@@ -33,27 +33,28 @@ export default function SmallArticleDisplay({ article }) {
   const createdDate = new Date(article.created);
   
   const navArticle=()=>navigate(`/articles/${article._id}`)
+  const navAuthor=()=>navigate(`/authors/${article.authorID}`)
       
-  return <div className="smallarticledisplaycontainer" onClick={()=>navigate(`/articles/${article._id}`)}>
+  return <div className="smallarticledisplaycontainer">
     <Image onClick={navArticle} src={article.contentImgID}/>
-    <div className="textcontainer" onClick={navArticle}>
+    <div className="textcontainer">
       <div className="tags">
         {article.categories.map((tag, index) => (
           <span key={index}>{tag+'   '}</span>
         ))}
       </div>
-      <div className="title">{article.title}</div>
-      <div className="author">By {article.author}</div>
+      <div className="title" onClick={navArticle}>{article.title}</div>
+      <div className="author" onClick={navAuthor}>By {article.author}</div>
       <div className="date">{createdDate.toLocaleString('en-EN', { year: "numeric", month: "long", day: "numeric" })}</div>
 
     </div>
   </div>
 }
 // this function renders the image for the article
-function Image({ src }) {
+function Image({ src, onClick }) {
   const [loading, setLoading] = useState(true);
 
-  return <div className="imagecontainer">
+  return <div className="imagecontainer" onClick={onClick}>
     <div className="center-content" style={{ display: loading || !src ? "" : "none" }}><LoadingAnimation size="50px" /></div>
     <img
       src={BASE_URL + `/api/images/${src}`}

@@ -40,7 +40,9 @@ export default function SearchPage({ isActive, close }) {
   /**
    * Currently does nothing since articles are sorted by relevance by default.
    */
-  function sortByRelevance() { }
+  function sortByRelevance() {
+    
+  }
   const searchParams = useSearchParams()[0];
 
   const [categories, setCategories] = useState(null);
@@ -130,7 +132,7 @@ export default function SearchPage({ isActive, close }) {
   // TODO add more articles in order to test this
   const articleCount = articleList.length;
   for (let i = articleCount - 2; i >= 0; i--) {
-    articleList.splice(i, 0, <hr key={`bar ${i}`}></hr>)
+    articleList.splice(i+1, 0, <hr key={`bar ${i}`}/>)
   }
 
   return <div className={isActive ? "active" : ""} id="search-outer-container">

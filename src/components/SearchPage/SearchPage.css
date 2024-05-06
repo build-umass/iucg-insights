@@ -29,11 +29,12 @@
     inset: 0;
     background-color: white;
     padding: 50px;
+    color: black;
 }
 
 .results-counter{
     color: gray;
-    font-weight: 100;
+    font-weight: 300;
     font-size: 24px;
     line-height: 1.5;
 }
@@ -66,6 +67,7 @@
     margin-right: 100px;
     color: gray;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .bottom-panel{
@@ -73,19 +75,27 @@
 }
 
 .control-panel {
-    width: 25%;
+    min-width: 25%;
     gap: 100px;
 }
 
-.control-panel h3{
+.control-panel h3 {
     font-size: 24px;
     font-weight: 400;
     line-height: 1;
     margin: 0px;
+    margin-bottom: 20px;
+
 }
 
-.control-panel hr{
-    border-color: #9a9a9a;
+.control-panel hr,
+.article-listing hr {
+    border-color: var(--faintgray);
+    width: 100%;
+}
+.article-listing hr {
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
 
 .control-panel .search-option{
@@ -103,5 +113,6 @@
     top: 0;
     right: 0;
     color: gray;
+    cursor: pointer;
     font-size: 50px;
 }

@@ -33,7 +33,7 @@ export default function SingleImage({ id, image, setImage }) {
         { imageData || id ? 
           <>
             <img alt="what you uploaded" src={imageData ? imageData : BASE_URL + `/api/images/${id}`} className="imageimage"></img>
-            <span onClick={onDelete} class="material-symbols-outlined resetbutton">reset_image</span>
+            <span onClick={onDelete} className="material-symbols-outlined resetbutton">reset_image</span>
           </> :
           <div>
             <span className="material-symbols-outlined uploadicon">cloud_upload</span><br/>

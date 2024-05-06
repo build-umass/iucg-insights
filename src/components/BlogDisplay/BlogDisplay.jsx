@@ -23,6 +23,7 @@ export default function BlogDisplay() {
     author: "",
     authorID: "",
     authorImgID: "",
+    authorID: "",
     content: "",
     contentImgID: "",
     created: "",
@@ -35,7 +36,7 @@ export default function BlogDisplay() {
     <Titlebar></Titlebar>
     <div className="content">
       <Title title={article.title} />
-      <Author author={article.author} src={article.authorImgID} authorID={article.authorID}/>
+      <Author author={article.author} src={article.authorImgID}/>
       <DateIndicator date={article.created}></DateIndicator>
       <Image src={article.contentImgID} title={article.title} />
       <Content markdown={marked.parse(article.content)} />
@@ -63,10 +64,10 @@ function Title({ title }) {
   return <h1 className="title">{title}</h1>
 }
 
-function Author({ author, src, authorID }) {
+function Author({ author, authorID }) {
   const navigate = useNavigate();
   return <div className="author" onClick={() => navigate(`/authors/${authorID}`)}>
-    By {author}
+    by {author}
   </div>
 }
 

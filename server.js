@@ -63,8 +63,9 @@ function wrap(func, message = "Internal server error.") {
 // type is either "industry" or "category"
 // name is the name of the category or industry whose count we want to update
 async function updateCounts(prop, name) {
-  let count = await Article.count({ [prop]: { $elemMatch: { $in: [name] } } })
-  console.log(count)
+  console.log("updating", prop, name)
+  let count = await Article.count({ [prop]: { $elemMatch: { $in: [name] } }, published: true })
+  console.log("setting it to", count)
   if (prop == "industries") await Industry.updateOne({ content: name }, { count })
   if (prop == "categories") await Category.updateOne({ content: name }, { count })
 }
@@ -98,7 +99,7 @@ async function authenticate(req, res, next) {
 
 async function authenticateAdmin(req, res, next) {
   await authenticate(req, res, () => {
-    if (!getSettings().allowed_emails.includes(req.email)) {
+    if (!settings.allowed_emails.includes(req.email)) {
       res.status(401).send("Non-Admin Token");
       console.log("Rejected non-admin token");
       return;
@@ -131,7 +132,15 @@ app.get("/api/hiddenarticles", wrap(async (_, res) => {
 }))
 //set article hidden
 app.put("/api/hiddenarticles/:id", wrap(async (req, res) => {
+  
   await Article.findByIdAndUpdate(req.params.id, { published: req.body.published })
+
+  //update counts
+  const article = await Article.findById(req.params.id)
+  await Promise.all([
+    ...article.industries.map(async name => updateCounts("industries", name)),
+    ...article.categories.map(async name => updateCounts("categories", name))
+  ])
   res.end()
 }))
 
@@ -268,19 +277,26 @@ app.post("/login", wrap(async (req, res) => {
 }));
 
 app.get("/whoami", authenticate, wrap((req, res) => {
-  res.status(200).send(getSettings().allowed_emails.includes(req.email));
+  res.status(200).send(settings.allowed_emails.includes(req.email));
 }))
 
 app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
   res.status(200).send("Secret Documents");
 }));
 
+ngram=str=>str
+  .split(" ")
+  .map(a => [...a])
+  .map(a => a.reduce((acc, a, i) => i<3 ? [acc[0]+a] : [...acc, acc[acc.length-1]+a], [""]))
+  .reduce((acc, a) => [...acc, ...a], [])
+  .join(" ")
+
 //search for article by everything
 app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
   const query = { published: true };
-  if (title) query.$text = { $search: title }
+  if (title) query.$text = { $search: ngram(title) }
   if (categories) query.categories = { $elemMatch: { $in: categories }}
   if (industries) query.industries = { $elemMatch: { $in: industries }}
   if (authors) query.author = { $in: authors }
@@ -289,7 +305,7 @@ app.post("/api/articles/search", wrap(async (req, res) => {
   let today = new Date()
   today.setUTCHours(0, 0, 0, 0)
   const articles = await Article.find({ ...query, lastDecayed: { $lt: today } })
-  const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp } = getSettings()
+  const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp } = settings
 
   await Promise.all(articles.map(async article => {
     const age = Math.round(Date.now() - article.created.getTime() / (1000 * 3600 * 24))
@@ -312,9 +328,7 @@ app.post("/api/articles/search", wrap(async (req, res) => {
   res.json(await Article.find(query).sort(sort))
 }));
 
-/*** SETTINGS STUFF ***/
-function getSettings() {
-  if (!fs.existsSync("./settings.json")) return {
+let settings = {
     clicks_coef: 1,
     clicks_exp: 0.5,
     decay_coef: 5,
@@ -323,16 +337,17 @@ function getSettings() {
     age_coef: 40,
     age_exp: 3,
     allowed_emails: ["maxwelltang@umass.edu", "bgillig@umass.edu"]
-  }
-
-  return JSON.parse(fs.readFileSync("./settings.json"))
 }
+if (fs.existsSync("./settings.json")) settings = JSON.parse(fs.readFileSync("./settings.json"))
+
+/*** SETTINGS STUFF ***/
 function setSettings(json) {
+  settings = json
   fs.writeFileSync("./settings.json", JSON.stringify(json))
 }
 
 app.get("/api/settings", wrap(async (_, res) => {
-  res.json(getSettings())
+  res.json(settings)
 }))
 app.put("/api/settings", wrap(async (req, res) => {
   setSettings(req.body)

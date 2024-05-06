@@ -12,16 +12,6 @@
 }
 
 
-.titleinput {
-  border: none;
-  font-size: 48px;
-  width: 100%;
-  outline: none;
-  border-left: gray solid 1px;
-  padding-left: 10px;
-  transition: border-left 0.1s;
-  box-sizing: border-box;
-}
 #createedit textarea {
   font-family: inherit;
   resize: none;
@@ -34,6 +24,9 @@
   padding-left: 10px;
   transition: border-left 0.1s;
   box-sizing: border-box;
+}
+#createedit textarea.titleinput {
+  font-size: 48px;
 }
 #createedit textarea:focus, .titleinput:focus {
   border-left: var(--gray) solid 3px;

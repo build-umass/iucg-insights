@@ -175,7 +175,8 @@ export default function CreateEdit() {
     <Titlebar nosearch={true}/>
     
     <div id="createedit">
-      <input placeholder="Title" class="titleinput"
+      <TextareaAutosize placeholder="Title" className="titleinput"
+        minRows="1"
         value={article.title}
         onChange={e => setArticle({ ...article, title: e.target.value })}/>
 
@@ -226,7 +227,7 @@ export default function CreateEdit() {
         <span className="btndraft" onClick={()=>{onSubmit(false)}}>Save to Drafts</span>
         <span className="btnpublish" onClick={()=>{onSubmit(true)}}>Publish</span>
       </div>
-      <span class="feedback">{feedback}</span>
+      <span className="feedback">{feedback}</span>
     </div>
   </>
 }
@@ -283,7 +284,7 @@ function ImageUpload({ images, addImages, deleteImage }) {
           <span className="smalltext">Click to Upload Image</span>
         </div>
       </label>
-      <div class="imagegrid">
+      <div className="imagegrid">
       { images.map(id => <ImageFromID key={id} id={id} deleteCallback={deleteImage}/>) }
       </div>
     </form>
@@ -312,7 +313,10 @@ function TagSelect({ article, setArticle, prop, getFunc }) {
     setArticle({ ...article, [prop]: options.map(a => a.label)})
   }
 
-  return <Select isMulti options={tags.map(a => ({ value: a._id, label: a.content }))} onChange={onSelect}/>
+  return <Select isMulti
+    value={article[prop].map(a => ({ value: a, label: a }))}
+    options={tags.map(a => ({ value: a.content, label: a.content }))}
+    onChange={onSelect}/>
 }
 
 function Author({ article, setArticle }) {
