@@ -1,0 +1,58 @@
+.settings-page-outer-wrapper {
+    padding: 150px;
+}
+h1, h2 {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 64px;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+.settings-page-list-edit-entry {
+    padding-left: 20px;
+    display: flex;
+    width: 600px;
+    justify-content: space-around;
+}
+
+.settings-page-list-edit-entry>input{
+    outline: none;
+    font: inherit;
+    border: none;
+    border-bottom: 2px solid black;
+    padding: 0px;
+    margin: 0px;
+    width: 200px;
+}
+
+.settings-page-ctrl-btn {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+.flex-spacer {
+    flex-grow: 1;
+}
+
+.settings-page-input-entry {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+}
+
+.settings-page-input {
+    outline: none;
+    border: none;
+    background-color: gray;
+
+}
+
+.settings-page-input-label {
+
+}
