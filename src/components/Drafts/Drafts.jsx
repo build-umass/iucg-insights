@@ -18,13 +18,13 @@ export default function Drafts() {
 
 function ArticleListItem({ article, articles, setArticles }) {
 
-  async function onToggleHidden() {
-    setArticlePublish(article._id, !article.published)
+  function onToggleHidden() {
     setArticles(articles.map(a => a._id != article._id ? a : { ...a, published: !a.published}))
+    setArticlePublish(article._id, !article.published)
   }
-  async function onDelete() {
-    setArticles(articles.fitler(({_id}) => _id != article._id))
-    await deleteArticle(article._id)
+  function onDelete() {
+    setArticles(articles.filter(({_id}) => _id != article._id))
+    deleteArticle(article._id)
   }
   
   return <div>
