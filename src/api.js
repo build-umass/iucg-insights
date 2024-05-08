@@ -1,5 +1,5 @@
 //TODO: replace with requests
-export const BASE_URL = "http://localhost:5000"
+export const BASE_URL = "http://localhost:5433"
 
 /*** ARTICLES ***/
 export async function getArticle(id) {
@@ -210,7 +210,7 @@ export async function deleteTempImage(id) {
 
 /*** LOGIN ***/
 export async function login(credential) {
-  await fetch("http://localhost:5000/login", {
+  await fetch("http://localhost:5433/login", {
     method: "POST",
     mode: "cors",
     credentials: "include",
