@@ -284,19 +284,12 @@ app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
   res.status(200).send("Secret Documents");
 }));
 
-ngram=str=>str
-  .split(" ")
-  .map(a => [...a])
-  .map(a => a.reduce((acc, a, i) => i<3 ? [acc[0]+a] : [...acc, acc[acc.length-1]+a], [""]))
-  .reduce((acc, a) => [...acc, ...a], [])
-  .join(" ")
-
 //search for article by everything
 app.post("/api/articles/search", wrap(async (req, res) => {
 
   const { title, categories, industries, authors, relevance } = req.body;
   const query = { published: true };
-  if (title) query.$text = { $search: ngram(title) }
+  if (title) query.title = { $regex: title.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), $options: "i" }
   if (categories) query.categories = { $elemMatch: { $in: categories }}
   if (industries) query.industries = { $elemMatch: { $in: industries }}
   if (authors) query.author = { $in: authors }
@@ -321,7 +314,7 @@ app.post("/api/articles/search", wrap(async (req, res) => {
   }));
 
   let sort = { created: -1 }
-  if (title) sort = { score: { $meta: "textScore" } }
+  // if (title) sort = { score: { $meta: "textScore" } }
   if (relevance) sort = { relevance: 1 }
 
 

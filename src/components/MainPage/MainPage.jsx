@@ -11,24 +11,9 @@ import "../../common.css"
 
 // This is the main page of the website. It displays all the articles in the database.
 export default function MainPage() {
-  /** @type {[any, (x: any) => void]} */
-  const [articles, setArticles] = useState([]);
-
-  //get articles
-  useEffect(() => { getArticles().then(setArticles) }, []);
-
-  //our delete callback
-  function remove(article) {
-    deleteArticle(article._id).then(
-      res => {
-        if (res.status === 200)
-          setArticles(articles.filter(a => a !== article))
-      }
-    )
-  }
-
+ 
   return <div className="mainpage">
-    <Titlebar setArticles={setArticles} />
+    <Titlebar/>
 
     <div className="hero-banner">
       <h1>IUCG INSIGHTS</h1>
@@ -39,7 +24,7 @@ export default function MainPage() {
 
     <FeaturedInsights></FeaturedInsights>
 
-      <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
+      <SearchSection />
 
       <IUCGFooter />
   </div>

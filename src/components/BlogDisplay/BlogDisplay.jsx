@@ -36,7 +36,7 @@ export default function BlogDisplay() {
     <Titlebar></Titlebar>
     <div className="content">
       <Title title={article.title} />
-      <Author author={article.author} src={article.authorImgID}/>
+      <Author author={article.author} authorID={article.authorID}/>
       <DateIndicator date={article.created}></DateIndicator>
       <Image src={article.contentImgID} title={article.title} />
       <Content markdown={marked.parse(article.content)} />
