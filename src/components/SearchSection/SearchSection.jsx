@@ -95,7 +95,11 @@ export default function SearchSection() {
                 <span className="material-symbols-outlined big">arrow_drop_down</span>}
             </div>
             <div className="flexPad"></div>
-            <div className="middleSearchBarTab">
+            <div className="middleSearchBarTab clearAll" onClick={() => {
+                setIndustries([])
+                setCategories([])
+                setAuthors([])
+            }}>
                 Clear All
             </div>
         </div>

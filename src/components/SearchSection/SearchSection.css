@@ -30,10 +30,15 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
 }
-
 .filterEntry{
     padding: 20px;
     text-align: center;
+    user-select: none;
+    cursor: pointer;
+}
+.middleSearchBarTab:not(.bold){
+    user-select: none;
+    cursor: pointer;
 }
 
 .minimized{

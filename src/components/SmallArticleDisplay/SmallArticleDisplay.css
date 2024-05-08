@@ -9,7 +9,11 @@
   position: relative;
   overflow: hidden;
 }
-.smallarticledisplaycontainer:not(:last-child) {
+.smallarticledisplaycontainer:nth-child(3),
+.smallarticledisplaycontainer:last-child {
+  border-right: none;
+}
+.smallarticledisplaycontainer {
   border-right: solid var(--faintgray) 0.5px;
 }
 

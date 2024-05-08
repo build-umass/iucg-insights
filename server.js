@@ -290,8 +290,8 @@ app.post("/api/articles/search", wrap(async (req, res) => {
   const { title, categories, industries, authors, relevance } = req.body;
   const query = { published: true };
   if (title) query.title = { $regex: title.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), $options: "i" }
-  if (categories) query.categories = { $elemMatch: { $in: categories }}
-  if (industries) query.industries = { $elemMatch: { $in: industries }}
+  if (categories) query.categories = { $all: categories }
+  if (industries) query.industries = { $all: industries }
   if (authors) query.author = { $in: authors }
 
   //decay all searched stuff
