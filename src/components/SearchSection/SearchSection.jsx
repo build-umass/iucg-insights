@@ -145,7 +145,7 @@ export default function SearchSection({articles, removeCallBack, loadAllArticles
                 </div>
             }
         </div>
-        {/* {articles.length != 0 &&  */}
+        {articles.length != 0 && 
             <div className="center">
                 <button className="loadMoreArticlesButton" onClick={() => {
                     setNumberOfActiveArticles(numberOfActiveArticles + 3);
@@ -154,7 +154,7 @@ export default function SearchSection({articles, removeCallBack, loadAllArticles
                     LOAD MORE
                 </button>
             </div>
-        {/* } */}
+        }
     </>
 
 }
