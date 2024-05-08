@@ -30,17 +30,20 @@ export default function MainPage() {
   return <div className="mainpage">
     <Titlebar setArticles={setArticles} />
 
-    <div className="hero-banner">
-      <h1>IUCG INSIGHTS</h1>
-      At IUCG we value the insights we gain through industry experience.
-      Below you can view our Industry Reports, Case Studies, and Client Projects.
-      We hope you enjoy learning about our insights.
-    </div>
+      <div className="hero-banner">
+        <h1>IUCG INSIGHTS</h1>
+        At IUCG we value the insights we gain through industry experience.
+        Below you can view our Industry Reports, Case Studies, and Client Projects.
+        We hope you enjoy learning about our insights.
+        <div className="linkedin-logo">
+          <a href="https://www.linkedin.com/company/iucg/" />
+        </div>
+      </div> 
 
     <FeaturedInsights></FeaturedInsights>
 
-    <SearchSection articles={articles} removeCallBack={article => remove(article)} />
+      <SearchSection articles = {articles} removeCallback={article=>remove(article)} />
 
-    <IUCGFooter />
+      <IUCGFooter />
   </div>
 }
