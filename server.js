@@ -476,5 +476,5 @@ app.delete('/api/authors/:id', authenticateAdmin, wrap(async (req, res) => {
   res.json({ message: 'Industry deleted successfully' });
 }));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5433;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}.`));
