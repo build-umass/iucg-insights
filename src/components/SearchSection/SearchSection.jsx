@@ -9,7 +9,7 @@ import { searchArticle, getArticles, getIndustries, getCategories, getAuthors } 
  *  removeCallBack: (x: any) => void
  * }} attributes
  */
-export default function SearchSection({articles, removeCallBack}){
+export default function SearchSection({articles, removeCallBack, loadAllArticles=false}){
     /** @type {[string, (x: string) => void]} */
     const [activeDropdown, setActiveDropdown] = useState("");
     const [filterSettings, setFilterSettings] = useState({
@@ -123,17 +123,33 @@ export default function SearchSection({articles, removeCallBack}){
         </div>
 
         <div className="articles">
-            {articles.slice(0, numberOfActiveArticles).map((article) =>
-            <SmallArticleDisplay
-                article={article}
-                key={article._id}/>
-            )}
+            {!loadAllArticles 
+            ? 
+            articles.slice(0, numberOfActiveArticles).map((article) =>
+                <SmallArticleDisplay
+                    article={article}
+                    key={article._id}
+                    removeCallback={()=>removeCallBack(article)}/>
+                )
+            :
+            articles.map((article) =>
+                <SmallArticleDisplay
+                        article={article}
+                        key={article._id}
+                        removeCallback={()=>removeCallBack(article)}/>
+                )
+            }
+            {articles.length == 0 &&
+                <h2>
+                    NO ARTICLES FOUND    
+                </h2>
+            }
         </div>
         <div className="loadMoreArticlesButton" onClick={() => {
             setNumberOfActiveArticles(numberOfActiveArticles + 3);
             console.log(numberOfActiveArticles);
         }}>
-            Load More
+            LOAD MORE
         </div>
 
     </>
