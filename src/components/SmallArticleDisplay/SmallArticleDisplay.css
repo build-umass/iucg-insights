@@ -1,39 +1,41 @@
 .smallarticledisplaycontainer .imagecontainer {
-  height: 500px;
-  padding: 50px;
+  height: 30vh;
+  padding: 4vw;
   cursor: pointer;
  }
 
 .smallarticledisplaycontainer {
   margin: 20px 0 20px 0;
-  border-right: solid gray 1px;
-  border-left: solid gray 1px;
   position: relative;
+  overflow: hidden;
+}
+.smallarticledisplaycontainer:not(:last-child) {
+  border-right: solid var(--faintgray) 0.5px;
 }
 
 .smallarticledisplaycontainer .textcontainer .tags {
-  font-size: 30px;
-  font-style: italic;
-  color: gray;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
 .smallarticledisplaycontainer .textcontainer .title {
-  font-size: 37px;
+  font-size: 30px;
   line-height: 1.5;
   font-weight: 600;
   color: black;
 }
-
 .smallarticledisplaycontainer .textcontainer .author {
-  font-size: 18px;
+  margin-bottom: 20px;
+}
+.smallarticledisplaycontainer .textcontainer .author,
+.smallarticledisplaycontainer .textcontainer .date {
+  font-size: 16px;
   color: black;
 }
- 
-.smallarticledisplaycontainer .textcontainer .date {
-  padding: 20px 0 0 0;
-  font-size: 22px;
-  color: gray;
-}
+
 
 .smallarticledisplaycontainer .textcontainer {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

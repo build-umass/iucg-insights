@@ -1,14 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 :root {
   --red: #a00c0c;
+  --redhl: #a63c3c;
   --faintgray: #e1e1e1;
   --lightgray: #cbc3c3;
   --gray: #787878;
+  --grayhl: #919191;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: "Jost", sans-serif;
+  font-optical-sizing: auto;
 }
 
 .center-content {

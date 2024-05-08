@@ -16,16 +16,16 @@ import {
   getIndustries,
   getCategories,
   getAuthors,
-  deleteAuthor,
-  createAuthor,
-  updateAuthor,
 } from "../../api"
-import TextareaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from 'react-textarea-autosize'
+import Select from 'react-select'
+import Titlebar from "../Titlebar/Titlebar"
+import SingleImage from "../SingleImage/SingleImage"
 import randomstring from "randomstring"
 import copy from "copy-text-to-clipboard"
 import { marked } from "marked"
 import { pdfrender } from "../../pdf-marked"
-import { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie"
 
 marked.use({ extensions: [pdfrender] })
 
@@ -35,6 +35,8 @@ export default function CreateEdit() {
   const articleID = useParams().id  
   const navigate = useNavigate()
 
+  const [feedback, setFeedback] = useState("")
+  const [preview, setPreview] = useState(false)
   const [article, setArticle] = useState({
     title: "",
     subtitle: "",
@@ -112,7 +114,6 @@ export default function CreateEdit() {
   //submit our stuff
   const [submitLock, setSubmitLock] = useState(false)
   const onSubmit = async (published) => {
-    console.log(article)
 
     //disallow clicking a bunch of times
     if (submitLock) return
@@ -122,12 +123,16 @@ export default function CreateEdit() {
     for (const prop of ["title", "subtitle", "synopsis", "author", "content", "authorID"])
       if (!article[prop]) {
         setSubmitLock(false)
-        alert(`${prop} must be nonemptyy`)
+        setFeedback(`${new Date().toLocaleTimeString()}: ${prop} must be nonempty`)
         return
       }
 
     //ensure we have images
-    if (!contentImgFile && !article.contentImgID) return alert("must upload a content image")
+    if (!contentImgFile && !article.contentImgID) {
+      setSubmitLock(false)
+      setFeedback(`${new Date().toLocaleTimeString()}: content image must not be empty`)
+      return 
+    }
 
     //list of functions that return promises bc I want to run them all
     //at the same time so I just map them to f => f()
@@ -159,7 +164,6 @@ export default function CreateEdit() {
 
     const id = reses[reses.length-1]._id
     navigate(`/articles/${id}`)
-    
   }
 
   if(cookies.isAdmin === "false"){
@@ -168,68 +172,64 @@ export default function CreateEdit() {
     </div>
   }
   return <>
-    <h1>Content Image</h1>
-    <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
-    <h1>Author</h1>
-    <Author article={article} setArticle={setArticle}/>
-    <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
+    <Titlebar nosearch={true}/>
+    
+    <div id="createedit">
+      <TextareaAutosize placeholder="Title" className="titleinput"
+        minRows="1"
+        value={article.title}
+        onChange={e => setArticle({ ...article, title: e.target.value })}/>
 
-    <h2>Title</h2>
-    <ParamEdit param={"title"} article={article} setArticle={setArticle}/>
-    <h2>Subtitle</h2>
-    <LargerEdit param={"subtitle"} article={article} setArticle={setArticle}/>
-    <h2>Synposis</h2>
-    <LargerEdit param={"synopsis"} article={article} setArticle={setArticle}/>
-    <h2>Content</h2>
-    <MarkdownEdit article={article} setArticle={setArticle}/>
+      <TextareaAutosize placeholder="Subtitle"
+        minRows="1"
+        value={article.subtitle}
+        onChange={e => setArticle({ ...article, subtitle: e.target.value })}/>
+      <TextareaAutosize placeholder="Synopsis"
+        minRows="1"
+        value={article.synopsis}
+        onChange={e => setArticle({ ...article, synopsis: e.target.value })}/>
 
-    <h2>Industries</h2>
-    <TagSelect
-      prop={"industries"}
-      article={article}
-      setArticle={setArticle}
-      getFunc={getIndustries}/>
-    <h2>Categories</h2>
-    <TagSelect
-      prop={"categories"}
-      article={article}
-      setArticle={setArticle}
-      getFunc={getCategories}/>
+      <br/><span className="smalltext">Header Image Upload</span>
+      <SingleImage id={article.contentImgID} image={contentImgFile} setImage={setContentImgFile}/>
 
-    <button onClick={()=>{onSubmit(true)}}>Publish</button>
-    <button onClick={()=>{onSubmit(false)}}>Save to Drafts</button>
+      <br/><span className="smalltext">Image Upload</span>
+      <ImageUpload images={article.images} addImages={addImages} deleteImage={deleteCallback}/>
+
+      <br/><span className="smalltext">Author Select</span>
+      <Author article={article} setArticle={setArticle}/>
+
+      <br/><span className="smalltext">Industry Select</span>
+      <TagSelect
+        prop={"industries"}
+        article={article}
+        setArticle={setArticle}
+        getFunc={getIndustries}/>
+
+      <br/><span className="smalltext">Category Select</span>
+      <TagSelect
+        prop={"categories"}
+        article={article}
+        setArticle={setArticle}
+        getFunc={getCategories}/>
+    
+      <br/>
+      <span className="smalltext">
+        Article Content<br/>
+        Documents are markdown. For usage examples see <a href="https://www.markdownguide.org/basic-syntax/">this link</a>.
+        To use the images you've uploaded please click the copy button and then paste the image into the document. To preview 
+        the document as it would look to your clients, click preview.
+      </span>
+      <MarkdownEdit article={article} setArticle={setArticle} preview={preview}/>
+
+      <br/>
+      <div className="buttonrow">
+        <span className="btnpreview" onClick={()=>{setPreview(!preview)}}>{preview ? "Edit" : "Preview"}</span>
+        <span className="btndraft" onClick={()=>{onSubmit(false)}}>Save to Drafts</span>
+        <span className="btnpublish" onClick={()=>{onSubmit(true)}}>Publish</span>
+      </div>
+      <span className="feedback">{feedback}</span>
+    </div>
   </>
-}
-
-//single image display with delete capabilities
-function SingleImage({ id, image, setImage }) {
-
-  const [imageData, setImageData] = useState("")
-  const form = React.createRef()
-  
-  //when we get raw data, save it
-  async function onChange(e) {
-    if (!e.target.files && !e.target.files[0]) return
-    setImage(e.target.files[0])
-  }
-
-  //reset the form and un-display the image
-  function onDelete(e) {
-    e.preventDefault()
-    form.current.reset()
-    setImageData(undefined)
-    setImage(undefined)
-  }
-
-  //when we get new raw data, display it
-  useEffect(() => { if (image) imageToDataURL(image).then(setImageData) }, [image])
-
-  //TODO: have better pdf preview
-  return <form ref={form}>
-      <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img alt="what you uploaded" src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
-      <button onClick={onDelete}>delete</button>
-    </form>
 }
 
 //displays an image based off its id given by the api
@@ -238,19 +238,24 @@ function ImageFromID({ id, deleteCallback }) {
 
   function onPreview(e) {
     e.preventDefault()
-    console.log("doing preview :3")
+    window.open(`${BASE_URL}/api/images/${id}`, "_blank").focus()
   }
   function onCopy(e) {
     e.preventDefault()
-    copy(`![](${BASE_URL}/api/images/${id})`)
+    copy(`![describe the image](${BASE_URL}/api/images/${id})`)
   }
-  
+  function onDelete(e) {
+    e.preventDefault()
+    deleteCallback(id)
+  }
 
-  return <div>
-      <img alt="what you uploaded" className="imageimage" src={BASE_URL + `/api/images/${id}`}></img>
-      <button onClick={onPreview}>preview</button>
-      <button onClick={onCopy}>copy</button>
-      <button onClick={deleteCallback}>delete</button>
+  return <div className="image">
+      <img alt="what you uploaded" className="imageimage" src={`${BASE_URL}/api/images/${id}`}></img>
+      <div className="buttons">
+        <span className="material-symbols-outlined" onClick={onPreview}>preview</span>
+        <span className="material-symbols-outlined" onClick={onCopy}>content_copy</span>
+        <span className="material-symbols-outlined" onClick={onDelete}>delete</span>
+      </div>
     </div>
 }
 
@@ -271,50 +276,30 @@ function ImageUpload({ images, addImages, deleteImage }) {
     addImages(ids, data)
   }
 
-  return <form ref={form}>
-      <input id="upload" multiple type="file" accept="image/*,application/pdf" onChange={onChange}/>
-      { images.map(id => <ImageFromID key={id} id={id} deleteCallback={() => deleteImage(id)}/>) }
+  return <form ref={form} id="multiimageupload">
+      <input id="multiupload" multiple type="file" accept="image/*,application/pdf" onChange={onChange} hidden/>
+      <label htmlFor="multiupload">
+        <div>
+          <span className="material-symbols-outlined uploadicon">cloud_upload</span><br/>
+          <span className="smalltext">Click to Upload Image</span>
+        </div>
+      </label>
+      <div className="imagegrid">
+      { images.map(id => <ImageFromID key={id} id={id} deleteCallback={deleteImage}/>) }
+      </div>
     </form>
 }
 
-function MarkdownEdit({ article, setArticle }) {
+function MarkdownEdit({ article, setArticle, preview }) {
   
   const onChange = e => setArticle({ ...article, content: e.target.value })
-
-  return <div>
-      <div dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div>
-      <TextareaAutosize minRows="4" id="content" value={article.content} onChange={onChange}/>
-    </div>
-}
-
-function ParamEdit({ param, article, setArticle }) {
-  const onChange = e => setArticle({ ...article, [param]: e.target.value })
-  
-  return <>
-      <input id={param} value={article[param]} onChange={onChange}/>
-    </>
-}
-
-function LargerEdit({ param, article, setArticle }) {
-  const onChange = e => setArticle({ ...article, [param]: e.target.value })
-  return <>
-      <TextareaAutosize minRows="4" id={param} value={article[param]} onChange={onChange}/>
-    </>
-}
-
-function Checkbox({ tag, article, setArticle, prop }) {
-
-  function handleChange() { 
-    if (article[prop].includes(tag.content)) setArticle({ ...article, [prop]: article[prop].filter(a => a !== tag.content)})
-    else setArticle({ ...article, [prop]: [...article[prop], tag.content] })
-  }
-
-  return <label>
-      <input type="checkbox"
-        checked={article[prop].includes(tag.content)}
-        onChange={handleChange}/>
-      {tag.content}
-    </label>
+  return preview ? <div id="preview" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div> :
+    <TextareaAutosize
+      id="markdownedit"
+      placeholder="Markdown goes here..."
+      minRows="4"
+      value={article.content}
+      onChange={onChange}/>
 }
 
 function TagSelect({ article, setArticle, prop, getFunc }) {
@@ -324,152 +309,33 @@ function TagSelect({ article, setArticle, prop, getFunc }) {
     getFunc().then(setTags)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  function onSelect(options) {
+    setArticle({ ...article, [prop]: options.map(a => a.label)})
+  }
 
-  return tags.map(tag =>
-    <Checkbox
-      key={tag._id}
-      tag={tag}
-      article={article}
-      setArticle={setArticle}
-      prop={prop}/>)
-
+  return <Select isMulti
+    value={article[prop].map(a => ({ value: a, label: a }))}
+    options={tags.map(a => ({ value: a.content, label: a.content }))}
+    onChange={onSelect}/>
 }
 
 function Author({ article, setArticle }) {
-  
-  const [edit, setEdit] = useState("")
-  const [editing, setEditing] = useState(false)
+
   const [authors, setAuthors] = useState([])
-  const [authorImgID, setAuthorImageID] = useState("")
-  const [image, setImage] = useState()
-  const select = React.createRef()
-  const [selected, setSelected] = useState("none")
-
   useEffect(() => { getAuthors().then(setAuthors) }, [])
-  function emptyAuthor() { setArticle({
-    ...article,
-    author: "",
-    authorImgID: "",
-    authorID: ""
-  })}
 
-  function onOptionSelect(e) {
-    const id = e.target.options[e.target.selectedIndex].getAttribute("value")
-    if (id === "none") {
-      emptyAuthor()
-      setSelected(id)
-      return
-    }
-    
-    //update article stuff
-    const author = authors.find(a => a._id === id)
+  function onChange(option) {
+    const author = authors.find(a => a._id === option.value)
     setArticle({
       ...article,
       author: author.name,
       authorImgID: author.imageID,
       authorID: author._id
     })
-    setAuthorImageID(author.imageID)
-    setSelected(id)
   }
 
-  function newOnClick() {
-    emptyAuthor()
-    setEditing(true)
-  }
-  function editOnClick() {
-    setArticle({ ...article, author: "" })
-    setEditing(true)
-  }
-  function deleteOnClick() {
-    //should never not have an id but just in case
-    if (!article.authorID) return
-    deleteAuthor(article.authorID)
-    select.current.selectedIndex = "0"
-    setAuthors(authors.filter(a => a._id !== article.authorID))
-    emptyAuthor()
-  }
-  async function saveOnClick() {
-    //if we don't have a name
-    if (!edit) return
-
-    const requests = []
-
-    let imgID = article.authorImgID
-    if (image) {
-      const [[id], data] = makeForm([image])
-      requests.push(() => putFormData(data))
-      imgID = id
-    }
-    //if I still dont ave an image don't let me save
-    if (!imgID) return
-    
-    let id = article.authorID
-    requests.push(() => {
-      if (id) updateAuthor(id, edit, imgID)
-      else createAuthor(edit, imgID)
-        .then(a => { id = a._id })
-    })
-    
-    //before our requests finish, don't let them submit
-    setArticle({ ...article, authorID: "" })
-
-    await Promise.all(requests.map(a => a()))
-
-    setArticle({
-      ...article,
-      author: edit,
-      authorImgID: imgID,
-      authorID: id
-    })
-    setAuthors([...authors, {
-      name: edit,
-      imageID: imgID,
-      _id: id
-    }])
-    setSelected(id)
-    setEditing(false)
-  }
-  function cancelOnClick() {
-
-    if (!article.authorID) {
-      emptyAuthor()
-      setEditing(false)
-      return
-    }
-
-    setImage(undefined)
-    setEditing(false)
-  }
-  
-  return <>
-      <SingleImage id={authorImgID} image={image} setImage={setImage}/>
-      <span>{article.author || "no author selected"}</span>
-      <div style={{display: editing ? "none" : ""}}>
-        <button onClick={newOnClick}>new</button>
-        <button onClick={editOnClick} style={{display: article.authorID ? "" : "none"}}>edit</button>
-        <button onClick={deleteOnClick} style={{display: article.authorID ? "" : "none"}}>delete</button>
-      </div>
-      <div style={{display: editing ? "" : "none"}}>
-        <input value={edit} onChange={e => setEdit(e.target.value)}/>
-        <button onClick={saveOnClick}>save</button>
-        <button onClick={cancelOnClick}>cancel</button>
-      </div>
-      <select ref={select} onChange={onOptionSelect} value={selected}>
-        <option value={"none"}>no author selected</option>
-        { authors.map(author =>  <option value={author._id} key={author._id}>{author.name}</option> )}
-      </select>
-    </>
+  return <Select options={authors.map(a => ({ value: a._id, label: a.name }))} onChange={onChange}/>
 }
-
-
-
-//function originally from https://stackoverflow.com/questions/12368910/html-display-image-after-selecting-filename
-const imageToDataURL = file => new Promise(resolve => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result)
-  reader.readAsDataURL(file)
-})
 
 function makeForm(files) {
   console.log([...files])

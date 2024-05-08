@@ -40,7 +40,8 @@
     height: 0px;
 }
 
-.articles{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.articles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(auto, 450px));
+  justify-content: center;
 }

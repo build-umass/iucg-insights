@@ -23,7 +23,12 @@ import "./SearchPageArticle.css"
  */
 export default function SearchPageArticle(props) {
     const navigate = useNavigate();
-    const navArticle=()=>navigate(`/articles/${props.article._id}`)
+    const navArticle = ()=>{
+        navigate(`/articles/${props.article._id}`, {
+            "replace": true
+        });
+        navigate(0);
+    }
     return <div className="search-page-article" onClick={navArticle}>
         <h2 className="article-title">{props.article.title}</h2>
         <h3 className="article-subtitle">{props.article.subtitle}</h3>

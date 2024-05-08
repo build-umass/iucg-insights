@@ -14,6 +14,7 @@ import Settings from './components/Settings/Settings';
 import Drafts from './components/Drafts/Drafts';
 import AuthorDisplay from './components/AuthorDisplay/AuthorDisplay';
 import AuthorCreateEdit from './components/AuthorCreateEdit/AuthorCreateEdit';
+import "./common.css"
 
 const root = createRoot(document.getElementById("root"))
 root.render(

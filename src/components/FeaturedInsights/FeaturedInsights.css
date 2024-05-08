@@ -1,25 +1,26 @@
 #featured-article-section{
-    padding: 50px 100px 50px 100px;
+    padding: 50px 10vw;
 }
 
 #featured-insights-title{
     font-size: 40px;
-    font-weight: 400;
     color: #A00C0C;
     margin-top: 0px;
     margin-bottom: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .featured-article-image{
-    width: 600px !important;
-    height: 800px;
+    width: 40vw !important;
     object-fit: cover;
     pointer-events: all !important;
 }
 
 .featured-article .article-content{
     display: flex;
-    gap: 100px;
+    gap: 40px;
+    height: 60vh !important;
 }
 
 .featured-article-left-content{
@@ -29,20 +30,20 @@
 .featured-article-title{
     font-size: 40px;
     font-weight: 600;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 0;
+    margin-bottom: 20px;
 }
 
 .featured-article-category{
     font-size: 25px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: #A00C0C;
+    text-transform: uppercase;
 }
 
 .featured-article-date{
-    font-size: 20px;
-    font-weight: 200;
+    font-size: 16px;
     margin-bottom: 20px;
 }
 

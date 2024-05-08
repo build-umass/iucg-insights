@@ -1,0 +1,38 @@
+.singleimage {
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+}
+
+.singleimage label {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+.singleimage .uploadicon {
+  font-size: 120px;
+  width: 100%;
+  text-align: center;
+  color: var(--gray);
+}
+
+.singleimage .imageimage {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.singleimage .resetbutton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--gray);
+  background: white;
+  border-radius: 4px;
+}
