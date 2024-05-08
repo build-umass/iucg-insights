@@ -219,7 +219,7 @@ export default function CreateEdit() {
         To use the images you've uploaded please click the copy button and then paste the image into the document. To preview 
         the document as it would look to your clients, click preview.
       </span>
-      <MarkdownEdit article={article} setArticle={setArticle} preview={preview}/>
+      <MarkdownEdit raw={article.content} setMarkdown={content=>setArticle({ ...article, content })} preview={preview}/>
 
       <br/>
       <div className="buttonrow">
@@ -290,15 +290,16 @@ function ImageUpload({ images, addImages, deleteImage }) {
     </form>
 }
 
-function MarkdownEdit({ article, setArticle, preview }) {
+export function MarkdownEdit({ raw, setMarkdown, preview }) {
   
-  const onChange = e => setArticle({ ...article, content: e.target.value })
-  return preview ? <div id="preview" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div> :
+  // const onChange = e => setArticle({ ...article, content: e.target.value })
+  const onChange = e => setMarkdown(e.target.value)
+  return preview ? <div id="preview" dangerouslySetInnerHTML={{ __html: marked.parse(raw) }}></div> :
     <TextareaAutosize
       id="markdownedit"
       placeholder="Markdown goes here..."
       minRows="4"
-      value={article.content}
+      value={raw}
       onChange={onChange}/>
 }
 

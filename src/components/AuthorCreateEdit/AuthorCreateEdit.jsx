@@ -1,14 +1,17 @@
-
+import "./AuthorCreateEdit.css"
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
 import { deleteImage, putFormData, getAuthor, createAuthor, updateAuthor, BASE_URL } from "../../api"
 import randomstring from "randomstring"
 import React from "react"
+import SingleImage from "../SingleImage/SingleImage"
+import Titlebar from "../Titlebar/Titlebar"
+
+import { MarkdownEdit } from "../CreateEdit/CreateEdit"
 
 import { marked } from "marked"
 import { pdfrender } from "../../pdf-marked"
-
 marked.use({ extensions: [pdfrender] })
 
 
@@ -23,6 +26,7 @@ export default function AuthorCreateEdit() {
     content: ""
   })
   const [image, setImage] = useState(undefined)
+  const [preview, setPreview] = useState(false)
 
   useEffect(() => {
     if (id) getAuthor(id).then(setAuthor)
@@ -57,60 +61,23 @@ export default function AuthorCreateEdit() {
   }
 
   return <>
-      <div><input value={author.name} onChange={e=>setAuthor({ ...author, name: e.target.value})}/>name</div>
+    <Titlebar nosearch={true}/>
+    <div className="authorcreateedit">
+      <TextareaAutosize placeholder="Author Name" className="authorinput"
+        minRows="1"
+        value={author.name}
+        onChange={e => setAuthor({ ...author, name: e.target.value })}/>
       <SingleImage id={author.imageID} image={image} setImage={setImage}/>
-      <MarkdownEdit value={author.content} setValue={content => setAuthor({ ...author, content })}/>
-      <button onClick={submit}>submit</button>
-    </>
-  
-  
-}
+      <MarkdownEdit raw={author.content} setMarkdown={content => setAuthor({ ...author, content })} preview={preview}/>
 
-function MarkdownEdit({ value, setValue}) {
-  
-  return <div>
-      <div dangerouslySetInnerHTML={{ __html: marked.parse(value) }}></div>
-      <TextareaAutosize minRows="4" id="content" value={value} onChange={e => setValue(e.target.value)}/>
+      <div className="buttonrow">
+        <span className="btnpreview" onClick={()=>{setPreview(!preview)}}>{preview ? "Edit" : "Preview"}</span>
+        <span onClick={submit}>Submit</span>
+      </div>
     </div>
+  </>
 }
 
-//single image display with delete capabilities
-function SingleImage({ id, image, setImage }) {
-
-  const [imageData, setImageData] = useState("")
-  const form = React.createRef()
-  
-  //when we get raw data, save it
-  async function onChange(e) {
-    if (!e.target.files && !e.target.files[0]) return
-    setImage(e.target.files[0])
-  }
-
-  //reset the form and un-display the image
-  function onDelete(e) {
-    e.preventDefault()
-    form.current.reset()
-    setImageData(undefined)
-    setImage(undefined)
-  }
-
-  //when we get new raw data, display it
-  useEffect(() => { if (image) imageToDataURL(image).then(setImageData) }, [image])
-
-  //TODO: have better pdf preview
-  return <form ref={form}>
-      <input id="upload" type="file" accept="image/*" onChange={onChange}/>
-      <img alt="what you uploaded" src={imageData ? imageData : id ? BASE_URL + `/api/images/${id}` : ""} className="imageimage"></img>
-      <button onClick={onDelete}>delete</button>
-    </form>
-}
-
-
-const imageToDataURL = file => new Promise(resolve => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result)
-  reader.readAsDataURL(file)
-})
 
 function makeForm(files) {
   console.log([...files])
