@@ -45,3 +45,22 @@
   grid-template-columns: repeat(3, minmax(auto, 450px));
   justify-content: center;
 }
+.loadMoreArticlesButton{
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-size: large;
+    text-align: center;
+    padding: 10px;
+    color: 4F4F4F;
+    text-decoration: underline;
+    cursor: grab;
+}
+.noArticlesFoundNotice{
+    font-size: xx-large;
+}
+.center{
+    display: flex;
+    justify-content: center;
+}
