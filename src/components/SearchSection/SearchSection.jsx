@@ -140,18 +140,21 @@ export default function SearchSection({articles, removeCallBack, loadAllArticles
                 )
             }
             {articles.length == 0 &&
-                <h2>
+                <div className="noArticlesFoundNotice">
                     NO ARTICLES FOUND    
-                </h2>
+                </div>
             }
         </div>
-        <div className="loadMoreArticlesButton" onClick={() => {
-            setNumberOfActiveArticles(numberOfActiveArticles + 3);
-            console.log(numberOfActiveArticles);
-        }}>
-            LOAD MORE
-        </div>
-
+        {/* {articles.length != 0 &&  */}
+            <div className="center">
+                <button className="loadMoreArticlesButton" onClick={() => {
+                    setNumberOfActiveArticles(numberOfActiveArticles + 3);
+                    console.log(numberOfActiveArticles);
+                }}>
+                    LOAD MORE
+                </button>
+            </div>
+        {/* } */}
     </>
 
 }
