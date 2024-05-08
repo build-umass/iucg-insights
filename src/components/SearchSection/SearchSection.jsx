@@ -33,6 +33,8 @@ export default function SearchSection({articles, removeCallBack}){
         if (name === "author") setDropdownContents(allauthors.map(a => a.name))
         if (name === "category") setDropdownContents(allcategories.map(a => a.content))
         if (name === "industry") setDropdownContents(allindustries.map(a => a.content))
+        setNumberOfActiveArticles(3);
+        setFilterSettings(newSettings);
     }
 
     useEffect(() => {
