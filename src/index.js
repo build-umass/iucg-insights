@@ -30,7 +30,7 @@ root.render(
           <Route path="/authors/:id" element={<AuthorDisplay />} />
           <Route path="/createauthor/" element={<AuthorCreateEdit />} />
           <Route path="/createauthor/:id" element={<AuthorCreateEdit />} />
-          <Route path="/search/" element={<SearchPage />} />
+          <Route path="/search/" element={<SearchPage isActive={true} />} />
           <Route path="/settings/" element={<Settings />} />
           <Route path="/drafts/" element={<Drafts />} />
         </Routes>

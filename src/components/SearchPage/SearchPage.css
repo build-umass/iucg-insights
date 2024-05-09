@@ -30,6 +30,7 @@
     background-color: white;
     padding: 50px;
     color: black;
+    overflow: scroll;
 }
 
 .results-counter{

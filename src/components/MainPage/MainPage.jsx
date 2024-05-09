@@ -11,21 +11,47 @@ import "../../common.css"
 
 // This is the main page of the website. It displays all the articles in the database.
 export default function MainPage() {
- 
-  return <div className="mainpage">
-    <Titlebar/>
+  /**
+   * @type {["closed" | "closing" | "open" | "opening", (x: string) => void]}
+   */
+  const [searchState, setSearchState] = useState("closed")
 
-    <div className="hero-banner">
-      <h1>IUCG INSIGHTS</h1>
-      At IUCG we value the insights we gain through industry experience.
-      Below you can view our Industry Reports, Case Studies, and Client Projects.
-      We hope you enjoy learning about our insights.
-    </div>
+  function openSearchPage() {
+    if (searchState === "closed") setSearchState("opening");
+  }
 
-    <FeaturedInsights></FeaturedInsights>
+  function closeSearchPage() {
+    if (searchState === "open") setSearchState("closing");
+  }
 
-      <SearchSection />
+  useEffect(() => {
+    setTimeout(() => {
+      if (searchState === "closing") setSearchState("closed");
+      if (searchState === "opening") setSearchState("open");
+    }, 1000);
+  }, [searchState])
 
-      <IUCGFooter />
-  </div>
+  return <>
+    {searchState !== "open" ?
+      <div className="mainpage">
+        <Titlebar openSearch={openSearchPage} />
+
+        <div className="hero-banner">
+          <h1>IUCG INSIGHTS</h1>
+          At IUCG we value the insights we gain through industry experience.
+          Below you can view our Industry Reports, Case Studies, and Client Projects.
+          We hope you enjoy learning about our insights.
+        </div>
+
+        <FeaturedInsights></FeaturedInsights>
+
+        <SearchSection />
+
+        <IUCGFooter />
+      </div>
+      :
+      <></>
+    }
+    <SearchPage isActive={searchState.match(/open/)} close={closeSearchPage}></SearchPage>
+  </>
 }

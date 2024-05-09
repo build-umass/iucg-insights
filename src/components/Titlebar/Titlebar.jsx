@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom"
 import 'material-symbols';
 import SearchPage from "../SearchPage/SearchPage";
 
-export default function Titlebar({ nosearch }) {
+export default function Titlebar({ nosearch, openSearch}) {
 
-  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate()
  
   return <div className="titlebar">
@@ -16,9 +15,8 @@ export default function Titlebar({ nosearch }) {
     <div className={"nav center-content"} style={{display: nosearch ? "none" : undefined}}>
       <div
       className="material-symbols-outlined"
-      onClick={() => setIsSearching(true)}
+      onClick={openSearch}
       htmlFor="top-search-bar">search</div>
     </div>
-    <SearchPage isActive={isSearching} close={() => setIsSearching(false)}></SearchPage>
   </div>
 }
