@@ -1,5 +1,6 @@
 .outer-wrapper{
     padding: 150px;
+    padding-top: 80px;
 }
 
 .author-page-content{
@@ -28,4 +29,7 @@
 .author-blurb p{
     font-size: 32px;
     font-weight: lighter;
+}
+#authorpage .search-page-article {
+    margin-bottom: 40px;
 }
