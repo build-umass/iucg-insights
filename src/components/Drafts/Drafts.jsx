@@ -14,8 +14,12 @@ export default function Drafts() {
   useEffect(() => console.log(articles), [articles])
 
   return <>
-      <h1>articles</h1>
-      { articles.map(article => <ArticleListItem key={article._id} article={article} articles={articles} setArticles={setArticles}/>) }
+    <div id="draftcontainer">
+      <div id="drafts">
+        <h1>articles</h1>
+        { articles.map(article => <ArticleListItem key={article._id} article={article} articles={articles} setArticles={setArticles}/>) }
+      </div>
+    </div>
       <ScrollRestoration/>
     </>
 }
