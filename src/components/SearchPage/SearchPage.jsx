@@ -143,7 +143,7 @@ export default function SearchPage({ isActive, close }) {
         <label htmlFor="search-bar">
           <span className="search-icon">search</span>
         </label>
-        <div onClick={sortByRelevance} className="sort-by-relevance">Sort By Relevance</div>
+        <div onClick={sortByRelevance} className="sort-by-relevance">Sorted By Relevance</div>
       </div>
       <div className="flex-row bottom-panel">
         <div className="control-panel flex-column">

@@ -301,8 +301,8 @@ app.post("/api/articles/search", wrap(async (req, res) => {
   const { clicks_coef, clicks_exp, decay_coef, decay_exp, decay_rate, age_coef, age_exp } = settings
 
   await Promise.all(articles.map(async article => {
-    const age = Math.round(Date.now() - article.created.getTime() / (1000 * 3600 * 24))
-    const decays = Math.floor(Date.now() - article.lastDecayed.getTime() / (1000 * 3600 * 24))
+    const age = Math.round((Date.now() - article.created.getTime()) / (1000 * 3600 * 24))
+    const decays = Math.floor((Date.now() - article.lastDecayed.getTime()) / (1000 * 3600 * 24))
 
     await Article.findByIdAndUpdate(article._id, {
       relevance: age_coef ** (-1 * age * age_exp)
