@@ -117,7 +117,6 @@ export default function SearchSection({removeCallBack, loadAllArticles=false}){
         </div>
 
         <div className="articles">
-<<<<<<< HEAD
             {!loadAllArticles 
             ? 
             articles.slice(0, numberOfActiveArticles).map((article) =>
@@ -152,22 +151,6 @@ export default function SearchSection({removeCallBack, loadAllArticles=false}){
                 </button>
             </div>
         }
-=======
-            {articles.slice(0, numberOfActiveArticles).map((article) =>
-            <SmallArticleDisplay
-                article={article}
-                key={article._id}
-                removeCallback={()=>removeCallBack(article)}/>
-            )}
-        </div>
-        <div className="loadMoreArticlesButton" onClick={() => {
-            setNumberOfActiveArticles(numberOfActiveArticles + 3);
-            console.log(numberOfActiveArticles);
-        }}>
-            Load More
-        </div>
-
->>>>>>> 93651ad (created react state to store # of active articles)
     </>
 
 }
