@@ -20,7 +20,7 @@ export default function Drafts() {
         { articles.map(article => <ArticleListItem key={article._id} article={article} articles={articles} setArticles={setArticles}/>) }
       </div>
     </div>
-      <ScrollRestoration/>
+    <ScrollRestoration/>
     </>
 }
 
