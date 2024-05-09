@@ -23,14 +23,13 @@ export default function BlogDisplay() {
     author: "",
     authorID: "",
     authorImgID: "",
-    authorID: "",
     content: "",
     contentImgID: "",
     created: "",
   })
   console.log(article)
 
-  useEffect(() => { getArticle(id).then(setArticle) }, [])
+  useEffect(() => { getArticle(id).then(setArticle) }, [id])
 
   return <div className="blogdisplay">
     <Titlebar></Titlebar>

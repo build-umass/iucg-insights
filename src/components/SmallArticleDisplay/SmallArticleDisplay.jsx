@@ -25,7 +25,7 @@ export default function SmallArticleDisplay({ article }) {
   
   //add global onclick for hiding stuff
   function onclick(event) {
-    if (event.target.parentElement == dropdown) return;
+    if (event.target.parentElement === dropdown) return;
     setHide(true)
   }
   window.addEventListener("click", onclick)
