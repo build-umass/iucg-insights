@@ -32,6 +32,8 @@
 }
 
 .filterEntry{
+    user-select: none;
+    cursor: pointer;
     padding: 20px;
     text-align: center;
 }
