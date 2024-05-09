@@ -58,7 +58,8 @@
     cursor: grab;
 }
 .noArticlesFoundNotice{
-    font-size: xx-large;
+    font-size: xxx-large;
+    padding: 200px 0px 200px 0px;
 }
 .center{
     display: flex;
