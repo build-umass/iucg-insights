@@ -2,6 +2,7 @@ import { useState, useRef, useEffect} from "react";
 import SmallArticleDisplay from "../SmallArticleDisplay/SmallArticleDisplay";
 import "./SearchSection.css"
 import { searchArticle, getArticles, getIndustries, getCategories, getAuthors } from "../../api";
+import { use } from "marked";
 
 /**
  * @param {{
@@ -9,20 +10,12 @@ import { searchArticle, getArticles, getIndustries, getCategories, getAuthors } 
  *  removeCallBack: (x: any) => void
  * }} attributes
  */
-export default function SearchSection({articles, removeCallBack, loadAllArticles=false}){
+export default function SearchSection({removeCallBack, loadAllArticles=false}){
     /** @type {[string, (x: string) => void]} */
     const [activeDropdown, setActiveDropdown] = useState("");
-    const [filterSettings, setFilterSettings] = useState({
-        author: "",
-        category: "",
-        industry: "",
-    });
     const [numberOfActiveArticles, setNumberOfActiveArticles] = useState(3);
-    console.log(articles);
-    console.log(filterSettings);
 
     const [articles, setArticles] = useState([])
-    const [activeDropdown, setActiveDropdown] = useState("");
     const [dropdownContents, setDropdownContents] = useState([]);
     function setDropdown(name) {
         if (activeDropdown === name) {
@@ -33,13 +26,14 @@ export default function SearchSection({articles, removeCallBack, loadAllArticles
         if (name === "author") setDropdownContents(allauthors.map(a => a.name))
         if (name === "category") setDropdownContents(allcategories.map(a => a.content))
         if (name === "industry") setDropdownContents(allindustries.map(a => a.content))
-        setNumberOfActiveArticles(3);
-        setFilterSettings(newSettings);
     }
 
     useEffect(() => {
         console.log(dropdownContents)
     }, [dropdownContents])
+    useEffect(() => {
+        setNumberOfActiveArticles(3);
+    }, [articles])
 
     // these three are just the list of all of them
     const [allcategories, setAllCategories] = useState([])
@@ -139,13 +133,15 @@ export default function SearchSection({articles, removeCallBack, loadAllArticles
                         removeCallback={()=>removeCallBack(article)}/>
                 )
             }
-            {articles.length == 0 &&
+        </div>
+        {articles.length == 0 &&
+            <div className="center">
                 <div className="noArticlesFoundNotice">
                     NO ARTICLES FOUND    
                 </div>
-            }
-        </div>
-        {articles.length != 0 && 
+            </div>
+        }
+        {articles.length != 0 && articles.length > numberOfActiveArticles && 
             <div className="center">
                 <button className="loadMoreArticlesButton" onClick={() => {
                     setNumberOfActiveArticles(numberOfActiveArticles + 3);
