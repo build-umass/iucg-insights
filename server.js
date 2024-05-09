@@ -280,8 +280,8 @@ app.get("/whoami", authenticate, wrap((req, res) => {
   res.status(200).send(settings.allowed_emails.includes(req.email));
 }))
 
-app.get("/securetest", authenticateAdmin, wrap(async (req, res) => {
-  res.status(200).send("Secret Documents");
+app.get("/api/isadmin", authenticateAdmin, wrap(async (req, res) => {
+  res.status(200).send("yes");
 }));
 
 //search for article by everything

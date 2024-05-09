@@ -1,6 +1,13 @@
 //TODO: replace with requests
 export const BASE_URL = "http://localhost:5433"
 
+export async function isAdmin() {
+  return fetch(`${BASE_URL}/api/isadmin`, {
+    mode: "cors",
+    credentials: "include",
+  })
+}
+
 /*** ARTICLES ***/
 export async function getArticle(id) {
   return fetch(BASE_URL + `/api/articles/${id}`).then(a => a.json())
@@ -210,7 +217,7 @@ export async function deleteTempImage(id) {
 
 /*** LOGIN ***/
 export async function login(credential) {
-  await fetch("http://localhost:5433/login", {
+  await fetch(`${BASE_URL}/login`, {
     method: "POST",
     mode: "cors",
     credentials: "include",

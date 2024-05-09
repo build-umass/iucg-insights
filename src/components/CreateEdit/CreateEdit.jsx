@@ -16,6 +16,8 @@ import {
   getIndustries,
   getCategories,
   getAuthors,
+  isAdmin,
+  login,
 } from "../../api"
 import TextareaAutosize from 'react-textarea-autosize'
 import Select from 'react-select'
@@ -26,6 +28,7 @@ import copy from "copy-text-to-clipboard"
 import { marked } from "marked"
 import { pdfrender } from "../../pdf-marked"
 import { useCookies } from "react-cookie"
+import { GoogleLogin } from '@react-oauth/google';
 
 marked.use({ extensions: [pdfrender] })
 
@@ -113,11 +116,21 @@ export default function CreateEdit() {
 
   //submit our stuff
   const [submitLock, setSubmitLock] = useState(false)
+  const [showRelogin, setShowRelogin] = useState(false)
   const onSubmit = async (published) => {
+
 
     //disallow clicking a bunch of times
     if (submitLock) return
     setSubmitLock(true)
+
+    //FIRST OF ALL ensure we have admin
+    if (!(await isAdmin()).ok) {
+      setFeedback(`${new Date().toLocaleTimeString()}: Cookie expired, please log in again`)
+      setShowRelogin(true)
+      setSubmitLock(false)
+      return
+    }
 
     //ensure we have nonempty properties
     for (const prop of ["title", "subtitle", "synopsis", "author", "content", "authorID"])
@@ -223,6 +236,18 @@ export default function CreateEdit() {
 
       <br/>
       <div className="buttonrow">
+        { showRelogin ? <GoogleLogin
+            type="icon"
+            size="medium"
+            theme="outline"
+            shape="circle"
+            onSuccess={async (credential) => {
+                await login(credential);
+            }}
+            onError={() => {
+                console.log('Login Failed');
+          }}/>
+        : undefined } 
         <span className="btnpreview" onClick={()=>{setPreview(!preview)}}>{preview ? "Edit" : "Preview"}</span>
         <span className="btndraft" onClick={()=>{onSubmit(false)}}>Save to Drafts</span>
         <span className="btnpublish" onClick={()=>{onSubmit(true)}}>Publish</span>
