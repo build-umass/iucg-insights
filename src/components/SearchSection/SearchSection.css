@@ -13,6 +13,11 @@
     padding: 20px;
 }
 
+.middleSearchBarTab:not(:first-child){
+    user-select: none;
+    cursor: pointer;
+}
+
 .flexPad{
     flex-grow: 1;
 }
