@@ -12,19 +12,26 @@ h1 {
 h2 {
     font-size: 40px;
 }
+.arrow {
+    font-size: 42px;
+    transform: translateY(10px);
+    cursor: pointer;
+}
 
 .settings-page-list-edit-entry {
     padding-left: 20px;
     display: flex;
     width: 600px;
     justify-content: space-around;
+    padding-bottom: 4px;
 }
 
-.settings-page-list-edit-entry>input{
+.settings-page-list-edit-entry > input,
+.settings-page-input {
     outline: none;
     font: inherit;
     border: none;
-    border-bottom: 2px solid black;
+    border-bottom: 1px solid var(--gray);
     padding: 0px;
     margin: 0px;
     width: 200px;
@@ -34,6 +41,8 @@ h2 {
     outline: none;
     border: none;
     background: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .flex-spacer {
@@ -42,15 +51,10 @@ h2 {
 
 .settings-page-input-entry {
     display: flex;
-    justify-content: space-between;
     width: 400px;
 }
-
-.settings-page-input {
-    outline: none;
-    border: none;
-    background-color: gray;
-
+.settings-page-input-entry *:first-child {
+    width: 100px;
 }
 
 .settings-page-input-label {

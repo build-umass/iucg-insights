@@ -50,7 +50,10 @@ export default function Settings() {
 
     <h2>
       Industries
-      <MUIButton onClick={() => setIndustriesVisible(!industriesVisible)}>{industriesVisible ? "arrow_drop_up" : "arrow_drop_down"}</MUIButton>
+      <span className="material-symbols-outlined arrow"
+        onClick={() => setIndustriesVisible(!industriesVisible)}>
+        {industriesVisible ? "arrow_drop_up" : "arrow_drop_down"}
+      </span>
     </h2>
     {industriesVisible ?
       <ListEdit
@@ -64,7 +67,10 @@ export default function Settings() {
 
     <h2>
       Categories
-      <MUIButton onClick={() => setCategoriesVisible(!categoriesVisible)}>{categoriesVisible ? "arrow_drop_up" : "arrow_drop_down"}</MUIButton>
+      <span className="material-symbols-outlined arrow"
+        onClick={() => setCategoriesVisible(!categoriesVisible)}>
+        {categoriesVisible ? "arrow_drop_up" : "arrow_drop_down"}
+      </span>
     </h2>
     {categoriesVisible ?
       <ListEdit
@@ -78,7 +84,10 @@ export default function Settings() {
 
     <h2>
       Authors
-      <MUIButton onClick={() => setAuthorsVisible(!authorsVisible)}>{authorsVisible ? "arrow_drop_up" : "arrow_drop_down"}</MUIButton>
+      <span className="material-symbols-outlined arrow"
+        onClick={() => setAuthorsVisible(!authorsVisible)}>
+        {authorsVisible ? "arrow_drop_up" : "arrow_drop_down"}
+      </span>
     </h2>
     {authorsVisible ? <>
       {authors.map(author => <div key={author._id} className="settings-page-list-edit-entry">
@@ -97,7 +106,10 @@ export default function Settings() {
 
     <h2>
       Allowed Emails
-      <MUIButton onClick={() => setEmailsVisible(!emailsVisible)}>{emailsVisible ? "arrow_drop_up" : "arrow_drop_down"}</MUIButton>
+      <span className="material-symbols-outlined arrow"
+        onClick={() => setEmailsVisible(!emailsVisible)}>
+        {emailsVisible ? "arrow_drop_up" : "arrow_drop_down"}
+      </span>
     </h2>
     {emailsVisible ?
       <ListEdit
@@ -111,16 +123,17 @@ export default function Settings() {
     }
 
 
+    <h2>Clicks</h2>
     <div>heuristic: {settings.clicks_coef}(clicks^{settings.clicks_exp})+{settings.decay_coef}(decayed clicks^{settings.decay_exp})+{settings.age_coef}^(-age*{settings.age_exp})</div>
     <div>click decay: (previous decay)*({settings.decay_rate}^days since last decay)</div>
-    <h2>Clicks</h2>
+    <br/>
     <InputAndLabel propname="clicks_coef" label="coefficient" settings={settings} setSettings={setSettings} />
     <InputAndLabel propname="clicks_exp" label="exponent" settings={settings} setSettings={setSettings} />
-    <h2></h2>
+    <br/>
     <InputAndLabel propname="decay_coef" label="coefficient" settings={settings} setSettings={setSettings} />
     <InputAndLabel propname="decay_exp" label="exponent" settings={settings} setSettings={setSettings} />
     <InputAndLabel propname="decay_rate" label="rate" settings={settings} setSettings={setSettings} />
-    <h2></h2>
+    <br/>
     <InputAndLabel propname="age_coef" label="coefficient" settings={settings} setSettings={setSettings} />
     <InputAndLabel propname="age_exp" label="exponent" settings={settings} setSettings={setSettings} />
 
@@ -251,7 +264,7 @@ function MUIButton({ children, onClick }) {
   if (typeof children !== "string") {
     throw new Error("MUIButton must be instantiated with only text inside!");
   }
-  return <button onClick={onClick} className="material-symbols-outlined settings-page-ctrl-btn">{children}</button>
+  return <span onClick={onClick} className="material-symbols-outlined settings-page-ctrl-btn">{children}</span>
 }
 
 
