@@ -1,6 +1,6 @@
 import "./AuthorDisplay.css"
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { ScrollRestoration, useParams } from "react-router-dom";
 import { getAuthor, searchArticle, BASE_URL } from "../../api"
 import SearchPageArticle from "../SearchPageArticle/SearchPageArticle";
 import Titlebar from "../Titlebar/Titlebar"
@@ -50,6 +50,7 @@ export default function AuthorDisplay() {
       {articleList}
     </div>
     <IUCGFooter></IUCGFooter>
+    <ScrollRestoration/>
   </>
 }
 

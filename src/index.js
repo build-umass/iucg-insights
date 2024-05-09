@@ -1,8 +1,9 @@
 // This is the entry point for the application
 import React from 'react';
+import * as ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client';
 import { CookiesProvider } from 'react-cookie';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, ScrollRestoration, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainPage from './components/MainPage/MainPage';
 import LoginPage from './components/LoginPage/LoginPage';
 // import Create from './components/Create/Create';
@@ -16,25 +17,49 @@ import AuthorDisplay from './components/AuthorDisplay/AuthorDisplay';
 import AuthorCreateEdit from './components/AuthorCreateEdit/AuthorCreateEdit';
 import "./common.css"
 
-const root = createRoot(document.getElementById("root"))
-root.render(
-  <GoogleOAuthProvider clientId='55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com'>
-    <BrowserRouter>
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainPage/>,
+  },
+  {
+    path: "create",
+    element: <CreateEdit/>
+  },
+  {
+    path: "create/:id",
+    element: <CreateEdit/>
+  },
+  {
+    path: "articles/:id",
+    element: <BlogDisplay/>
+  },
+  {
+    path: "authors/:id",
+    element: <AuthorDisplay/>
+  },
+  {
+    path: "createauthor",
+    element: <AuthorCreateEdit/>
+  },
+  {
+    path: "createauthor/:id",
+    element: <AuthorCreateEdit/>
+  },
+  {
+    path: "settings",
+    element: <Settings/>
+  },
+  {
+    path: "drafts",
+    element: <Drafts/>
+  },
+])
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <GoogleOAuthProvider clientId='55337590525-411lsekong4ho3gritf5sbpgckpgq9ev.apps.googleusercontent.com'>
       <CookiesProvider>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/create" element={<CreateEdit />} />
-          <Route path="/create/:id" element={<CreateEdit />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/articles/:id" element={<BlogDisplay />} />
-          <Route path="/authors/:id" element={<AuthorDisplay />} />
-          <Route path="/createauthor/" element={<AuthorCreateEdit />} />
-          <Route path="/createauthor/:id" element={<AuthorCreateEdit />} />
-          <Route path="/search/" element={<SearchPage isActive={true} />} />
-          <Route path="/settings/" element={<Settings />} />
-          <Route path="/drafts/" element={<Drafts />} />
-        </Routes>
+        <RouterProvider router={router}/>
       </CookiesProvider>
-    </BrowserRouter>
-  </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
 )

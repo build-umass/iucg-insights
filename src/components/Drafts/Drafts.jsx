@@ -1,6 +1,6 @@
 import { getHiddenArticles, setArticlePublish, deleteArticle } from "../../api"
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { ScrollRestoration, useNavigate } from "react-router-dom"
 
 export default function Drafts() {
 
@@ -13,6 +13,7 @@ export default function Drafts() {
   return <>
       <h1>articles</h1>
       { articles.map(article => <ArticleListItem key={article._id} article={article} articles={articles} setArticles={setArticles}/>) }
+      <ScrollRestoration/>
     </>
 }
 

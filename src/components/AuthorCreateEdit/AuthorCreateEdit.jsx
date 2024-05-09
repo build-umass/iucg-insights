@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, ScrollRestoration } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
 import { deleteImage, putFormData, getAuthor, createAuthor, updateAuthor, BASE_URL } from "../../api"
 import randomstring from "randomstring"
@@ -61,6 +61,7 @@ export default function AuthorCreateEdit() {
       <SingleImage id={author.imageID} image={image} setImage={setImage}/>
       <MarkdownEdit value={author.content} setValue={content => setAuthor({ ...author, content })}/>
       <button onClick={submit}>submit</button>
+      <ScrollRestoration/>
     </>
   
   

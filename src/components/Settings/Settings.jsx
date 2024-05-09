@@ -14,7 +14,7 @@ import {
   updateCategory,
   deleteAuthor,
 } from "../../api"
-import { useNavigate } from "react-router-dom";
+import { ScrollRestoration, useNavigate } from "react-router-dom";
 
 export default function Settings() {
 
@@ -45,7 +45,8 @@ export default function Settings() {
     console.log("settings saved :D")
   }
 
-  return <div className="settings-page-outer-wrapper">
+  return <>
+    <div className="settings-page-outer-wrapper">
     <h1>Settings</h1>
 
     <h2>
@@ -140,6 +141,8 @@ export default function Settings() {
     <br /><button onClick={onClick}>save settings</button>
 
   </div>
+  <ScrollRestoration/>
+  </>
 }
 
 function ListEdit({ getFunc, createFunc, deleteFunc, updateFunc, debug, _tags, _setTags }) {

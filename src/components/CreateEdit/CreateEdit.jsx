@@ -1,7 +1,7 @@
 import "./CreateEdit.css"
 import "../../common.css"
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, ScrollRestoration } from "react-router-dom";
 import React from "react";
 import {
   BASE_URL,
@@ -229,6 +229,7 @@ export default function CreateEdit() {
       </div>
       <span className="feedback">{feedback}</span>
     </div>
+    <ScrollRestoration/>
   </>
 }
 

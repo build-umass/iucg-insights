@@ -1,7 +1,7 @@
 import "./BlogDisplay.css"
 import "../../common.css"
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, ScrollRestoration } from "react-router-dom";
 import React from "react";
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation.jsx"
 import SmallerArticleDisplay from "../SmallerArticleDisplay/SmallerArticleDisplay.jsx"
@@ -32,18 +32,21 @@ export default function BlogDisplay() {
 
   useEffect(() => { getArticle(id).then(setArticle) }, [])
 
-  return <div className="blogdisplay">
-    <Titlebar></Titlebar>
-    <div className="content">
-      <Title title={article.title} />
-      <Author author={article.author} authorID={article.authorID}/>
-      <DateIndicator date={article.created}></DateIndicator>
-      <Image src={article.contentImgID} title={article.title} />
-      <Content markdown={marked.parse(article.content)} />
+  return <>
+    <div className="blogdisplay">
+      <Titlebar></Titlebar>
+      <div className="content">
+        <Title title={article.title} />
+        <Author author={article.author} authorID={article.authorID}/>
+        <DateIndicator date={article.created}></DateIndicator>
+        <Image src={article.contentImgID} title={article.title} />
+        <Content markdown={marked.parse(article.content)} />
+      </div>
+      {/* <ReadMore /> */}
+      <IUCGFooter></IUCGFooter>
     </div>
-    <ReadMore />
-    <IUCGFooter></IUCGFooter>
-  </div>
+    <ScrollRestoration/>
+  </>
 }
 
 function Image({ src, title }) {
