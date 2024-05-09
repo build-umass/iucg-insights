@@ -25,7 +25,7 @@
     font-weight: normal;
 }
 
-.author-blurb p{
+.author-blurb *{
     font-size: 32px;
     font-weight: 200;
 }
