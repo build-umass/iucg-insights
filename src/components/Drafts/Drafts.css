@@ -1,0 +1,28 @@
+#draftcontainer {
+  background: var(--faintgray);
+  min-height: 100vh;
+}
+#drafts {
+  padding-left: 30px;
+  max-width: 800px;
+}
+#drafts h1 {
+  margin: 0;
+  padding: 40px;
+}
+.draftrow {
+  display: flex;
+}
+.draftrow *:first-child {
+  flex: 1;
+}
+.draftrow span.unpublished {
+  color: var(--gray);
+}
+.draftrow:last-child {
+  padding-bottom: 300px;
+}
+.draftrow .material-symbols-outlined {
+  cursor: pointer;
+  user-select: none;
+}
