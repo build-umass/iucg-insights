@@ -24,6 +24,7 @@
   padding-left: 10px;
   transition: border-left 0.1s;
   box-sizing: border-box;
+  overflow-anchor: none;
 }
 #createedit textarea.titleinput {
   font-size: 48px;

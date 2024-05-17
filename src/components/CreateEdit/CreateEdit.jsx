@@ -1,4 +1,5 @@
 import "./CreateEdit.css"
+import "../BlogDisplay/BlogDisplay.css"
 import "../../common.css"
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, ScrollRestoration } from "react-router-dom";
@@ -319,7 +320,7 @@ function ImageUpload({ images, addImages, deleteImage }) {
 function MarkdownEdit({ article, setArticle, preview }) {
   
   const onChange = e => setArticle({ ...article, content: e.target.value })
-  return preview ? <div id="preview" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div> :
+  return preview ? <div className="blog-content" id="preview" dangerouslySetInnerHTML={{ __html: marked.parse(article.content) }}></div> :
     <TextareaAutosize
       id="markdownedit"
       placeholder="Markdown goes here..."

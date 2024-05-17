@@ -1,6 +1,8 @@
 .blogdisplay {
   position: relative;
+  --width: min(calc(100vw - 160px), 800px);
 }
+
 
 .blogdisplay .buttons {
   position: fixed;
@@ -31,38 +33,9 @@
 .blogdisplay .content {
   padding: 75px;
   background-color: white;
-}
-
-.blogdisplay .content.editing,
-.blogdisplay .content.fullscreen {
-  margin-top: 0vh;
-}
-
-.blogdisplay .content .editwindow {
-  background: aliceblue;
-  padding: 20px;
-  font-family: courier new;
-}
-
-.blogdisplay .content .buttoncontainer {
-  background: lightblue;
-}
-
-.blogdisplay .content .buttoncontainer button {
-  background: none;
-  border: none;
-  font-size: 16px;
-  padding: 15px;
-  color: black;
-  transition: background 0.2s, color 0.2s;
-}
-
-.blogdisplay .content .buttoncontainer button.selected {
-  color: darkblue;
-}
-
-.blogdisplay .content .buttoncontainer button:hover {
-  background: #00000011;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: min(100vw, 800px);
 }
 
 .blogdisplay .content .title {
@@ -88,9 +61,33 @@
   width: 100%;
 }
 
-.blog-content p{
+.blog-content p {
   font-size: 24px;
-  font-weight: 200;
+  font-weight: 300;
+  margin-top: 0px;
+}
+.blog-content h1 {
+  font-size: 48px;
+  background: var(--red);
+  color: white;
+  padding: 30px 10px 10px 10px;
+}
+.blog-content h2 {
+  font-size: 32px;
+}
+.blog-content h3 {
+  font-size: 28px;
+  color: var(--red);
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+.blog-content li::marker {
+  font-size: 24px;
+  font-weight: 300;
+}
+.blog-content li {
+  font-size: 24px;
+  font-weight: 300;
 }
 
 .readmore h2 {
@@ -117,11 +114,6 @@
   margin-bottom: 0;
 }
 
-@media (max-width:calc(800px + 30px + 300px)) {
-  .readmore { display: none }
-  .blogdisplay .content { grid-template-columns: min(800px, 100vw) }
-}
-
 .date-label{
   margin-top: 0px;
   margin-bottom: 40px;
@@ -129,9 +121,9 @@
   font-weight: 150;
 }
 
-.blogdisplay img {
-  --width: min(calc(100vw - 160px), 960px);
+.blog-content img {
   object-fit: cover;
+  width: var(--width);
 }
 .hero-image{
   width: var(--width);
