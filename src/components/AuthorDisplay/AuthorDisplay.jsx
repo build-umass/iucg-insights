@@ -33,7 +33,7 @@ export default function AuthorDisplay() {
       article={article}
       key={key}
     ></SearchPageArticle>);
-  return <>
+  return <div id="authorpage">
     <Titlebar></Titlebar>
     <div class="outer-wrapper">
       <div class="author-page-content">
@@ -50,8 +50,7 @@ export default function AuthorDisplay() {
       {articleList}
     </div>
     <IUCGFooter></IUCGFooter>
-    <ScrollRestoration/>
-  </>
+  </div>
 }
 
 
