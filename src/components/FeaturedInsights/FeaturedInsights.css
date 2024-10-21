@@ -64,6 +64,7 @@
     color: lightgray;
     font-size: 50px;
     font-variation-settings: 'FILL' 1, 'wght' 700;
+    transform: translateY(0px);
 }
 
 #featured-insights-control-panel .dot{
