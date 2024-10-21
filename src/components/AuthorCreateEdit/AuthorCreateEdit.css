@@ -1,0 +1,58 @@
+.authorcreateedit {
+  width: 800px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 300px;
+}
+
+
+.authorcreateedit textarea {
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  border: none;
+  width: 100%;
+  font-size: 24px;
+  outline: none;
+  border-left: gray solid 1px;
+  padding-left: 10px;
+  transition: border-left 0.1s;
+  box-sizing: border-box;
+}
+.authorcreateedit textarea:focus, .titleinput:focus {
+  border-left: var(--gray) solid 3px;
+}
+
+.buttonrow {
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+}
+.buttonrow span {
+  padding: 10px 24px;
+  color: white;
+  background: var(--red);
+  border-radius: 8px;
+  font-size: 16px;
+
+  transition: background 0.1s;
+}
+.buttonrow span:hover {
+  background: var(--redhl);
+}
+
+.buttonrow .btnpreview {
+  background: var(--gray);
+}
+.buttonrow .btnpreview:hover {
+  background: var(--grayhl);
+}
+
+.buttonrow .btnpreview {
+  width: 60px;
+  text-align: center;
+}
